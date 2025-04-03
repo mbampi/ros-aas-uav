@@ -1,0 +1,25 @@
+[project]
+authors = ["Matheus Dussin Bampi <matheusbampi@gmail.com>"]
+channels = ["robostack-staging", "conda-forge"]
+description = "Add a short description here"
+name = "ros2"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+build = "colcon build --symlink-install"
+aas_gateway = "ros2 run aas_comm_pkg aas_gateway"
+pub = "ros2 run aas_comm_pkg pub_sample"
+node_info = "ros2 node info /aas_gateway"
+
+[dependencies]
+ros-humble-desktop = ">=0.10.0,<0.11"
+ros-humble-turtlesim = ">=1.4.2,<2"
+colcon-common-extensions = ">=0.3.0,<0.4"
+setuptools = "<=58.2.0"
+
+[activation]
+scripts = ["install/setup.sh"]
+
+[pypi-dependencies]
+opcua = ">=0.98.13, <0.99"
