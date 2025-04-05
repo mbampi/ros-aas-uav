@@ -1,10 +1,13 @@
-from opcua import Server, ua
-from datetime import datetime
+import argparse
+import signal
+import sys
 import time
 import yaml
 import xml.etree.ElementTree as ET
-import logging
+from datetime import datetime
+from opcua import Server, ua
 from typing import Dict, List
+import logging
 
 # Setup logging
 logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -76,6 +79,7 @@ class OPCUAServer:
         self.variable_map = {}
         self.xml_path = xml_path
         self.yaml_path = yaml_path
+        self._running = False
 
     def setup_variables(self):
         """Create OPC UA variables using parsed XML and YAML configurations."""
@@ -99,11 +103,11 @@ class OPCUAServer:
             self.variable_map[opcua_var.nodeid] = var
             log.debug(f"Created variable '{var}' with NodeId {opcua_var.nodeid}")
 
-    def run(self):
+    def start(self):
         """Start the OPC UA server and handle variable subscriptions and runtime loop."""
         self.setup_variables()
         self.server.start()
-        log.info(f"OPC UA Server is running at {self.server.endpoint}")
+        log.info(f"OPC UA Server running at {self.server.endpoint}")
 
         handler = VariableChangeHandler(self.variable_map)
         subscription = self.server.create_subscription(10, handler)
@@ -112,23 +116,45 @@ class OPCUAServer:
             node = self.server.get_node(nodeid)
             subscription.subscribe_data_change(node)
 
-        try:
-            while True:
-                log.debug(f"Server time: {datetime.now()}")
-                time.sleep(10)
-        finally:
-            self.server.stop()
-            log.info("OPC UA Server stopped.")
+        self._running = True
+        while self._running:
+            log.debug(f"Server time: {datetime.now()}")
+            time.sleep(10)
+
+    def stop(self):
+        self._running = False
+        self.server.stop()
+        log.info("OPC UA Server stopped.")
 
 def main():
     """Entry point to initialize and run the OPC UA server."""
+    parser = argparse.ArgumentParser(description="Run OPC UA Server with YAML + XML configuration")
+    parser.add_argument("--endpoint", default="opc.tcp://127.0.0.1:4840/freeopcua/server/", help="Server endpoint URL")
+    parser.add_argument("--namespace", default="http://aas-example.org", help="Namespace URI")
+    parser.add_argument("--xml", default="uav_submodel.xml", help="Path to XML NodeSet file")
+    parser.add_argument("--yaml", default="map.yaml", help="Path to YAML variable map file")
+    args = parser.parse_args()
+
     server = OPCUAServer(
-        endpoint="opc.tcp://127.0.0.1:4840/freeopcua/server/",
-        namespace_uri="http://aas-example.org",
-        xml_path="uav_submodel.xml",
-        yaml_path="map.yaml"
+        endpoint=args.endpoint,
+        namespace_uri=args.namespace,
+        xml_path=args.xml,
+        yaml_path=args.yaml
     )
-    server.run()
+
+    def handle_exit(signum, frame):
+        log.info("Interrupt received, stopping server...")
+        server.stop()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, handle_exit)
+    signal.signal(signal.SIGTERM, handle_exit)
+
+    try:
+        server.start()
+    except Exception as e:
+        log.error(f"Exception occurred: {e}")
+        server.stop()
 
 if __name__ == "__main__":
     main()
