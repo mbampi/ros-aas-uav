@@ -1,6 +1,7 @@
 from opcua import Server, ua
 from datetime import datetime
 import time
+import xml.etree.ElementTree as ET
 
 # Dictionary to map variables to labels
 # This is used to identify which variable changed when the handler is called
