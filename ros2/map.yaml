@@ -11,7 +11,7 @@ SignalStrength:
   topic: signal_strength
 Pitch:
   topic: pitch
-Roll:
-  topic: roll
-Yaw:
-  topic: yaw
+# Roll:
+#   topic: roll
+# Yaw:
+#   topic: yaw
