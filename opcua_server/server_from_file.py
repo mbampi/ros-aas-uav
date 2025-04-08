@@ -110,7 +110,7 @@ class OPCUAServer:
         log.info(f"OPC UA Server running at {self.server.endpoint}")
 
         handler = VariableChangeHandler(self.variable_map)
-        subscription = self.server.create_subscription(10, handler)
+        subscription = self.server.create_subscription(5, handler)
 
         for nodeid in self.variable_map:
             node = self.server.get_node(nodeid)

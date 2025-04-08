@@ -44,17 +44,20 @@ def main(args=None):
 
     # Define topics with their min/max values and publication periods
     topics_with_periods_and_values = {
-        'horizontal_speed': {'min': 30, 'max': 60, 'period': 0.5},  # Horizontal Speed
-        'vertical_speed': {'min': 0, 'max': 10, 'period': 0.8},  # Vertical Speed 
+        'horizontal_speed': {'min': 30, 'max': 60, 'period': 0.2},  # Horizontal Speed
+        'vertical_speed': {'min': 0, 'max': 10, 'period': 0.2},  # Vertical Speed 
         'battery': {'min': 80, 'max': 80, 'period': 1},  # Battery
-        'altitude': {'min': 20, 'max': 25, 'period': 1},  # Altitude 
-        'temperature': {'min': 16, 'max': 18, 'period': 1},  # Temperature 
-        'signal_strength': {'min': 90, 'max': 95, 'period': 1},  # Signal Strength
-        'pitch': {'min': -15, 'max': 15, 'period': 0.5},  # Pitch Angle
-        'roll': {'min': -20, 'max': 20, 'period': 0.5},  # Roll Angle   
+        'altitude': {'min': 20, 'max': 25, 'period': 0.2},  # Altitude 
+        'temperature': {'min': 16, 'max': 18, 'period': 0.5},  # Temperature 
+        'signal_strength': {'min': 90, 'max': 95, 'period': 0.5},  # Signal Strength
+        'pitch': {'min': -15, 'max': 15, 'period': 0.2},  # Pitch Angle
+        'roll': {'min': -20, 'max': 20, 'period': 0.2},  # Roll Angle   
         'imu_temperature': {'min': 20, 'max': 60, 'period': 1},  # IMU Sensor Temperature
-        'motor_rpm': {'min': 1000, 'max': 8000, 'period': 0.5},  # Motor RPM        
+        'motor_rpm': {'min': 1000, 'max': 8000, 'period': 0.2},  # Motor RPM        
     }
+    # Calculate the total data frequency
+    data_frequency = sum(1 / config['period'] for config in topics_with_periods_and_values.values())
+    print(f"Total data frequency: {data_frequency} Hz")
 
     # Initialize the MultiTopicPublisher node with the topic configurations
     multi_topic_publisher = MultiTopicPublisher(topics_with_periods_and_values=topics_with_periods_and_values)
