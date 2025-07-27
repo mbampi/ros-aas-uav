@@ -1,4 +1,5 @@
 import argparse
+import json
 import signal
 import sys
 import time
@@ -13,6 +14,13 @@ import logging
 logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
+# save logs to a file
+file_handler = logging.FileHandler('opcua_server.log')
+file_handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+log.addHandler(file_handler)
+
 
 class ConfigLoader:
     @staticmethod
@@ -66,10 +74,16 @@ class VariableChangeHandler:
     def datachange_notification(self, node, val, data):
         """Callback triggered when a subscribed variable changes its value."""
         label = self.variable_map.get(node.nodeid, "unknown")
-        log.debug(f"Variable '{label}' changed value to: {val}. node: {node.nodeid}")
+        log_details = {
+            'variable': label,
+            'data': val,
+            'node_id': str(node.nodeid),
+            'event': 'variable_updated'
+        }
+        log.debug(json.dumps(log_details))
 
 class OPCUAServer:
-    def __init__(self, endpoint: str, namespace_uri: str, xml_path: str, yaml_path: str):
+    def __init__(self, endpoint: str, namespace_uri: str, aas_path: str, mapping_path: str):
         """Initialize the OPC UA server and configuration parameters."""
         self.server = Server()
         self.server.set_endpoint(endpoint)
@@ -77,15 +91,15 @@ class OPCUAServer:
         self.idx = self.server.register_namespace(namespace_uri)
         self.objects_node = self.server.get_objects_node()
         self.variable_map = {}
-        self.xml_path = xml_path
-        self.yaml_path = yaml_path
+        self.aas_path = aas_path
+        self.mapping_path = mapping_path
         self._running = False
 
     def setup_variables(self):
         """Create OPC UA variables using parsed XML and YAML configurations."""
         uav = self.objects_node.add_object(self.idx, "UAV")
-        xml_node_map = ConfigLoader.parse_xml(self.xml_path)
-        variables = ConfigLoader.variables_from_yaml(self.yaml_path)
+        xml_node_map = ConfigLoader.parse_xml(self.aas_path)
+        variables = ConfigLoader.variables_from_yaml(self.mapping_path)
 
         if not variables:
             log.error("No variables found in YAML file.")
@@ -138,8 +152,8 @@ def main():
     server = OPCUAServer(
         endpoint=args.endpoint,
         namespace_uri=args.namespace,
-        xml_path=args.xml,
-        yaml_path=args.yaml
+        aas_path=args.xml,
+        mapping_path=args.yaml
     )
 
     def handle_exit(signum, frame):

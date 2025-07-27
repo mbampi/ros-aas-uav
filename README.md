@@ -20,57 +20,30 @@ In this example, the UAV Publisher simulates an UAV System publishing randomized
 
 The OPC UA server is a Python script that simulates an AAS provider. It waits for the AAS Gateway to connect and send the data from the UAV. The OPC UA server then prints the received data.
 
-### Configuration
+## Configuration
 
-The main fields needed for the service are:
-- Topic: The ROS Topic used by the UAV System to communicate the data. It is used by the AAS Gateway to subscribe to the data.
-- NodeSet Identifier: The NodeSet Identifier used by the OPC UA server to identify the data. It is used by the AAS Gateway to send the data to the OPC UA server.
-   - Example: "ns=2;s=Speed"
-- Property: The AAS Property used to map the data. It is used by the AAS Gateway to send the data to the OPC UA server.
--  
+The configuration for the AAS Gateway and the OPC UA server is done through YAML files. These files define the mapping between the ROS Topics and the AAS Properties.
 
-To map the data throghout the system, the AAS Gateway uses the mapping "topic <-> property"
-Where the topic is the ROS Topic and the property is the AAS property. 
+### Asset Administration Shell Specification
+
+The AAS Specification is defined by the NodeSet XML file. This file contains the structure of the AAS, including the Asset Information, Submodels, and Properties.
+
+### Topics to AAS Properties Mapping
+
+The mapping between the ROS Topics and the AAS Properties is defined in the `map.yaml` file. This file specifies which ROS Topic corresponds to which AAS Property.
 
 ## How to Run
 
 ### Run OPC UA Server
 
 ```bash
-python3 opcua/server.py
+python3 opcua/server_from_file.py
 ```
 
-### Run ROS2 AAS Gateway
+### Run with Docker Compose
 
+Run the following command to build and start the Docker containers for the ROS2 AAS Gateway and the mock publisher:
 ```bash
 cd ros2
-pixi run aas_gateway
+docker-compose up --build
 ```
-
-### Run ROS2 UAV Publisher
-
-```bash
-cd ros2
-pixi run pub
-```
-
-### Collect metrics
-
-interactive CLI
-```bash
-glances
-```
-
-export to csv metrics of the python processes
-```bash
-glances --export csv --export-csv-file ./glances.csv --quiet --export-process-filter "python.*"
-```
-
-## Performance
-
-Published from UAV: 1739652619.386628
-Received in AAS Gateway: 1739652619.399873 
-Sent from AAS Gateway to Server: 1739652619.402693
-Received in AAS Server: 1739652619.711016
-
-The total latency is 324.39 milliseconds (ms) => 0.32439 s

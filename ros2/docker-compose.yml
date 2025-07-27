@@ -1,0 +1,22 @@
+services:
+  aas_gateway:
+    container_name: aas_gateway
+    build:
+      dockerfile: Dockerfile
+    command: >
+      bash -c "source /ros2_ws/install/setup.bash && 
+        ros2 launch aas_ros2_gateway aas_gateway.launch.py"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mock_publisher:
+    container_name: mock_publisher
+    build:
+      dockerfile: Dockerfile
+    command: >
+      bash -c "source /ros2_ws/install/setup.bash && 
+        ros2 run aas_ros2_gateway mock_publisher /ros2_ws/install/aas_ros2_gateway/share/aas_ros2_gateway/config/mock_data.yaml"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - aas_gateway

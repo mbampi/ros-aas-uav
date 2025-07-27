@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>aas_comm_pkg</name>
-  <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <name>aas_ros2_gateway</name>
+  <version>1.0.0</version>
+  <description>A ROS2 package to facilitate communication between ROS and AAS OPC UA.</description>
   <maintainer email="matheusbampi@gmail.com">matheusdbampi</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache License 2.0</license>
 
-  <depend>opcua</depend>
+  <depend>python3-opcua</depend>
+  <depend>python3-yaml</depend>
+  <depend>python3-lxml</depend>
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
