@@ -8,8 +8,8 @@ version = "0.1.0"
 
 [tasks]
 build = "colcon build --symlink-install"
-aas_gateway = "ros2 run aas_comm_pkg aas_gateway"
-pub = "ros2 run aas_comm_pkg pub_sample"
+aas_gateway = "ros2 run aas_ros2_gateway aas_gateway"
+pub = "ros2 run aas_ros2_gateway pub_sample"
 node_info = "ros2 node info /aas_gateway"
 
 [dependencies]
@@ -22,4 +22,4 @@ setuptools = "<=58.2.0"
 scripts = ["install/setup.sh"]
 
 [pypi-dependencies]
-opcua = ">=0.98.13, <0.99"
+opcua = "*"

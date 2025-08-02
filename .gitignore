@@ -258,4 +258,6 @@ AMENT_IGNORE
 
 # End of https://www.toptal.com/developers/gitignore/api/ros2,python,visualstudiocode,macos
 
-resource_measure
+resource_measure/
+latency_measure/
+gazebo/

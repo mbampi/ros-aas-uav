@@ -11,7 +11,31 @@ SignalStrength:
   topic: signal_strength
 Pitch:
   topic: pitch
-# Roll:
-#   topic: roll
-# Yaw:
-#   topic: yaw
+SignalFrequency:
+  topic: signal_frequency
+NumberOfSatellites:
+  topic: number_of_satellites
+DischargeRate:
+  topic: discharge_rate
+RegistrationNumber:
+  topic: registration_number
+MaximumAltitude:
+  topic: maximum_altitude
+HeightUnfolded:
+  topic: height_unfolded
+HeightFolded:
+  topic: height_folded
+PayloadCapacityWeight:
+  topic: payload_capacity_weight
+TotalWeight:
+  topic: total_weight
+WidthFolded:
+  topic: width_folded
+WidthUnfolded:
+  topic: width_unfolded
+LengthFolded:
+  topic: length_folded
+LengthUnfolded:
+  topic: length_unfolded
+MaximumClimbRate:
+  topic: maximum_climb_rate
