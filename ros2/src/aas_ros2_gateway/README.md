@@ -1,82 +1,42 @@
 # AAS ROS2 Gateway
 
-A ROS2 package that acts as a gateway between ROS2 topics and an OPC UA server, using an Asset Administration Shell (AAS) submodel for mapping.
+Documentation for the ROS2 AAS Gateway package. This package bridges ROS2 topics into an OPC UA Asset Administration Shell (AAS) model via a configurable mapping.
 
----
+- Map ROS2 topics to AAS properties using YAML (`map.yaml`)
+- Optionally support richer message types and transformations (PX4-friendly)
+- Run inside ROS2 workspace or using Docker Compose
 
-## Overview
+PX4 and message mappings:
+- Use `message_type` to import ROS2 message classes (e.g. `sensor_msgs.msg.BatteryState` or `px4_msgs.msg.BatteryStatus`).
+- Use `field_path` (e.g. `percentage` or `pose.position.x`) to extract nested fields.
+- Apply `data_transform` to convert units or enums (percentage, quaternion_to_pitch, mm_to_m, px4_nav_state_to_string).
 
-This package provides a flexible way to bridge data from a ROS2 environment to an industrial control system that uses OPC UA. The mapping between ROS2 topics and OPC UA nodes is defined in a YAML file, making it easy to configure for different applications.
+Mock publisher (PX4-like)
+- A PX4-focused mock publisher is available at `scripts/mock_publisher.py`. It can publish typical PX4/MAVROS topics (battery, attitude, gps, odometry) for testing the gateway.
 
-This node is implemented as a standard ROS 2 node for simplicity and ease of use.
+Troubleshooting & tips
+- Use `ros2 topic list` and `ros2 topic info <topic>` to discover available topics and types.
+- Use `ros2 interface show <msg>` to inspect message fields.
+- Start with one mapping entry and verify before adding many.
 
----
 
-## Features
-
-* **Dynamic Topic Subscriptions:** Subscribes to a list of ROS2 topics defined in a configuration file.
-* **OPC UA Integration:** Writes received ROS2 messages to corresponding nodes in an OPC UA server.
-* **Configurable:** Easy to configure through a YAML file and ROS2 parameters.
-* **Robust:** Includes error handling and logging.
-* **Extensible:** The code is modular and easy to extend with new features.
-
----
-
-## Getting Started
-
-### Installation
-
-Clone the repository into your ROS2 workspace:
+## Quick start
+1. Source your ROS2 workspace and build this package (colcon):
 
 ```bash
-cd ~/ros2_ws/src
-git clone [https://github.com/mbampi/aas_ros2_gateway.git](https://github.com/mbampi/aas_ros2_gateway.git)
-```
-
-Install dependencies:
-
-```bash
-cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y
-```
-
-Build the package:
-
-```bash
-cd ~/ros2_ws
+source ~/ros2_ws/install/setup.bash
 colcon build --packages-select aas_ros2_gateway
 ```
 
-### Usage
+1. Edit the mapping file (`config/map.yaml`) to match your AAS XML model (`config/uav_submodel.xml`).
 
-1.  **Source your workspace**:
-    ```bash
-    source ~/ros2_ws/install/setup.bash
-    ```
-
-2.  **Configure your mappings** in `src/aas_ros2_gateway/config/map.yaml`:
-    ```yaml
-    topics_to_properties:
-      - property: "HorizontalSpeed"
-        topic: "horizontal_speed"
-      - property: "VerticalSpeed"
-        topic: "vertical_speed"
-    ```
-
-3.  **Launch the gateway**:
-    ```bash
-    ros2 launch aas_ros2_gateway aas_gateway.launch.py
-    ```
-
-You can also override the default parameters from the command line:
+2. Run the gateway with mapping (supports message types, field paths, transforms):
 
 ```bash
-ros2 launch aas_ros2_gateway aas_gateway.launch.py opcua_server_url:='opc.tcp://your-server:4840'
+ros2 run aas_ros2_gateway aas_gateway_node --ros-args -p mapping_path:=config/map.yaml -p aas_path:=config/uav_submodel.xml
 ```
 
----
-
-## 🐳 Running with Docker Compose
+### 🐳 Running with Docker Compose
 
 You can also run the gateway using Docker Compose for a more isolated and reproducible environment.
 
