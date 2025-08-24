@@ -33,9 +33,18 @@ class ConfigLoader:
 
     @staticmethod
     def variables_from_yaml(file_path: str) -> List[str]:
-        """Extract variable names (keys) from a YAML configuration file."""
+        """Extract variable names (property names) from a YAML configuration file.
+        
+        Expects the format with 'topics_to_properties' list containing
+        dictionaries with 'property' keys.
+        """
         data = ConfigLoader.load_yaml(file_path)
-        return list(data.keys())
+        properties = []
+        for item in data['topics_to_properties']:
+            if 'property' in item:
+                properties.append(item['property'])
+        
+        return properties
 
     @staticmethod
     def parse_xml(file_path: str) -> Dict[str, str]:

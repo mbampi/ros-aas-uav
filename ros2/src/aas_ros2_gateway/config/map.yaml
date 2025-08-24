@@ -44,6 +44,71 @@ topics_to_properties:
     message_type: px4_msgs.msg.SensorGps
     field_path: satellites_used
     data_transform: identity
+    
+  
+  # Local position data from PX4
+  - property: LocalPose
+    topic: /px4_1/fmu/out/vehicle_local_position
+    message_type: px4_msgs.msg.VehicleLocalPosition
+    field_path: ""
+    data_transform: position_to_json
+    
+  # Horizontal speed from local position velocities
+  - property: HorizontalSpeed
+    topic: /px4_1/fmu/out/vehicle_local_position
+    message_type: px4_msgs.msg.VehicleLocalPosition
+    field_path: vxy
+    data_transform: vector_magnitude_2d
+    
+  # Vertical speed from local position
+  - property: VerticalSpeed
+    topic: /px4_1/fmu/out/vehicle_local_position
+    message_type: px4_msgs.msg.VehicleLocalPosition
+    field_path: vz
+    data_transform: negate
+    
+  # GPS Global position and heading
+  - property: GlobalPose
+    topic: /px4_1/fmu/out/vehicle_global_position
+    message_type: px4_msgs.msg.VehicleGlobalPosition
+    field_path: ""
+    data_transform: pose_to_json
+    
+  # GPS heading
+  - property: Heading
+    topic: /px4_1/fmu/out/vehicle_global_position
+    message_type: px4_msgs.msg.VehicleGlobalPosition
+    field_path: yaw
+    data_transform: radians_to_degrees
+    
+  # Arming state from PX4
+  - property: Status
+    topic: /px4_1/fmu/out/vehicle_status
+    message_type: px4_msgs.msg.VehicleStatus
+    field_path: arming_state
+    data_transform: px4_arming_state_to_string
+    
+  # GPS fix type
+  - property: FixType
+    topic: /px4_1/fmu/out/vehicle_gps_position
+    message_type: px4_msgs.msg.SensorGps
+    field_path: fix_type
+    data_transform: identity
+    
+  # GPS horizontal accuracy (EPH)
+  - property: HorizontalAccuracy
+    topic: /px4_1/fmu/out/vehicle_gps_position
+    message_type: px4_msgs.msg.SensorGps
+    field_path: eph
+    data_transform: identity
+    
+  # GPS vertical accuracy (EPV)
+  - property: VerticalAccuracy
+    topic: /px4_1/fmu/out/vehicle_gps_position
+    message_type: px4_msgs.msg.SensorGps
+    field_path: epv
+    data_transform: identity
+    
 
 # PX4 enum mappings for transformations
 px4_enums:

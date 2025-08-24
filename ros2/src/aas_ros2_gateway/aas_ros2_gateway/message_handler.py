@@ -23,8 +23,8 @@ from typing import Any, Dict, Optional, Union, List, Callable
 
 class MessageHandler:
     """
-    Generic handler for ROS2 messages that can dynamically import message types,
-    extract fields, and apply transformations.
+    Generic handler for ROS2 messages that dynamically imports message types,
+    extracts fields, and applies transformations.
     """
     
     def __init__(self, logger, enums: Optional[Dict] = None):
@@ -54,7 +54,6 @@ class MessageHandler:
             return self._message_type_cache[message_type_string]
             
         try:
-            # Split the message type string
             parts = message_type_string.split('.')
             if len(parts) < 3:
                 self.logger.error(f"Invalid message type format: {message_type_string}")
@@ -64,13 +63,8 @@ class MessageHandler:
             module_path = '.'.join(parts[:-1])  # e.g., 'px4_msgs.msg'
             class_name = parts[-1]  # e.g., 'BatteryStatus'
             
-            # Import the module
             module = importlib.import_module(module_path)
-            
-            # Get the class
             message_class = getattr(module, class_name)
-            
-            # Cache the result
             self._message_type_cache[message_type_string] = message_class
             
             self.logger.info(f"Successfully imported message type: {message_type_string}")
@@ -127,23 +121,18 @@ class MessageHandler:
         """
         path_parts = []
         
-        # Split by dots first
         dot_parts = field_path.split('.')
         
         for part in dot_parts:
-            # Check if this part contains array indexing
             if '[' in part and ']' in part:
-                # Extract the field name and index
                 match = re.match(r'(\w+)\[(\d+)\]', part)
                 if match:
                     field_name = match.group(1)
                     index = int(match.group(2))
                     path_parts.extend([field_name, index])
                 else:
-                    # Fallback for complex indexing
                     path_parts.append(part)
             else:
-                # Simple field name
                 path_parts.append(part)
         
         return path_parts
@@ -164,12 +153,20 @@ class MessageHandler:
             'vector_magnitude': self._transform_vector_magnitude,
             'vector_magnitude_2d': self._transform_vector_magnitude_2d,
             'quaternion_to_pitch': self._transform_quaternion_to_pitch,
+            'quaternion_to_roll': self._transform_quaternion_to_roll,
+            'quaternion_to_yaw': self._transform_quaternion_to_yaw,
             'px4_nav_state_to_string': self._transform_px4_nav_state,
             'px4_arming_state_to_string': self._transform_px4_arming_state,
             'diagnostic_level_to_string': self._transform_diagnostic_level,
             'rc_to_signal_strength': self._transform_rc_signal_strength,
             'manual_control_to_signal_strength': self._transform_manual_control_signal,
-            'gps_eph_to_signal_strength': self._transform_gps_eph_to_signal
+            'gps_eph_to_signal_strength': self._transform_gps_eph_to_signal,
+            'position_to_json': self._transform_position_to_json,
+            'velocity_to_json': self._transform_velocity_to_json,
+            'pose_to_json': self._transform_pose_to_json,
+            'degrees_to_radians': lambda value: math.radians(float(value)),
+            'radians_to_degrees': lambda value: math.degrees(float(value)),
+            'meters_per_second_to_kmh': lambda value: float(value) * 3.6
         }
     
     def apply_transformation(self, value: Any, transform_type: str) -> Union[str, float, int]:
@@ -235,6 +232,44 @@ class MessageHandler:
         self.logger.debug(f"Quaternion to pitch: w={w:.3f}, x={x:.3f}, y={y:.3f}, z={z:.3f} -> {pitch_deg:.2f} degrees")
         return pitch_deg
     
+    def _transform_quaternion_to_roll(self, value: Any) -> float:
+        """Convert quaternion [w, x, y, z] to roll in degrees."""
+        if hasattr(value, 'w') and hasattr(value, 'x') and hasattr(value, 'y') and hasattr(value, 'z'):
+            w, x, y, z = value.w, value.x, value.y, value.z
+        elif hasattr(value, '__len__') and len(value) >= 4:
+            w, x, y, z = value[0], value[1], value[2], value[3]
+        else:
+            self.logger.warning(f"quaternion_to_roll requires quaternion object or array with 4 elements, got: {type(value)}")
+            return 0.0
+        
+        # Convert quaternion to roll angle
+        sin_roll = 2.0 * (w * x + y * z)
+        cos_roll = 1.0 - 2.0 * (x * x + y * y)
+        roll_rad = math.atan2(sin_roll, cos_roll)
+        roll_deg = math.degrees(roll_rad)
+        
+        self.logger.debug(f"Quaternion to roll: w={w:.3f}, x={x:.3f}, y={y:.3f}, z={z:.3f} -> {roll_deg:.2f} degrees")
+        return roll_deg
+    
+    def _transform_quaternion_to_yaw(self, value: Any) -> float:
+        """Convert quaternion [w, x, y, z] to yaw in degrees."""
+        if hasattr(value, 'w') and hasattr(value, 'x') and hasattr(value, 'y') and hasattr(value, 'z'):
+            w, x, y, z = value.w, value.x, value.y, value.z
+        elif hasattr(value, '__len__') and len(value) >= 4:
+            w, x, y, z = value[0], value[1], value[2], value[3]
+        else:
+            self.logger.warning(f"quaternion_to_yaw requires quaternion object or array with 4 elements, got: {type(value)}")
+            return 0.0
+        
+        # Convert quaternion to yaw angle
+        sin_yaw = 2.0 * (w * z + x * y)
+        cos_yaw = 1.0 - 2.0 * (y * y + z * z)
+        yaw_rad = math.atan2(sin_yaw, cos_yaw)
+        yaw_deg = math.degrees(yaw_rad)
+        
+        self.logger.debug(f"Quaternion to yaw: w={w:.3f}, x={x:.3f}, y={y:.3f}, z={z:.3f} -> {yaw_deg:.2f} degrees")
+        return yaw_deg
+    
     def _transform_px4_nav_state(self, value: Any) -> str:
         """Convert PX4 navigation state enum to string."""
         nav_states = self.enums.get('nav_states', {})
@@ -285,6 +320,95 @@ class MessageHandler:
             self.logger.warning(f"Invalid EPH value for signal strength conversion: {value}")
             return 0.0
     
+    def _transform_position_to_json(self, value: Any) -> str:
+        """Convert position data (with x, y, z attributes) to JSON string."""
+        try:
+            if hasattr(value, 'x') and hasattr(value, 'y') and hasattr(value, 'z'):
+                position_data = {
+                    'x': float(value.x),
+                    'y': float(value.y),
+                    'z': float(value.z)
+                }
+            elif hasattr(value, '__len__') and len(value) >= 3:
+                position_data = {
+                    'x': float(value[0]),
+                    'y': float(value[1]),
+                    'z': float(value[2])
+                }
+            else:
+                self.logger.warning(f"position_to_json requires object with x,y,z or array with 3+ elements")
+                return json.dumps({'x': 0.0, 'y': 0.0, 'z': 0.0})
+            
+            return json.dumps(position_data)
+        except Exception as e:
+            self.logger.error(f"Failed to convert position to JSON: {e}")
+            return json.dumps({'x': 0.0, 'y': 0.0, 'z': 0.0})
+    
+    def _transform_velocity_to_json(self, value: Any) -> str:
+        """Convert velocity data to JSON string."""
+        try:
+            if hasattr(value, 'x') and hasattr(value, 'y') and hasattr(value, 'z'):
+                velocity_data = {
+                    'vx': float(value.x),
+                    'vy': float(value.y),
+                    'vz': float(value.z),
+                    'speed_2d': math.sqrt(value.x**2 + value.y**2),
+                    'speed_3d': math.sqrt(value.x**2 + value.y**2 + value.z**2)
+                }
+            elif hasattr(value, '__len__') and len(value) >= 3:
+                velocity_data = {
+                    'vx': float(value[0]),
+                    'vy': float(value[1]),
+                    'vz': float(value[2]),
+                    'speed_2d': math.sqrt(value[0]**2 + value[1]**2),
+                    'speed_3d': math.sqrt(value[0]**2 + value[1]**2 + value[2]**2)
+                }
+            else:
+                self.logger.warning(f"velocity_to_json requires object with x,y,z or array with 3+ elements")
+                return json.dumps({'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'speed_2d': 0.0, 'speed_3d': 0.0})
+            
+            return json.dumps(velocity_data)
+        except Exception as e:
+            self.logger.error(f"Failed to convert velocity to JSON: {e}")
+            return json.dumps({'vx': 0.0, 'vy': 0.0, 'vz': 0.0, 'speed_2d': 0.0, 'speed_3d': 0.0})
+    
+    def _transform_pose_to_json(self, value: Any) -> str:
+        """Convert pose data (position + orientation) to JSON string."""
+        try:
+            pose_data = {}
+            
+            # Extract position if available
+            if hasattr(value, 'x') and hasattr(value, 'y') and hasattr(value, 'z'):
+                pose_data['position'] = {
+                    'x': float(value.x),
+                    'y': float(value.y),
+                    'z': float(value.z)
+                }
+            
+            # Extract orientation if available (assuming quaternion)
+            if hasattr(value, 'w'):
+                # Full quaternion message
+                w, x, y, z = value.w, value.x, value.y, value.z
+                
+                # Convert to Euler angles
+                roll_rad = math.atan2(2.0 * (w * x + y * z), 1.0 - 2.0 * (x * x + y * y))
+                pitch_rad = math.asin(max(-1.0, min(1.0, 2.0 * (w * y - z * x))))
+                yaw_rad = math.atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z))
+                
+                pose_data['orientation'] = {
+                    'quaternion': {'w': float(w), 'x': float(x), 'y': float(y), 'z': float(z)},
+                    'euler_degrees': {
+                        'roll': math.degrees(roll_rad),
+                        'pitch': math.degrees(pitch_rad),
+                        'yaw': math.degrees(yaw_rad)
+                    }
+                }
+            
+            return json.dumps(pose_data)
+        except Exception as e:
+            self.logger.error(f"Failed to convert pose to JSON: {e}")
+            return json.dumps({'position': {'x': 0.0, 'y': 0.0, 'z': 0.0}})
+    
     def process_message(self, msg: Any, field_path: str, transform_type: str = "identity") -> Union[str, float, int, None]:
         """
         Complete message processing: extract field and apply transformation.
@@ -297,13 +421,11 @@ class MessageHandler:
         Returns:
             The processed value ready for OPC UA writing
         """
-        # Extract the field value
         raw_value = self.extract_field_value(msg, field_path)
         
         if raw_value is None:
             return None
         
-        # Apply transformation
         processed_value = self.apply_transformation(raw_value, transform_type)
         
         return processed_value
@@ -343,7 +465,6 @@ class MessageHandler:
                 processed_ts = time.time()
                 
                 if processed_value is not None:
-                    # Log the received data
                     log_payload = {
                         'event': 'message_received',
                         'topic': topic,
