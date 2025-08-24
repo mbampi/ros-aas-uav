@@ -1,0 +1,11 @@
+# UAV Telemetry Latency Analyzer Dependencies
+
+# Core data processing
+numpy>=1.21.0
+pandas>=1.3.0
+
+# Statistical analysis and visualization
+matplotlib>=3.5.0
+
+# Terminal output formatting
+tabulate>=0.8.0
