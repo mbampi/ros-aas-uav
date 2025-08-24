@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAV OPC UA Server Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚁 UAV OPC UA Server Dashboard</h1>
+            <div class="status-bar">
+                <div class="status-indicator" id="connectionStatus">
+                    <span class="status-dot disconnected"></span>
+                    <span id="statusText">Disconnected</span>
+                </div>
+                <div class="timestamp" id="lastUpdate">Last Update: Never</div>
+                <label style="display:flex; align-items:center; gap:8px; font-size: 0.9rem;">
+                    Refresh:
+                    <select id="refreshRate">
+                        <option value="500" selected>0.5s</option>
+                        <option value="1000">1s</option>
+                        <option value="2000">2s</option>
+                        <option value="5000">5s</option>
+                    </select>
+                </label>
+            </div>
+        </header>
+
+        <main>
+            <!-- Summary Cards -->
+            <section class="summary-cards">
+                <div class="card" id="totalEventsCard">
+                    <div class="card-header">
+                        <h3>Total Events</h3>
+                        <span class="card-icon">📊</span>
+                    </div>
+                    <div class="card-value" id="totalEvents">0</div>
+                </div>
+                <div class="card" id="activePropertiesCard">
+                    <div class="card-header">
+                        <h3>Active Properties</h3>
+                        <span class="card-icon">🔗</span>
+                    </div>
+                    <div class="card-value" id="activeProperties">0</div>
+                </div>
+                <div class="card" id="uptimeCard">
+                    <div class="card-header">
+                        <h3>Server Uptime</h3>
+                        <span class="card-icon">⏱️</span>
+                    </div>
+                    <div class="card-value" id="uptime">00:00:00</div>
+                </div>
+            </section>
+
+            <!-- Properties Grid -->
+            <section class="properties-section">
+                <h2>OPC UA Properties</h2>
+                <div class="properties-grid" id="propertiesGrid">
+                    <!-- Properties will be dynamically added here -->
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <h2>Real-time Data Charts</h2>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <canvas id="batteryChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="altitudeChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="speedChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="attitudeChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Event Log -->
+            <section class="log-section">
+                <h2>Event Log</h2>
+                <div class="log-controls">
+                    <button id="clearLogBtn" class="btn">Clear Log</button>
+                    <button id="pauseLogBtn" class="btn">Pause</button>
+                    <label>
+                        Max entries:
+                        <select id="maxLogEntries">
+                            <option value="50">50</option>
+                            <option value="100" selected>100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="log-container" id="logContainer">
+                    <!-- Log entries will be added here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/dashboard.js"></script>
+</body>
+
+</html>

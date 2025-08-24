@@ -11,6 +11,13 @@ from typing import Dict, List
 import os
 import logging
 
+# Optional web UI imports - will be imported only if --ui flag is used
+try:
+    from web_ui import DataManager, WebUIServer, UIVariableChangeHandler
+    WEB_UI_AVAILABLE = True
+except ImportError:
+    WEB_UI_AVAILABLE = False
+
 # Setup logging
 logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 log = logging.getLogger(__name__)
@@ -192,7 +199,7 @@ class VariableChangeHandler:
             pass
 
 class OPCUAServer:
-    def __init__(self, endpoint: str, namespace_uri: str, aas_path: str, mapping_path: str):
+    def __init__(self, endpoint: str, namespace_uri: str, aas_path: str, mapping_path: str, enable_ui: bool = False, ui_host: str = '127.0.0.1', ui_port: int = 5000):
         """Initialize the OPC UA server and configuration parameters."""
         self.server = Server()
         self.server.set_endpoint(endpoint)
@@ -203,6 +210,24 @@ class OPCUAServer:
         self.aas_path = aas_path
         self.mapping_path = mapping_path
         self._running = False
+        
+        # Web UI components
+        self.enable_ui = enable_ui
+        self.ui_host = ui_host
+        self.ui_port = ui_port
+        self.data_manager = None
+        self.web_server = None
+        self.web_thread = None
+        
+        if self.enable_ui:
+            if not WEB_UI_AVAILABLE:
+                log.error("Web UI requested but required dependencies not available. Install with: pip install flask flask-socketio")
+                log.info("Continuing without web UI...")
+                self.enable_ui = False
+            else:
+                self.data_manager = DataManager()
+                self.web_server = WebUIServer(self.data_manager, ui_host, ui_port)
+                log.info(f"Web UI enabled - will be available at http://{ui_host}:{ui_port}")
 
     def setup_variables(self):
         """Create OPC UA variables using parsed XML and YAML configurations."""
@@ -232,6 +257,16 @@ class OPCUAServer:
         self.server.start()
         log.info(f"OPC UA Server running at {self.server.endpoint}")
 
+        # Start web UI if enabled
+        if self.enable_ui and self.web_server:
+            try:
+                self.web_thread = self.web_server.start()
+                log.info(f"Web UI dashboard available at http://{self.ui_host}:{self.ui_port}")
+            except Exception as e:
+                log.error(f"Failed to start web UI: {e}")
+                log.info("Continuing without web UI...")
+                self.enable_ui = False
+
         ts = datetime.now().strftime("%m-%dT%H-%M-%S")
         metrics_dir = 'metrics'
         try:
@@ -240,7 +275,17 @@ class OPCUAServer:
             pass
 
         latency_log = os.path.join(metrics_dir, f"events-{ts}.jsonl")
-        handler = VariableChangeHandler(self.variable_map, latency_log_path=latency_log)
+        
+        # Use UI-enhanced handler if web UI is enabled, otherwise use original handler
+        if self.enable_ui and self.data_manager and self.web_server:
+            handler = UIVariableChangeHandler(
+                self.variable_map, 
+                latency_log_path=latency_log,
+                data_manager=self.data_manager,
+                web_server=self.web_server
+            )
+        else:
+            handler = VariableChangeHandler(self.variable_map, latency_log_path=latency_log)
         
         self._latency_handler = handler # keep reference for closing later
         log.info(f"Writing latency records to {latency_log}")
@@ -269,18 +314,46 @@ class OPCUAServer:
 
 def main():
     """Entry point to initialize and run the OPC UA server."""
-    parser = argparse.ArgumentParser(description="Run OPC UA Server with YAML + XML configuration")
+    parser = argparse.ArgumentParser(
+        description="Run OPC UA Server with YAML + XML configuration",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run CLI-only version (default)
+  python opcua_server.py
+  
+  # Run with web UI dashboard
+  python opcua_server.py --ui
+  
+  # Run with web UI on specific host/port
+  python opcua_server.py --ui --ui-host 0.0.0.0 --ui-port 8080
+"""
+    )
     parser.add_argument("--endpoint", default="opc.tcp://0.0.0.0:4840/freeopcua/server/", help="Server endpoint URL")
     parser.add_argument("--namespace", default="http://aas-example.org", help="Namespace URI")
     parser.add_argument("--xml", default="uav_submodel.xml", help="Path to XML NodeSet file")
     parser.add_argument("--yaml", default="map.yaml", help="Path to YAML variable map file")
+    parser.add_argument("--ui", action="store_true", help="Enable web UI dashboard")
+    parser.add_argument("--ui-host", default="127.0.0.1", help="Web UI host (default: 127.0.0.1)")
+    parser.add_argument("--ui-port", type=int, default=5000, help="Web UI port (default: 5000)")
     args = parser.parse_args()
+
+    # Check UI requirements if UI is requested
+    if args.ui and not WEB_UI_AVAILABLE:
+        print("ERROR: Web UI requested but required dependencies not available.")
+        print("Please install with: pip install flask flask-socketio")
+        print("Continuing in CLI-only mode...")
+        print()
+        args.ui = False
 
     server = OPCUAServer(
         endpoint=args.endpoint,
         namespace_uri=args.namespace,
         aas_path=args.xml,
-        mapping_path=args.yaml
+        mapping_path=args.yaml,
+        enable_ui=args.ui,
+        ui_host=args.ui_host,
+        ui_port=args.ui_port
     )
 
     def handle_exit(signum, frame):
