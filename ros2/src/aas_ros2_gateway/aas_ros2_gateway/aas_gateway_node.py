@@ -23,7 +23,6 @@ def main(args=None):
     rclpy.init(args=args)
     node = None
     try:
-        # Create an instance of the MultiTopicSubscriber node
         node = MultiTopicSubscriber()
         node.get_logger().info("aas_gateway node has been started.")
         rclpy.spin(node)
