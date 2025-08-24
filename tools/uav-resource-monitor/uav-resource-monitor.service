@@ -1,0 +1,29 @@
+[Unit]
+Description=UAV Resource Monitor Service
+Documentation=file:///opt/uav-resource-monitor/README.md
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=uav-monitor
+Group=uav-monitor
+WorkingDirectory=/opt/uav-resource-monitor/scripts
+Environment=PATH=/opt/uav-resource-monitor/venv/bin
+ExecStart=/opt/uav-resource-monitor/venv/bin/python /opt/uav-resource-monitor/scripts/resource_monitor.py --config /opt/uav-resource-monitor/config/monitor_config.json --session-id auto
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=uav-resource-monitor
+
+# Security settings
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/uav-resource-monitor/data /opt/uav-resource-monitor/logs /opt/uav-resource-monitor/reports
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
