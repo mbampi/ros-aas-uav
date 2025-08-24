@@ -1,20 +1,33 @@
 
+# Updated PX4 ROS2 Topic Mappings for OPC UA Server
+# These topics correspond to the actual PX4+ROS2+Gazebo system
+
+CurrentBatteryLevel:
+  topic: px4_battery_level
+  description: "Battery remaining percentage from PX4"
+Altitude:
+  topic: px4_altitude
+  description: "Vehicle altitude from PX4 local position (NED frame)"
+Pitch:
+  topic: px4_pitch
+  description: "Vehicle pitch angle from PX4 attitude quaternion"
+FlighStatus:
+  topic: px4_flight_status
+  description: "PX4 navigation state (flight mode)"
+SignalStrength:
+  topic: px4_gps_signal
+  description: "GPS signal strength derived from EPH accuracy"
+NumberOfSatellites:
+  topic: px4_gps_satellites
+  description: "Number of GPS satellites used by PX4"
+
+# Legacy/Static Properties - Keep for compatibility
 HorizontalSpeed:
   topic: horizontal_speed
 VerticalSpeed:
   topic: vertical_speed
-CurrentBatteryLevel:
-  topic: battery
-Altitude:
-  topic: altitude
-SignalStrength:
-  topic: signal_strength
-Pitch:
-  topic: pitch
 SignalFrequency:
   topic: signal_frequency
-NumberOfSatellites:
-  topic: number_of_satellites
 DischargeRate:
   topic: discharge_rate
 RegistrationNumber:

@@ -8,12 +8,14 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from opcua import Server, ua
 from typing import Dict, List
+import os
 import logging
 
 # Setup logging
 logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
+
 # save logs to a file
 file_handler = logging.FileHandler('opcua_server.log')
 file_handler.setLevel(logging.DEBUG)
@@ -67,20 +69,118 @@ class ConfigLoader:
         raise ValueError(f"Unsupported NodeId format: {nodeid_str}")
 
 class VariableChangeHandler:
-    def __init__(self, variable_map: Dict[ua.NodeId, str]):
-        """Initialize with a mapping from NodeId to variable names."""
+    def __init__(self, variable_map: Dict[ua.NodeId, str], latency_log_path: str = "latency.jsonl"):
+        """Initialize with a mapping from NodeId to variable names and a path for latency logging.
+
+        The handler writes one JSON object per line to `latency_log_path` so downstream tools
+        can easily process latency measurements.
+        """
         self.variable_map = variable_map
+        self.latency_log_path = latency_log_path
+        # Open file in append mode, create directories if needed
+        try:
+            os.makedirs(os.path.dirname(self.latency_log_path) or '.', exist_ok=True)
+        except Exception:
+            pass
+        self._fp = open(self.latency_log_path, 'a', buffering=1)  # line-buffered
+
+    def _safe_float(self, v):
+        try:
+            return float(v)
+        except Exception:
+            return None
 
     def datachange_notification(self, node, val, data):
-        """Callback triggered when a subscribed variable changes its value."""
+        """Callback triggered when a subscribed variable changes its value.
+
+        Expect payloads in the exact JSON format:
+            { 'id': <uuid>, 'recv_ts': <float>, 'processed_ts': <float>, 'value': <any> }
+
+        This method only records the server receive timestamp and echoes the
+        payload fields into a JSONL file. No further calculations are performed
+        here to avoid any impact on performance or alter the raw timestamps.
+        """
+        server_recv_ts = time.time()
         label = self.variable_map.get(node.nodeid, "unknown")
-        log_details = {
-            'variable': label,
-            'data': val,
+
+        parsed = None
+        raw_payload = None
+
+        # Normalize incoming value into a string containing JSON when possible
+        try:
+            # Common cases: bytes or str
+            if isinstance(val, bytes):
+                raw_payload = val.decode('utf-8', errors='replace')
+            elif isinstance(val, str):
+                raw_payload = val
+            else:
+                # Some OPC UA libraries wrap values; try to extract .Value
+                if hasattr(val, 'Value'):
+                    inner = val.Value
+                    if isinstance(inner, bytes):
+                        raw_payload = inner.decode('utf-8', errors='replace')
+                    elif isinstance(inner, str):
+                        raw_payload = inner
+                    else:
+                        # Best-effort serialization
+                        try:
+                            raw_payload = json.dumps(inner, default=str)
+                        except Exception:
+                            raw_payload = str(inner)
+                else:
+                    # Fallback: try to serialize the value
+                    try:
+                        raw_payload = json.dumps(val, default=str)
+                    except Exception:
+                        raw_payload = str(val)
+
+            # First, try to parse the whole payload as JSON
+            try:
+                parsed = json.loads(raw_payload) if raw_payload is not None else None
+            except Exception:
+                # If that fails, try to find a JSON object inside the string
+                try:
+                    import re
+                    if raw_payload:
+                        m = re.search(r"\{.*\}", raw_payload)
+                        if m:
+                            parsed = json.loads(m.group(0))
+                except Exception:
+                    parsed = None
+
+        except Exception:
+            parsed = None
+
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        record = {
+            'event': 'variable_updated',
             'node_id': str(node.nodeid),
-            'event': 'variable_updated'
+            'variable': label,
+            'value': parsed.get('value', None),
+            'message_id': parsed.get('id', None),
+            'recv_ts': parsed.get('recv_ts', None),
+            'processed_ts': parsed.get('processed_ts', None),
+            'server_recv_ts': server_recv_ts,
         }
-        log.debug(json.dumps(log_details))
+
+        # Write a single JSON object per line
+        try:
+            self._fp.write(json.dumps(record, default=str) + '\n')
+        except Exception:
+            log.exception('Failed to write latency record to file')
+
+        # Keep a debug log copy
+        log.debug(json.dumps(record))
+
+    def close(self):
+        try:
+            if hasattr(self, '_fp') and not self._fp.closed:
+                self._fp.flush()
+                self._fp.close()
+        except Exception:
+            pass
 
 class OPCUAServer:
     def __init__(self, endpoint: str, namespace_uri: str, aas_path: str, mapping_path: str):
@@ -123,7 +223,19 @@ class OPCUAServer:
         self.server.start()
         log.info(f"OPC UA Server running at {self.server.endpoint}")
 
-        handler = VariableChangeHandler(self.variable_map)
+        ts = datetime.now().strftime("%m-%dT%H-%M-%S")
+        metrics_dir = 'metrics'
+        try:
+            os.makedirs(metrics_dir, exist_ok=True)
+        except Exception:
+            pass
+
+        latency_log = os.path.join(metrics_dir, f"events-{ts}.jsonl")
+        handler = VariableChangeHandler(self.variable_map, latency_log_path=latency_log)
+        
+        self._latency_handler = handler # keep reference for closing later
+        log.info(f"Writing latency records to {latency_log}")
+
         subscription = self.server.create_subscription(5, handler)
 
         for nodeid in self.variable_map:
@@ -137,13 +249,19 @@ class OPCUAServer:
 
     def stop(self):
         self._running = False
+        # Close latency handler file if present
+        try:
+            if hasattr(self, '_latency_handler'):
+                self._latency_handler.close()
+        except Exception:
+            pass
         self.server.stop()
         log.info("OPC UA Server stopped.")
 
 def main():
     """Entry point to initialize and run the OPC UA server."""
     parser = argparse.ArgumentParser(description="Run OPC UA Server with YAML + XML configuration")
-    parser.add_argument("--endpoint", default="opc.tcp://127.0.0.1:4840/freeopcua/server/", help="Server endpoint URL")
+    parser.add_argument("--endpoint", default="opc.tcp://0.0.0.0:4840/freeopcua/server/", help="Server endpoint URL")
     parser.add_argument("--namespace", default="http://aas-example.org", help="Namespace URI")
     parser.add_argument("--xml", default="uav_submodel.xml", help="Path to XML NodeSet file")
     parser.add_argument("--yaml", default="map.yaml", help="Path to YAML variable map file")

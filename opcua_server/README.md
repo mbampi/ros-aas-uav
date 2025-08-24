@@ -8,27 +8,29 @@ It is designed to load a XML file that defines the structure of the server and i
 
 ## Setup
 
-1. Activate the virtual environment:
+1. Set your virtual environment:
+   ```bash
+   python3 -m venv venv
+   ```
+2. Activate the virtual environment:
    ```bash
    source venv/bin/activate
    ```
-2. Make sure you have the required dependencies installed. You can install them using pip:
+3. Install the required packages:
    ```bash
    pip install -r requirements.txt
+   ```
+4. Run the server:
+   ```bash
+   python3 opcua_server.py
    ```
 
 ## Usage
 
-To run the server, use the following command:
-```bash
-python opcua_server.py
-```
-This will start the OPC UA server and load the XML and YAML files specified in the code. The server will listen on the specified endpoint and provide access to the nodes and variables defined in the XML and YAML files.
-
-`$ python3 server_from_file.py --help`
+`$ python3 opcua_server.py --help`
 
 ```bash
-usage: server_from_file.py [-h] [--endpoint ENDPOINT]
+usage: opcua_server.py [-h] [--endpoint ENDPOINT]
                            [--namespace NAMESPACE] [--xml XML]
                            [--yaml YAML]
 

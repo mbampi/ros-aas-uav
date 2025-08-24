@@ -3,3 +3,4 @@
         mapping_path: "/ros2_ws/install/aas_ros2_gateway/share/aas_ros2_gateway/config/map.yaml"
         aas_path: "/ros2_ws/install/aas_ros2_gateway/share/aas_ros2_gateway/config/uav_submodel.xml"
         opcua_endpoint: "opc.tcp://host.docker.internal:4840/freeopcua/server/"
+        debug_enabled: false
