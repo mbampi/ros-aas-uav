@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import time
 from opcua import Client
 
 class OPCUAClient:
@@ -28,31 +29,54 @@ class OPCUAClient:
         """
         self.client = Client(endpoint)
         self.logger = logger
+        self.endpoint = endpoint
+        self.is_connected = False
+        self.connect()
+
+    def connect(self):
+        """
+        Connects to the OPC UA server with retry logic.
+        """
+        while not self.is_connected:
+            try:
+                self.client.connect()
+                self.is_connected = True
+                self.logger.info(f"Connected to OPC UA server at {self.endpoint}")
+            except Exception as e:
+                self.logger.error(f"Failed to connect to OPC UA server: {e}. Retrying in 5 seconds...")
+                time.sleep(5)
+
+    def write_value(self, node_id: str, value: str):
+        """
+        Writes a value to a specific node on the OPC UA server.
+
+        Args:
+            node_id (str): The ID of the node to write to.
+            value (str): The value to write.
+        """
         try:
-            self.client.connect()
-            self.logger.info(f"Connected to OPC UA server at {endpoint}")
+            if not self.is_connected:
+                self.logger.info("Not connected to OPC UA server. Attempting to reconnect...")
+                self.connect()
+            
+            node = self.client.get_node(node_id)
+            node.set_value(value)
+            self.logger.debug(f"Successfully wrote '{value}' to node {node_id}")
+
         except Exception as e:
-            self.logger.error(f"Failed to connect to OPC UA server: {e}")
-            raise
-
-def write_value(self, node_id: str, value: str):
-    """
-    Writes a value to a specific node on the OPC UA server.
-
-    Args:
-        node_id (str): The ID of the node to write to.
-        value (str): The value to write.
-    """
-    try:
-        node = self.client.get_node(node_id)
-        node.set_value(value)
-
-    except Exception as e:
-        raise e
+            self.logger.error(f"Failed to write value '{value}' to node {node_id}: {e}")
+            self.is_connected = False
+            raise e
 
     def disconnect(self):
         """
         Disconnects from the OPC UA server.
         """
-        self.client.disconnect()
-        self.logger.info("Disconnected from OPC UA server")
+        try:
+            if self.is_connected:
+                self.client.disconnect()
+                self.logger.info("Disconnected from OPC UA server")
+        except Exception as e:
+            self.logger.warning(f"Error during OPC UA disconnect: {e}")
+        finally:
+            self.is_connected = False

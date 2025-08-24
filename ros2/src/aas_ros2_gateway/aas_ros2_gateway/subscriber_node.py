@@ -12,79 +12,132 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 from .opcua_client import OPCUAClient
 from .topic_mapper import TopicNodeIdMapper
+from .message_handler import MessageHandler
+
 
 class MultiTopicSubscriber(Node):
     """
-    A ROS2 node that subscribes to multiple topics and writes the received
-    messages to an OPC UA server.
+    ROS2 node that subscribes to multiple topics with different message types
+    and writes processed data to an OPC UA server.
     """
+    
     def __init__(self):
         """
-        Initializes the MultiTopicSubscriber node.
+        Initialize the MultiTopicSubscriber node.
         """
-        super().__init__('multi_topic_subscriber')
-        self.declare_parameter('mapping_path', 'default.yaml')
-        self.declare_parameter('aas_path', 'default.xml')
+        super().__init__('aas_gateway')
+        
+        # Declare parameters
+        self.declare_parameter('mapping_path', 'map.yaml')
+        self.declare_parameter('aas_path', 'uav_submodel.xml')
         self.declare_parameter('opcua_endpoint', 'opc.tcp://127.0.0.1:4840/freeopcua/server/')
+        self.declare_parameter('debug_enabled', False)
 
+        # Get parameter values
         mapping_path = self.get_parameter('mapping_path').get_parameter_value().string_value
         aas_path = self.get_parameter('aas_path').get_parameter_value().string_value
         opcua_endpoint = self.get_parameter('opcua_endpoint').get_parameter_value().string_value
+        debug_enabled = self.get_parameter('debug_enabled').get_parameter_value().bool_value
 
-        self.get_logger().info(f"Loading topic-node ID mappings from {mapping_path} and {aas_path}")
-        mapper = TopicNodeIdMapper(self.get_logger())
-        topics_to_node_ids = mapper.map_topics_to_node_ids(mapping_path, aas_path)
-
-        if not topics_to_node_ids:
-            self.get_logger().error("No topics to subscribe to. Exiting.")
-            return
-
-        self.opcua_client = OPCUAClient(opcua_endpoint, self.get_logger())
-        self._topic_subscriptions = []
-
-        for topic, node_id in topics_to_node_ids.items():
-            subscription = self.create_subscription(
-                String,
-                topic,
-                lambda msg, topic=topic, node_id=node_id: self.listener_callback(msg, topic, node_id),
-                10
-            )
-            self._topic_subscriptions.append(subscription)
-            self.get_logger().info(f"Subscribed to topic: {topic} -> Node ID: {node_id}")
-
-    def listener_callback(self, msg, topic, node_id):
-        """
-        Callback function for the ROS topic subscriptions.
-
-        Args:
-            msg: The received message.
-            topic (str): The topic the message was received on.
-            node_id (str): The OPC UA node ID to write to.
-        """
-        log_payload = {
-            'event': 'message_received',
-            'topic': topic,
-            'data': msg.data
-        }
-        self.get_logger().info(json.dumps(log_payload))
+        self.get_logger().info(f"Initializing AAS Gateway")
+        self.get_logger().info(f"Config files: {mapping_path}, {aas_path}")
+        self.get_logger().info(f"OPC UA endpoint: {opcua_endpoint}")
+        self.get_logger().info(f"Debug mode: {debug_enabled}")
         
-        log_payload['event'] = 'write_opcua'
-        log_payload['node_id'] = node_id
         try:
-            self.opcua_client.write_value(node_id, msg.data)
-            log_payload['status'] = 'success'
-            self.get_logger().info(json.dumps(log_payload))
-
+            # Initialize components
+            self.get_logger().info("Setting up components...")
+            self._setup_components(mapping_path, aas_path, opcua_endpoint)
+            
+            # Setup subscriptions
+            self.get_logger().info("Setting up subscriptions...")
+            self._setup_subscriptions(mapping_path, aas_path)
+            
+            self.get_logger().info("✅ AAS Gateway initialization complete!")
         except Exception as e:
-            log_payload['status'] = 'error'
-            log_payload['error'] = str(e)
-            self.get_logger().error(json.dumps(log_payload))
+            self.get_logger().error(f"Failed to initialize AAS Gateway: {e}")
+            import traceback
+            self.get_logger().error(f"Traceback: {traceback.format_exc()}")
+            raise
+    
+    def _setup_components(self, mapping_path: str, aas_path: str, opcua_endpoint: str):
+        """Initialize mapper, message handler, and OPC UA client."""
+        # Initialize mapper and validate configuration
+        self.mapper = TopicNodeIdMapper(self.get_logger())
+        
+        if not self.mapper.validate_configuration(mapping_path, aas_path):
+            raise RuntimeError("Configuration validation failed")
+        
+        # Initialize OPC UA client and topic subscriptions list
+        self.opcua_client = OPCUAClient(opcua_endpoint, self.get_logger())
+        self.topic_subscriptions = []
+    
+    def _setup_subscriptions(self, mapping_path: str, aas_path: str):
+        """Set up topic subscriptions using configuration."""
+
+        self.get_logger().info("Loading mappings and enums...")
+        mappings = self.mapper.load_mapping(mapping_path, aas_path)
+        enums = self.mapper.get_enums(mapping_path)
+        
+        self.get_logger().info(f"Found {len(mappings)} mappings and {len(enums)} enum groups")
+        
+        if not mappings:
+            raise RuntimeError("No valid mappings found in configuration")
+        
+        # Initialize message handler
+        self.get_logger().info("🛠️ Initializing message handler...")
+        self.message_handler = MessageHandler(self.get_logger(), enums)
+        
+        # Create subscriptions for each topic
+        self.get_logger().info("Creating topic subscriptions...")
+        for i, mapping in enumerate(mappings):
+            self.get_logger().info(f"Creating subscription {i+1}/{len(mappings)}: {mapping}")
+            self._create_subscription(mapping)
+        
+        self.get_logger().info(f"Created {len(self.topic_subscriptions)} topic subscriptions")
+    
+    def _create_subscription(self, mapping: dict):
+        """
+        Create a single topic subscription from mapping configuration.
+        
+        Args:
+            mapping: Topic mapping configuration dictionary
+        """
+        topic = mapping['topic']
+        message_type_str = mapping['message_type']
+        property_name = mapping['property']
+        node_id = mapping['node_id']
+        field_path = mapping['field_path']
+        transform_type = mapping['data_transform']
+        
+        # Import the message type
+        message_class = self.message_handler.import_message_type(message_type_str)
+        if message_class is None:
+            self.get_logger().error(f"Failed to import {message_type_str} for {topic}")
+            return
+        
+        # Create callback using message handler
+        callback = self.message_handler.create_subscription_callback(
+            topic, property_name, node_id, field_path, transform_type, self.opcua_client
+        )
+
+        qos_profile = QoSProfile(
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            depth=10
+        )
+        
+        # Create the subscription
+        try:
+            subscription = self.create_subscription(message_class, topic, callback, qos_profile)
+            self.topic_subscriptions.append(subscription)
+            self.get_logger().info(f"Subscribed: {topic} ({message_type_str}) -> {property_name}")
+        except Exception as e:
+            self.get_logger().error(f"Failed to subscribe to {topic}: {e}")
 
     def destroy_node(self):
         """
