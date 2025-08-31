@@ -1,6 +1,12 @@
+# Core OPC UA server dependencies
 lxml==5.3.2
 opcua
 python-dateutil==2.9.0.post0
 pytz==2025.2
 PyYAML==6.0.2
 six==1.17.0
+
+# Web UI dependencies
+flask>=2.3.0
+flask-socketio>=5.3.0
+eventlet>=0.33.0

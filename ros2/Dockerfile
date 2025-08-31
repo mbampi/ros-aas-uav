@@ -6,9 +6,6 @@ FROM ros:humble-ros-base-jammy as builder
 # Set shell to bash for all RUN commands
 SHELL ["/bin/bash", "-c"]
 
-# Make the build-time architecture available as a variable
-ARG TARGETARCH
-
 # Install build tools and python dependencies
 RUN apt-get update && apt-get install -y \
     python3-rosdep \
@@ -22,42 +19,38 @@ RUN apt-get update && apt-get install -y \
 # Create the workspace directory
 WORKDIR /ros2_ws
 
-# Check the TARGETARCH variable to decide how to get px4_msgs
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-    echo "AMD64 detected. Installing px4_msgs from apt." && \
-    apt-get update && apt-get install -y ros-humble-px4-msgs && rm -rf /var/lib/apt/lists/*; \
-    else \
-    echo "Non-AMD64 architecture ($TARGETARCH) detected. Cloning px4_msgs from source." && \
-    git clone --branch main https://github.com/PX4/px4_msgs.git src/px4_msgs; \
-    fi
+# =====================================================================
+# px4_msgs layer - This will be cached and only rebuilt when px4_msgs changes
+# =====================================================================
+# Clone and build px4_msgs first as a separate layer for better caching
+RUN git clone --branch main https://github.com/PX4/px4_msgs.git src/px4_msgs && \
+    source /opt/ros/humble/setup.bash && \
+    rosdep install --from-paths src/px4_msgs --ignore-src -y --rosdistro humble && \
+    colcon build --packages-select px4_msgs && \
+    echo "px4_msgs build completed and cached"
 
-# Copy package definition files first
+# =====================================================================
+# Application layer - This will rebuild when your code changes
+# =====================================================================
+# Copy package definition files first for dependency resolution
 COPY src/aas_ros2_gateway/package.xml ./src/aas_ros2_gateway/
 
-# Install all dependencies from source folders
+# Install dependencies for our package (excluding px4_msgs which is already built)
 RUN source /opt/ros/humble/setup.bash && \
-    rosdep install --from-paths src --ignore-src -y --rosdistro humble --skip-keys "python3-opcua"
+    rosdep install --from-paths src/aas_ros2_gateway --ignore-src -y --rosdistro humble --skip-keys "python3-opcua px4_msgs"
 
 # Now copy the rest of the source code
 COPY src/aas_ros2_gateway ./src/aas_ros2_gateway
 
-# Build the entire workspace
+# Build only our package (px4_msgs is already built)
 RUN source /opt/ros/humble/setup.bash && \
-    colcon build
+    source install/setup.bash && \
+    colcon build --packages-select aas_ros2_gateway
 
 # =====================================================================
 # Stage 2: "final" - The lean runtime image
 # =====================================================================
 FROM ros:humble-ros-base-jammy
-
-ARG TARGETARCH
-
-# For amd64, we need the pre-compiled package for runtime dependencies.
-# For arm64, this is not needed as the compiled files are in the copied install/ directory.
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-    echo "AMD64 detected. Installing runtime px4_msgs from apt." && \
-    apt-get update && apt-get install -y ros-humble-px4-msgs && rm -rf /var/lib/apt/lists/*; \
-    fi
 
 # Copy compiled workspace from the builder stage
 COPY --from=builder /ros2_ws/install /ros2_ws/install
