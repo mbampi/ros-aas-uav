@@ -5,8 +5,10 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      bash -c "source /ros2_ws/install/setup.bash && 
-        ros2 launch aas_ros2_gateway aas_gateway.launch.py"
+      bash -c "source /ros2_ws/install/setup.bash && \
+        ros2 launch aas_ros2_gateway aas_gateway.launch.py 2>&1 | tee /logs/aas_gateway.log"
+    volumes:
+      - ./logs/aas_gateway:/logs
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
