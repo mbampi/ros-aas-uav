@@ -26,3 +26,14 @@ services:
       - aas_gateway
     profiles:
       - mock
+
+  resource_monitor:
+    image: docker:latest
+    container_name: resource_monitor
+    command: >
+      sh -c "while true; do docker stats --no-stream --format '{{json .}}' aas_gateway >> /logs/resource_usage.log; sleep 1; done"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./logs/resource_monitor:/logs
+    depends_on:
+      - aas_gateway

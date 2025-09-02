@@ -45,7 +45,6 @@ topics_to_properties:
     field_path: satellites_used
     data_transform: identity
     
-  
   # Local position data from PX4
   - property: LocalPose
     topic: /px4_1/fmu/out/vehicle_local_position
