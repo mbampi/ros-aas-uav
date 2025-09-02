@@ -268,13 +268,13 @@ class OPCUAServer:
                 self.enable_ui = False
 
         ts = datetime.now().strftime("%m-%dT%H-%M-%S")
-        metrics_dir = 'metrics'
+        events_dir = 'events'
         try:
-            os.makedirs(metrics_dir, exist_ok=True)
+            os.makedirs(events_dir, exist_ok=True)
         except Exception:
             pass
 
-        latency_log = os.path.join(metrics_dir, f"events-{ts}.jsonl")
+        latency_log = os.path.join(events_dir, f"{ts}.jsonl")
         
         # Use UI-enhanced handler if web UI is enabled, otherwise use original handler
         if self.enable_ui and self.data_manager and self.web_server:
