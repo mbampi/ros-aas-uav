@@ -38,7 +38,8 @@ class LatencyAnalyzer:
             'server_latency': [],
             'total_latency': []
         })
-        
+        self.offset = 0.004  # Clock offset in seconds between client and server (if any)
+
     def load_and_parse_data(self) -> None:
         """Load JSONL file and parse events with latency calculations."""
         print(f"Loading data from {self.file_path}...")
@@ -65,12 +66,19 @@ class LatencyAnalyzer:
                         recv_ts = event['recv_ts']
                         processed_ts = event['processed_ts']
                         server_recv_ts = event['server_recv_ts']
+                        server_recv_ts += self.offset
+
                         variable = event.get('variable', 'unknown')
-                        
+
                         processing_latency = processed_ts - recv_ts
+                        processing_latency = processing_latency if processing_latency >= 0 else 0
+
                         server_latency = server_recv_ts - processed_ts
+                        server_latency = server_latency if server_latency >= 0 else 0
+
                         total_latency = server_recv_ts - recv_ts
-                        
+                        total_latency = total_latency if total_latency >= 0 else 0
+
                         # Store in overall latency data
                         self.latency_data['processing_latency'].append(processing_latency)
                         self.latency_data['server_latency'].append(server_latency)
