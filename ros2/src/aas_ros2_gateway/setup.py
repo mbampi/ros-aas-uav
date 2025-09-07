@@ -17,7 +17,7 @@ setup(
         # Include all config files
         (os.path.join('share', package_name, 'config'), glob(os.path.join('config', '*'))),
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'pyyaml'],
     zip_safe=True,
     maintainer='Matheus D Bampi',
     maintainer_email='matheusbampi@gmail.com',
@@ -27,7 +27,7 @@ setup(
     entry_points={
         'console_scripts': [
             'aas_gateway = aas_ros2_gateway.aas_gateway_node:main',
-            'mock_publisher = scripts.mock_publisher:main'
+            'mock_publisher = scripts.mock_publisher:main',
         ],
     },
 )

@@ -39,6 +39,12 @@ class MessageHandler:
         self.enums = enums or {}
         self._message_type_cache = {}
         self._transformations = self._build_transformation_map()
+        self._field_path_cache = {}  # Cache parsed field paths
+        self._node_handle_cache = {}  # Cache for OPC UA node handles
+        
+        # Performance counters (minimal overhead)
+        self._message_count = 0
+        self._last_stats_time = time.time()
     
     def import_message_type(self, message_type_string: str):
         """
@@ -67,7 +73,7 @@ class MessageHandler:
             message_class = getattr(module, class_name)
             self._message_type_cache[message_type_string] = message_class
             
-            self.logger.info(f"Successfully imported message type: {message_type_string}")
+            self.logger.debug(f"Successfully imported message type: {message_type_string}")
             return message_class
             
         except (ImportError, AttributeError) as e:
@@ -111,7 +117,7 @@ class MessageHandler:
     
     def _parse_field_path(self, field_path: str) -> List[Union[str, int, tuple]]:
         """
-        Parse a field path string into a list of access operations.
+        Parse a field path string into a list of access operations with caching.
         
         Args:
             field_path: Path like 'linear.x', 'q[0]', 'accelerometer_m_s2[0]'
@@ -119,6 +125,10 @@ class MessageHandler:
         Returns:
             List of access operations (strings for attributes, ints for indices)
         """
+        # Check cache first
+        if field_path in self._field_path_cache:
+            return self._field_path_cache[field_path]
+            
         path_parts = []
         
         dot_parts = field_path.split('.')
@@ -135,6 +145,8 @@ class MessageHandler:
             else:
                 path_parts.append(part)
         
+        # Cache the result
+        self._field_path_cache[field_path] = path_parts
         return path_parts
     
     def _build_transformation_map(self) -> Dict[str, Callable]:
@@ -430,6 +442,7 @@ class MessageHandler:
         
         return processed_value
     
+    
     def create_subscription_callback(self, topic: str, property_name: str, node_id: str, 
                                    field_path: str, transform_type: str, opcua_client) -> callable:
         """
@@ -449,58 +462,35 @@ class MessageHandler:
         def callback(msg):
             """Generated callback for topic subscription."""
             try:
-                # Create unique id and timestamp for this received message
-                msg_id = str(uuid.uuid4())
+                # Capture timestamp immediately
                 recv_ts = time.time()
-
-                self.logger.info(f"RECEIVED MESSAGE on {topic} (type: {type(msg).__name__}) id={msg_id}")
                 
-                # Show the raw message structure for debugging
-                if hasattr(msg, '__slots__'):
-                    msg_fields = {slot: getattr(msg, slot, None) for slot in msg.__slots__ if hasattr(msg, slot)}
-                    self.logger.debug(f"Message fields for {topic}: {msg_fields}")
-                
-                # Process the message
+                # Process message 
                 processed_value = self.process_message(msg, field_path, transform_type)
                 processed_ts = time.time()
                 
                 if processed_value is not None:
-                    log_payload = {
-                        'event': 'message_received',
+                    # Create JSON payload
+                    write_payload = json.dumps({
+                        'id': str(uuid.uuid4()),
                         'topic': topic,
-                        'property': property_name,
-                        'raw_field': field_path,
-                        'processed_value': processed_value,
-                        'transform_type': transform_type,
-                        'message_id': msg_id,
                         'recv_ts': recv_ts,
-                        'processed_ts': processed_ts
-                    }
-                    self.logger.info(f"Processed message: {log_payload}")
+                        'processed_ts': processed_ts,
+                        'value': processed_value
+                    })
                     
-                    log_payload['event'] = 'write_opcua'
-                    log_payload['node_id'] = node_id
+                    opcua_client.write_value(node_id, write_payload)
                     
-                    try:
-                        # Send JSON payload to OPC UA
-                        write_payload = json.dumps({
-                            'id': msg_id,
-                            'recv_ts': recv_ts,
-                            'processed_ts': processed_ts,
-                            'value': processed_value
-                        })
-                        opcua_client.write_value(node_id, write_payload)
-                        log_payload['status'] = 'success'
-                        self.logger.info(f"OPC UA write successful: {log_payload}")
+                    # Metrics every 1000 messages (to avoid overhead)
+                    self._message_count += 1
+                    if self._message_count % 1000 == 0:
+                        current_time = time.time()
+                        elapsed = current_time - self._last_stats_time
+                        rate = 1000.0 / elapsed if elapsed > 0 else 0
+                        self.logger.info(f"Stats: {self._message_count} msgs, {rate:.0f} msg/s")
+                        self._last_stats_time = current_time
                         
-                    except Exception as e:
-                        log_payload['status'] = 'error'
-                        log_payload['error'] = str(e)
-                        self.logger.error(f"OPC UA write failed: {log_payload}")
-                else:
-                    self.logger.warning(f"Failed to process message from topic {topic} (field_path: {field_path}, transform: {transform_type})")
-                    
             except Exception as e:
-                self.logger.error(f"Callback error for topic {topic}: {e}")
-        
+                self.logger.error(f"Error processing {topic}: {e}")
+
         return callback

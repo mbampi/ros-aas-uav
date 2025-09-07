@@ -37,12 +37,17 @@ class MultiTopicSubscriber(Node):
         self.declare_parameter('aas_path', 'uav_submodel.xml')
         self.declare_parameter('opcua_endpoint', 'opc.tcp://127.0.0.1:4840/freeopcua/server/')
         self.declare_parameter('debug_enabled', False)
+        self.declare_parameter('log_level', 'INFO')
 
         # Get parameter values
         mapping_path = self.get_parameter('mapping_path').get_parameter_value().string_value
         aas_path = self.get_parameter('aas_path').get_parameter_value().string_value
         opcua_endpoint = self.get_parameter('opcua_endpoint').get_parameter_value().string_value
         debug_enabled = self.get_parameter('debug_enabled').get_parameter_value().bool_value
+        log_level = self.get_parameter('log_level').get_parameter_value().string_value
+        
+        # Configure logger level
+        self._configure_logger_level(log_level)
 
         self.get_logger().info(f"Initializing AAS Gateway")
         self.get_logger().info(f"Config files: {mapping_path}, {aas_path}")
@@ -65,6 +70,27 @@ class MultiTopicSubscriber(Node):
             self.get_logger().error(f"Traceback: {traceback.format_exc()}")
             raise
     
+    def _configure_logger_level(self, log_level: str):
+        """
+        Configure the logger level based on the parameter.
+        
+        Args:
+            log_level: Log level string (DEBUG, INFO, WARN, ERROR, FATAL)
+        """
+        import rclpy.logging
+        
+        level_map = {
+            'DEBUG': rclpy.logging.LoggingSeverity.DEBUG,
+            'INFO': rclpy.logging.LoggingSeverity.INFO,
+            'WARN': rclpy.logging.LoggingSeverity.WARN,
+            'ERROR': rclpy.logging.LoggingSeverity.ERROR,
+            'FATAL': rclpy.logging.LoggingSeverity.FATAL
+        }
+        
+        severity = level_map.get(log_level.upper(), rclpy.logging.LoggingSeverity.INFO)
+        self.get_logger().set_level(severity)
+        self.get_logger().info(f"Logger level set to: {log_level.upper()}")
+
     def _setup_components(self, mapping_path: str, aas_path: str, opcua_endpoint: str):
         """Initialize mapper, message handler, and OPC UA client."""
         # Initialize mapper and validate configuration
@@ -143,5 +169,8 @@ class MultiTopicSubscriber(Node):
         """
         Cleans up resources when the node is destroyed.
         """
-        self.opcua_client.disconnect()
+        # Disconnect OPC UA client
+        if hasattr(self, 'opcua_client'):
+            self.opcua_client.disconnect()
+            
         super().destroy_node()

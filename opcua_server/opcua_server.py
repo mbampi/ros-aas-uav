@@ -11,7 +11,7 @@ from typing import Dict, List
 import os
 import logging
 
-# Optional web UI imports - will be imported only if --ui flag is used
+# Web UI imports: will be imported only if --ui flag is used
 try:
     from web_ui import DataManager, WebUIServer, UIVariableChangeHandler
     WEB_UI_AVAILABLE = True
