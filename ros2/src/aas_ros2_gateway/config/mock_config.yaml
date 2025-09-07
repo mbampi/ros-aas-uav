@@ -1,0 +1,33 @@
+# Mock Publisher Configuration for Academic Experiments
+# 
+# Focus on two variables:
+# 1. Number of topics (enable/disable topics)
+# 2. Message frequency (Hz for each topic)
+
+# Set 'enabled: true/false' to control which topics are published
+# Set 'frequency' to control message rate in Hz
+  # Battery status - remaining, voltage, current, temperature
+  # Vehicle local position - x, y, z, vx, vy, vz
+  # Vehicle attitude - quaternion orientation
+  # Vehicle status - nav_state, arming_state, failsafe
+  # GPS position - lat, lon, alt, accuracy, satellites
+  # Global position - lat, lon, alt, yaw
+
+# scenario_4: 300 Hz, 5 topics
+namespace: "/px4_1/fmu/out"
+topics:
+  battery_status:
+    enabled: true
+    frequency: 60.0
+  vehicle_local_position:
+    enabled: true  
+    frequency: 60.0
+  vehicle_attitude:
+    enabled: true
+    frequency: 60.0
+  vehicle_status:
+    enabled: true
+    frequency: 60.0
+  vehicle_gps_position:
+    enabled: true
+    frequency: 60.0

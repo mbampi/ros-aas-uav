@@ -1,0 +1,167 @@
+# Academic Experiment Scenarios
+
+# This allows testing the impact of:
+# - Number of topics (message diversity)
+# - Message frequency (system load)
+
+# SCENARIO 1
+# - Frequency: 2 Hz
+# - Topics: 5
+# - Total Frequency: 10 Hz
+
+scenario_1:
+  namespace: "/px4_1/fmu/out"
+  topics:
+    battery_status:
+      enabled: true
+      frequency: 2.0
+    vehicle_local_position:
+      enabled: true  
+      frequency: 2.0
+    vehicle_attitude:
+      enabled: true
+      frequency: 2.0
+    vehicle_status:
+      enabled: true
+      frequency: 2.0
+    vehicle_gps_position:
+      enabled: true
+      frequency: 2.0
+    vehicle_global_position:
+      enabled: false
+      frequency: 2.0
+
+# SCENARIO 2
+# - Frequency: 10 Hz
+# - Topics: 5
+# - Total Frequency: 50 Hz
+
+scenario_2:
+  namespace: "/px4_1/fmu/out"
+  topics:
+    battery_status:
+      enabled: true
+      frequency: 10.0
+    vehicle_local_position:
+      enabled: true  
+      frequency: 10.0
+    vehicle_attitude:
+      enabled: true
+      frequency: 10.0
+    vehicle_status:
+      enabled: true
+      frequency: 10.0
+    vehicle_gps_position:
+      enabled: true
+      frequency: 10.0
+    vehicle_global_position:
+      enabled: false
+      frequency: 10.0
+
+# SCENARIO 3
+# - Frequency: 30 Hz
+# - Topics: 5
+# - Total Frequency: 150 Hz
+
+scenario_3:
+  namespace: "/px4_1/fmu/out"
+  topics:
+    battery_status:
+      enabled: true
+      frequency: 30.0
+    vehicle_local_position:
+      enabled: true  
+      frequency: 30.0
+    vehicle_attitude:
+      enabled: true
+      frequency: 30.0
+    vehicle_status:
+      enabled: true
+      frequency: 30.0
+    vehicle_gps_position:
+      enabled: true
+      frequency: 30.0
+    vehicle_global_position:
+      enabled: false
+      frequency: 30.0
+
+# SCENARIO 4
+# - Frequency: 60 Hz
+# - Topics: 5
+# - Total Frequency: 300 Hz
+
+scenario_4:
+  namespace: "/px4_1/fmu/out"
+  topics:
+    battery_status:
+      enabled: true
+      frequency: 60.0
+    vehicle_local_position:
+      enabled: true  
+      frequency: 60.0
+    vehicle_attitude:
+      enabled: true
+      frequency: 60.0
+    vehicle_status:
+      enabled: true
+      frequency: 60.0
+    vehicle_gps_position:
+      enabled: true
+      frequency: 60.0
+    vehicle_global_position:
+      enabled: false
+      frequency: 60.0
+
+# SCENARIO 5
+# - Frequency: 200 Hz
+# - Topics: 5
+# - Total Frequency: 1000 Hz
+
+scenario_5:
+  namespace: "/px4_1/fmu/out"
+  topics:
+    battery_status:
+      enabled: true
+      frequency: 200.0
+    vehicle_local_position:
+      enabled: true  
+      frequency: 200.0
+    vehicle_attitude:
+      enabled: true
+      frequency: 200.0
+    vehicle_status:
+      enabled: true
+      frequency: 200.0
+    vehicle_gps_position:
+      enabled: true
+      frequency: 200.0
+    vehicle_global_position:
+      enabled: false
+      frequency: 200.0
+
+# SCENARIO 6
+# - Frequency: 400 Hz
+# - Topics: 5
+# - Total Frequency: 2000 Hz
+
+scenario_6:
+  namespace: "/px4_1/fmu/out"
+  topics:
+    battery_status:
+      enabled: true
+      frequency: 400.0
+    vehicle_local_position:
+      enabled: true  
+      frequency: 400.0
+    vehicle_attitude:
+      enabled: true
+      frequency: 400.0
+    vehicle_status:
+      enabled: true
+      frequency: 400.0
+    vehicle_gps_position:
+      enabled: true
+      frequency: 400.0
+    vehicle_global_position:
+      enabled: false
+      frequency: 400.0
