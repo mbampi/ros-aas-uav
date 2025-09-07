@@ -11,6 +11,12 @@ services:
       - ./logs/aas_gateway:/logs
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    # 4GB of RAM and 4 CPU cores - simulating a weak Companion Board
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '4'
 
   mock_publisher:
     container_name: mock_publisher
@@ -31,7 +37,14 @@ services:
     image: docker:latest
     container_name: resource_monitor
     command: >
-      sh -c "while true; do docker stats --no-stream --format '{{json .}}' aas_gateway >> /logs/resource_usage.log; sleep 1; done"
+      sh -c '
+        while true; do
+          TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
+          STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
+          echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
+          sleep 1;
+        done
+      '
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./logs/resource_monitor:/logs
