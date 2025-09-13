@@ -12,29 +12,22 @@ Medir a latência ponta a ponta (end-to-end) e o consumo de recursos computacion
 Componentes principais:
 - Servidor OPC UA (executando na Estação de Controle / GCS)
 - AAS Gateway (ROS 2 node, executando no companion computer do UAV)
-- Resource Monitor (script para coletar CPU/memória no companion computer)
 
 Pastas de interesse para coleta de dados:
 - `opcua_server/metrics/` (no servidor OPC UA)
-- `tools/uav-resource-monitor/data/` (no computador de bordo)
 - `ros2/logs/` (no computador de bordo)
 
 ## 3 - Configuração de Hardware e Software
 
 Hardware recomendado:
-- Drones: 2 drones baseados em PX4, cada um com um companion computer (Raspberry Pi, Jetson Nano, etc.)
+- Drones: 2 drones baseados em PX4
+- Companion Computer: Raspberry Pi ou similar (um por drone)
 - Estação de Controle (GCS): notebook para executar o Servidor OPC UA
 
 Software:
-- Repositório: `ros-aas-uav` (branch: `lab-experiment`)
+- Repositório: `ros-aas-uav`
 - AAS Gateway: pacote ROS2 dentro de `ros2/src/aas_ros2_gateway`
 - Servidor OPC UA: `opcua_server/`
-
-Requisitos mínimos (para os hosts onde os componentes rodarão):
-- Python 3.6+
-- pip / virtualenv (para o servidor OPC UA)
-- Docker & Docker Compose (recomendado para o AAS Gateway)
-- ROS 2 instalado (se for rodar o node localmente sem Docker)
 
 ## 4 - Servidor OPC UA (Estação de Controle)
 
@@ -66,6 +59,10 @@ O servidor criará a pasta `opcua_server/metrics/` com os logs/métricas de inte
 
 ## 5 - Companion Computer (AAS Gateway + Resource Monitor)
 
+### Pré-requisitos
+
+- Docker e Docker Compose
+
 No companion board vamos executar o AAS Gateway (ROS2 node) e o Resource Monitor.
 
 ### Arquivos de configuração principais
@@ -95,22 +92,7 @@ AAS Gateway initialization complete!
 aas_gateway node has been started.
 ```
 
-### Rodar o Resource Monitor
-
-No diretório `tools/uav-resource-monitor`:
-
-```bash
-cd tools/uav-resource-monitor
-./setup_local.sh
-source venv/bin/activate
-python3 scripts/resource_monitor.py --session-id voo-1
-```
-
-Esse monitor grava no diretório `tools/uav-resource-monitor/data/`.
-
 ## 6 - Cenários de Teste
-
-Tempo alvo: coleta total < 30 minutos (dois cenários curtos)
 
 ### Cenário A — Desempenho com um Drone
 
@@ -122,7 +104,7 @@ Dados: publique telemetria essencial (ex.: atitude, posição GPS, estado da bat
 - `/px4_1/fmu/out/vehicle_attitude` -> q
 - `/px4_1/fmu/out/vehicle_gps_position` -> eph / satellites_used
 
-Medição: executar por 15 minutos e registrar latência e uso de recursos.
+Medição: executar por 15 minutos.
 
 ### Cenário B — Interoperabilidade com Dois Drones
 
@@ -135,7 +117,6 @@ Ação: ligue ambos os drones (podem ficar sobre a mesa). Cada drone roda sua in
 Pastas a coletar após cada cenário:
 
 - `opcua_server/metrics/` (Servidor OPC UA)
-- `tools/uav-resource-monitor/data/` (Companion computer)
 - `ros2/logs/` (Companion computer / AAS Gateway)
 
 Essas pastas contêm dados brutos de latência, eventos e uso de recursos.
@@ -157,14 +138,7 @@ Recomenda-se capturar:
 - [ ] Iniciar Resource Monitor em cada companion computer
 - [ ] Executar Cenário A (15 min) e coletar pastas
 - [ ] Executar Cenário B (15 min) e coletar pastas
-- [ ] Copiar `opcua_server/metrics/`, `tools/uav-resource-monitor/data/`, `ros2/logs/` para armazenamento
-
-## 10 - Notas e Observações
-
-- Pequenos erros de debug (ex.: leitura de voltagem) no resource monitor são aceitáveis e não comprometem a coleta principal.
-- Se não usar Docker para o AAS Gateway, garanta que ROS2 e dependências estejam instaladas localmente.
-
----
+- [ ] Copiar `opcua_server/metrics/`, `ros2/logs/` para armazenamento
 
 Documentos de referência:
 - `opcua_server/README.md` e `ros2/src/aas_ros2_gateway/README.md`

@@ -1,4 +1,6 @@
 services:
+  
+  # ROS2 AAS Gateway - bridges ROS2 and AAS
   aas_gateway:
     container_name: aas_gateway
     build:
@@ -11,26 +13,31 @@ services:
       - ./logs/aas_gateway:/logs
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    # 4GB of RAM and 4 CPU cores - simulating a weak Companion Board
-    deploy:
-      resources:
-        limits:
-          memory: 4G
-          cpus: '4'
+  # 4GB of RAM and 4 CPU cores - simulating a weak Companion Board
+  # deploy:
+  #   resources:
+  #     limits:
+  #       memory: 4G
+  #       cpus: '4'
 
+  # Translates PX4 MAVLink to ROS2 topics
   micro_ros_agent:
     container_name: micro_ros_agent
+    privileged: true # to access hardware serial ports
     build:
       context: .
       dockerfile: Dockerfile
     command: >
       bash -c "source /micro_ros_ws/install/setup.bash && \
-        ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0"
+        ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyAMA0 -b 921600"
     devices:
-      - "/dev/ttyACM0:/dev/ttyACM0"
+      - "/dev/ttyAMA0:/dev/ttyAMA0"
     depends_on:
       - aas_gateway
+    restart: unless-stopped
 
+  # Optional: Mocks ROS2 topics for testing without PX4
+  # Enabled with `--profile mock`
   mock_publisher:
     container_name: mock_publisher
     build:
@@ -46,6 +53,7 @@ services:
     profiles:
       - mock
 
+  # Resource monitor for logging CPU/RAM usage of aas_gateway
   resource_monitor:
     image: docker:latest
     container_name: resource_monitor
