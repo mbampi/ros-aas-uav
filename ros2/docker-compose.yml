@@ -11,12 +11,27 @@ services:
       - ./logs/aas_gateway:/logs
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    # 4GB of RAM and 4 CPU cores - simulating a weak Companion Board
+    network_mode: "host" 
     deploy:
       resources:
         limits:
           memory: 4G
           cpus: '4'
+  mavros:
+    build:
+      context: .
+      dockerfile: Dockerfile.mavros
+    container_name: mavros
+    network_mode: "host"
+    devices:
+      - "/dev/ttyAMA0:/dev/ttyAMA0"  # Adjust this to your actual serial port
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash && 
+        ros2 launch mavros px4.launch.py
+        fcu_url:=serial:///dev/ttyAMA0:921600
+        gcs_url:=udp://@"
+    depends_on:
+      - aas_gateway
 
   mock_publisher:
     container_name: mock_publisher
@@ -28,6 +43,7 @@ services:
         ros2 run aas_ros2_gateway mock_publisher"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    network_mode: "host" 
     depends_on:
       - aas_gateway
     profiles:

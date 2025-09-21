@@ -1,0 +1,30 @@
+# Dockerfile for MAVROS with ROS2 Humble
+FROM ros:humble-ros-base
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    python3-colcon-common-extensions \
+    python3-rosdep \
+    ros-humble-mavros \
+    ros-humble-mavros-extras \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install GeographicLib datasets (required for MAVROS)
+RUN wget https://raw.githubusercontent.com/mavlink/mavros/ros2/mavros/scripts/install_geographiclib_datasets.sh \
+    && chmod +x install_geographiclib_datasets.sh \
+    && ./install_geographiclib_datasets.sh \
+    && rm install_geographiclib_datasets.sh
+
+# Set up environment
+ENV ROS_DOMAIN_ID=0
+ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
+# Source ROS2 setup
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+
+# Set working directory
+WORKDIR /opt/ros/humble
+
+# Default command
+CMD ["bash"]

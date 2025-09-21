@@ -36,6 +36,22 @@ Requisitos mínimos (para os hosts onde os componentes rodarão):
 - Docker & Docker Compose (recomendado para o AAS Gateway)
 - ROS 2 instalado (se for rodar o node localmente sem Docker)
 
+### 3.1 - Preparação do PX4-ROS 
+
+Passo 1: Configurar o PX4 para Enviar MAVLink
+Primeiro, precisa de garantir que o seu PX4 está enviando os dados MAVLink corretos pela porta serial que está conectada ao Raspberry Pi.
+
+Ligue-se ao seu drone com o QGroundControl e vá ao menu de Parameters. Procure e configure os seguintes parâmetros:
+- MAV_1_CONFIG: Defina como `TELEM 2`. Isto associa a instância MAVLink #1 à porta física (ex.: TELEM 2).
+- MAV_1_MODE: Defina como `Onboard`. Isto configura o fluxo de dados para um computador de bordo (Companion Computer).
+- SER_TEL2_BAUD: Defina a taxa de transmissão (baud rate). `921600` é o padrão (O mais importante é que este valor seja exatamente o mesmo que vamos usar no MAVROS)
+- XRCE_DDS_CFG: Defina como `Disabled`. Queremos desligar o cliente micro-ROS para não haver conflitos.
+
+Depois de alterar os parâmetros, reinicie o controlador de voo (PX4).
+
+```docker exec -it mavros ros2 topic list```
+
+   
 ## 4 - Servidor OPC UA (Estação de Controle)
 
 O Servidor OPC UA ficará no GCS escutando na porta 4840.

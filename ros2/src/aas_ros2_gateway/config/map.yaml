@@ -1,160 +1,133 @@
-# PX4 ROS2 Gateway Configuration
-# Maps PX4 topics to OPC UA properties for UAV data integration
-# Updated for real PX4+ROS2+Gazebo system integration
+# MAVROS ROS2 Gateway Configuration
+# Maps MAVROS topics to OPC UA properties for UAV data integration
+# Updated for MAVROS integration with PX4
 
 topics_to_properties:
-  # Battery monitoring from PX4
+  # Battery monitoring from MAVROS
   - property: CurrentBatteryLevel
-    topic: /px4_1/fmu/out/battery_status
-    message_type: px4_msgs.msg.BatteryStatus
-    field_path: remaining
-    data_transform: percentage
+    topic: /mavros/battery
+    message_type: sensor_msgs.msg.BatteryState
+    field_path: percentage
+    data_transform: identity
     
-  # Vehicle position/altitude from PX4 local position
+  # Vehicle position/altitude from MAVROS local position
   - property: Altitude
-    topic: /px4_1/fmu/out/vehicle_local_position
-    message_type: px4_msgs.msg.VehicleLocalPosition
-    field_path: z
-    data_transform: negate
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.position.z
+    data_transform: identity
     
-  # Vehicle attitude (pitch angle) from PX4
+  # Vehicle attitude (pitch angle) from MAVROS
   - property: Pitch
-    topic: /px4_1/fmu/out/vehicle_attitude
-    message_type: px4_msgs.msg.VehicleAttitude
-    field_path: q
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation
     data_transform: quaternion_to_pitch
     
-  # Vehicle flight status from PX4
-  # - property: FlighStatus
-  #   topic: /px4_1/fmu/out/vehicle_status
-  #   message_type: px4_msgs.msg.VehicleStatus
-  #   field_path: nav_state
-  #   data_transform: px4_nav_state_to_string
+  # Vehicle flight status from MAVROS
+  # - property: FlightStatus
+  #   topic: /mavros/state
+  #   message_type: mavros_msgs.msg.State
+  #   field_path: mode
+  #   data_transform: identity
     
-  # # GPS signal strength from PX4
+  # # GPS signal strength from MAVROS
   # - property: SignalStrength
-  #   topic: /px4_1/fmu/out/vehicle_gps_position
-  #   message_type: px4_msgs.msg.SensorGps
+  #   topic: /mavros/gpsstatus/gps1/raw
+  #   message_type: mavros_msgs.msg.GPSRAW
   #   field_path: eph
   #   data_transform: gps_eph_to_signal_strength
     
-  # # GPS satellites count from PX4
+  # # GPS satellites count from MAVROS
   # - property: NumberOfSatellites
-  #   topic: /px4_1/fmu/out/vehicle_gps_position
-  #   message_type: px4_msgs.msg.SensorGps
-  #   field_path: satellites_used
+  #   topic: /mavros/gpsstatus/gps1/raw
+  #   message_type: mavros_msgs.msg.GPSRAW
+  #   field_path: satellites_visible
   #   data_transform: identity
     
-  # # Local position data from PX4
+  # # Local position data from MAVROS
   # - property: LocalPose
-  #   topic: /px4_1/fmu/out/vehicle_local_position
-  #   message_type: px4_msgs.msg.VehicleLocalPosition
-  #   field_path: ""
+  #   topic: /mavros/local_position/pose
+  #   message_type: geometry_msgs.msg.PoseStamped
+  #   field_path: pose.position
   #   data_transform: position_to_json
     
   # # Horizontal speed from local position velocities
   # - property: HorizontalSpeed
-  #   topic: /px4_1/fmu/out/vehicle_local_position
-  #   message_type: px4_msgs.msg.VehicleLocalPosition
-  #   field_path: vxy
+  #   topic: /mavros/local_position/velocity_local
+  #   message_type: geometry_msgs.msg.TwistStamped
+  #   field_path: twist.linear
   #   data_transform: vector_magnitude_2d
     
   # # Vertical speed from local position
   # - property: VerticalSpeed
-  #   topic: /px4_1/fmu/out/vehicle_local_position
-  #   message_type: px4_msgs.msg.VehicleLocalPosition
-  #   field_path: vz
-  #   data_transform: negate
+  #   topic: /mavros/local_position/velocity_local
+  #   message_type: geometry_msgs.msg.TwistStamped
+  #   field_path: twist.linear.z
+  #   data_transform: identity
     
   # # GPS Global position and heading
   # - property: GlobalPose
-  #   topic: /px4_1/fmu/out/vehicle_global_position
-  #   message_type: px4_msgs.msg.VehicleGlobalPosition
+  #   topic: /mavros/global_position/global
+  #   message_type: sensor_msgs.msg.NavSatFix
   #   field_path: ""
-  #   data_transform: pose_to_json
+  #   data_transform: navsatfix_to_json
     
-  # # GPS heading
+  # # GPS heading from compass
   # - property: Heading
-  #   topic: /px4_1/fmu/out/vehicle_global_position
-  #   message_type: px4_msgs.msg.VehicleGlobalPosition
-  #   field_path: yaw
-  #   data_transform: radians_to_degrees
+  #   topic: /mavros/global_position/compass_hdg
+  #   message_type: std_msgs.msg.Float64
+  #   field_path: data
+  #   data_transform: identity
     
-  # Arming state from PX4
-  - property: Status
-    topic: /px4_1/fmu/out/vehicle_status
-    message_type: px4_msgs.msg.VehicleStatus
-    field_path: arming_state
-    data_transform: px4_arming_state_to_string
+  # Arming state from MAVROS
+  # - property: Status
+  #   topic: /mavros/state
+  #   message_type: mavros_msgs.msg.State
+  #   field_path: armed
+  #   data_transform: bool_to_armed_string
     
   # # GPS fix type
   # - property: FixType
-  #   topic: /px4_1/fmu/out/vehicle_gps_position
-  #   message_type: px4_msgs.msg.SensorGps
-  #   field_path: fix_type
-  #   data_transform: identity
+  #   topic: /mavros/global_position/global
+  #   message_type: sensor_msgs.msg.NavSatFix
+  #   field_path: status.status
+  #  data_transform: navsatfix_status_to_string
     
-  # GPS horizontal accuracy (EPH)
+  # GPS horizontal accuracy
   - property: HorizontalAccuracy
-    topic: /px4_1/fmu/out/vehicle_gps_position
-    message_type: px4_msgs.msg.SensorGps
+    topic: /mavros/gpsstatus/gps1/raw
+    message_type: mavros_msgs.msg.GPSRAW
     field_path: eph
     data_transform: identity
     
-  # # GPS vertical accuracy (EPV)
-  # - property: VerticalAccuracy
-  #   topic: /px4_1/fmu/out/vehicle_gps_position
-  #   message_type: px4_msgs.msg.SensorGps
-  #   field_path: epv
-  #   data_transform: identity
-    
+  # GPS vertical accuracy
+  - property: VerticalAccuracy
+    topic: /mavros/gpsstatus/gps1/raw
+    message_type: mavros_msgs.msg.GPSRAW
+    field_path: epv
+    data_transform: identity
 
-# PX4 enum mappings for transformations
-px4_enums:
-  nav_states:
-    0: "MANUAL"
-    1: "ALTCTL" 
-    2: "POSCTL"
-    3: "AUTO_MISSION"
-    4: "AUTO_LOITER"
-    5: "AUTO_RTL"
-    6: "AUTO_ACRO"
-    7: "OFFBOARD"
-    8: "STAB"
-    9: "RATTITUDE"
-    10: "AUTO_TAKEOFF"
-    11: "AUTO_LAND"
-    12: "AUTO_FOLLOW_TARGET"
-    13: "AUTO_PRECLAND"
-    14: "ORBIT"
-    15: "AUTO_VTOL_TAKEOFF"
-    16: "AUTO_VTOL_LAND"
-    17: "AUTO_FOLLOW_ME"
-    18: "AUTO_READY"
+# MAVROS enum mappings for transformations
+mavros_enums:
+  navsatfix_status:
+    -1: "NO_FIX"
+    0: "FIX_NOT_AVAILABLE"
+    1: "GPS_FIX"
+    2: "DGPS_FIX"
     
-  arming_states:
-    1: "INIT"
-    2: "STANDBY"
-    3: "ARMED"
-    4: "STANDBY_ERROR"
-    5: "SHUTDOWN"
-    6: "IN_AIR_RESTORE"
-    
-  vehicle_statuses:
-    0: "DISARMED"
-    1: "ARMED"
-    2: "CALIBRATING"
-    3: "ERROR"
-    
-  failure_detector_status:
-    0: "NO_FAILURE"
-    1: "ROLL_PITCH_FAILURE"
-    2: "ALT_FAILURE"
-    3: "EXT_FAILURE"
-    
-  battery_warnings:
-    0: "NONE"
-    1: "LOW"
-    2: "CRITICAL"
-    3: "EMERGENCY"
-    4: "FAILED"
+  mavros_modes:
+    "MANUAL": "MANUAL"
+    "ACRO": "ACRO"
+    "ALTCTL": "ALTITUDE_CONTROL"
+    "POSCTL": "POSITION_CONTROL"
+    "OFFBOARD": "OFFBOARD"
+    "STABILIZED": "STABILIZED"
+    "RATTITUDE": "RATTITUDE"
+    "AUTO.MISSION": "AUTO_MISSION"
+    "AUTO.LOITER": "AUTO_LOITER"
+    "AUTO.RTL": "AUTO_RTL"
+    "AUTO.LAND": "AUTO_LAND"
+    "AUTO.RTGS": "AUTO_RTGS"
+    "AUTO.READY": "AUTO_READY"
+    "AUTO.TAKEOFF": "AUTO_TAKEOFF"
