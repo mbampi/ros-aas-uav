@@ -28,6 +28,7 @@ setup(
         'console_scripts': [
             'aas_gateway = aas_ros2_gateway.aas_gateway_node:main',
             'mock_publisher = scripts.mock_publisher:main',
+            'mavlink_mock_publisher = scripts.mavlink_mock_publisher:main',
         ],
     },
 )

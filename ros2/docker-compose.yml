@@ -17,52 +17,68 @@ services:
         limits:
           memory: 4G
           cpus: '4'
+
   mavros:
     build:
       context: .
       dockerfile: Dockerfile.mavros
     container_name: mavros
-    network_mode: "host"
-    devices:
-      - "/dev/ttyAMA0:/dev/ttyAMA0"  # Adjust this to your actual serial port
+    ports:
+      - "14550:14550/udp"
+      # - "/dev/ttyAMA0:/dev/ttyAMA0" # Example for serial device (UART)
     command: >
       bash -c "source /opt/ros/humble/setup.bash && 
-        ros2 launch mavros px4.launch.py
-        fcu_url:=serial:///dev/ttyAMA0:921600
-        gcs_url:=udp://@"
-    depends_on:
-      - aas_gateway
+        ros2 run mavros mavros_node --ros-args -p fcu_url:=udp://:14550@"
 
-  mock_publisher:
-    container_name: mock_publisher
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: >
-      bash -c "source /ros2_ws/install/setup.bash && 
-        ros2 run aas_ros2_gateway mock_publisher"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    network_mode: "host" 
-    depends_on:
-      - aas_gateway
-    profiles:
-      - mock
+  # Leaving these commented out for now; can be enabled for testing purposes
+  
+  # mock_publisher:
+  #   container_name: mock_publisher
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   command: >
+  #     bash -c "source /ros2_ws/install/setup.bash && 
+  #       ros2 run aas_ros2_gateway mock_publisher"
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   network_mode: "host" 
+  #   depends_on:
+  #     - aas_gateway
+  #   profiles:
+  #     - mock
 
-  resource_monitor:
-    image: docker:latest
-    container_name: resource_monitor
-    command: >
-      sh -c '
-        while true; do
-          TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
-          STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
-          echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
-          sleep 1;
-        done
-      '
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./logs/resource_monitor:/logs
-    depends_on:
-      - aas_gateway
+  # mavlink_mock_publisher:
+  #   container_name: mavlink_mock_publisher
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   command: >
+  #     bash -c "source /opt/ros/humble/setup.bash && 
+  #       source /ros2_ws/install/setup.bash && 
+  #       ros2 launch aas_ros2_gateway mavlink_mock_publisher.launch.py"
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   network_mode: "host" 
+  #   depends_on:
+  #     - aas_gateway
+  #   profiles:
+  #     - mavlink-mock
+
+  # resource_monitor:
+  #   image: docker:latest
+  #   container_name: resource_monitor
+  #   command: >
+  #     sh -c '
+  #       while true; do
+  #         TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
+  #         STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
+  #         echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
+  #         sleep 1;
+  #       done
+  #     '
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./logs/resource_monitor:/logs
+  #   depends_on:
+  #     - aas_gateway

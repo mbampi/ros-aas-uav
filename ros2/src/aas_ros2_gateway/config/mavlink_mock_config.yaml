@@ -1,0 +1,42 @@
+# MAVROS Mock Publisher Configuration for Academic Experiments
+# 
+# Focus on two variables:
+# 1. Number of topics (enable/disable topics)
+# 2. Message frequency (Hz for each topic)
+#
+# Set 'enabled: true/false' to control which topics are published
+# Set 'frequency' to control message rate in Hz
+#
+# Topics simulate what MAVROS would publish:
+#   battery - Battery status (voltage, current, percentage)
+#   local_position_pose - Local position and orientation (PoseStamped)
+#   local_position_velocity - Local velocity (linear and angular)
+#   state - Vehicle state (mode, armed, connected)
+#   gps_raw - Raw GPS data (lat, lon, alt, satellites, accuracy)
+#   global_position - Global position (NavSatFix format)
+#   compass_hdg - Compass heading in degrees
+
+# Default scenario: moderate frequency, all topics enabled
+namespace: "/mavros"
+topics:
+  battery:
+    enabled: true
+    frequency: 2.0
+  local_position_pose:
+    enabled: true  
+    frequency: 30.0
+  local_position_velocity:
+    enabled: true
+    frequency: 30.0
+  state:
+    enabled: true
+    frequency: 5.0
+  gps_raw:
+    enabled: true
+    frequency: 10.0
+  global_position:
+    enabled: true
+    frequency: 10.0
+  compass_hdg:
+    enabled: true
+    frequency: 10.0
