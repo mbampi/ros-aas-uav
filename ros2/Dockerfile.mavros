@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     python3-rosdep \
     ros-humble-mavros \
     ros-humble-mavros-extras \
+    tcpdump \
     && rm -rf /var/lib/apt/lists/*
 
 # Install GeographicLib datasets (required for MAVROS)

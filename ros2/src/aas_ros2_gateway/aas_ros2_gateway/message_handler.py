@@ -511,17 +511,20 @@ class MessageHandler:
                 # Process message 
                 processed_value = self.process_message(msg, field_path, transform_type)
                 processed_ts = time.time()
-                
+
                 if processed_value is not None:
                     # Create JSON payload
                     write_payload = json.dumps({
                         'id': str(uuid.uuid4()),
                         'topic': topic,
+                        'field_path': field_path,
+                        'property': property_name,
                         'recv_ts': recv_ts,
                         'processed_ts': processed_ts,
                         'value': processed_value
                     })
                     
+                    self.logger.info(f"Writing to OPC UA node {node_id} for topic {topic}: {write_payload}")
                     opcua_client.write_value(node_id, write_payload)
                     
                     # Metrics every 1000 messages (to avoid overhead)

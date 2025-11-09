@@ -28,7 +28,7 @@ services:
       # - "/dev/ttyAMA0:/dev/ttyAMA0" # Example for serial device (UART)
     command: >
       bash -c "source /opt/ros/humble/setup.bash && 
-        ros2 run mavros mavros_node --ros-args -p fcu_url:=udp://:14550@"
+        ros2 run mavros mavros_node --ros-args -p fcu_url:=udp://:14550@ -p tgt_system:=2 -p conn_debug:=true --log-level mavros:=DEBUG"
 
   # Leaving these commented out for now; can be enabled for testing purposes
   
