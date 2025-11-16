@@ -3,6 +3,9 @@
 # Calculation: Per-Property Load Test
 # Total Calculated Load: 33.40 Hz (Close to target of 31.50 Hz)
 
+# Number of properties: 11
+# Number of topics: 7
+
 topics_to_properties:
   # --- Low-Frequency Properties (Total 3.80 Hz) ---
   - property: CurrentBatteryLevel
