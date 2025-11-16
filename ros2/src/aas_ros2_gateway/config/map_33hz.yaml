@@ -1,0 +1,97 @@
+# MAVROS ROS2 Gateway Configuration
+# Setup: Half Load (Tier 2)
+# Calculation: Per-Property Load Test
+# Total Calculated Load: 33.40 Hz (Close to target of 31.50 Hz)
+
+topics_to_properties:
+  # --- Low-Frequency Properties (Total 3.80 Hz) ---
+  - property: CurrentBatteryLevel
+    topic: /mavros/battery
+    message_type: sensor_msgs.msg.BatteryState
+    field_path: percentage
+    data_transform: identity
+
+  - property: FlightStatus
+    topic: /mavros/state
+    message_type: mavros_msgs.msg.State
+    field_path: mode
+    data_transform: identity
+
+  - property: Status
+    topic: /mavros/state
+    message_type: mavros_msgs.msg.State
+    field_path: armed
+    data_transform: bool_to_armed_string
+
+  - property: SignalStrength
+    topic: /mavros/gpsstatus/gps1/raw
+    message_type: mavros_msgs.msg.GPSRAW
+    field_path: eph
+    data_transform: identity
+
+  - property: NumberOfSatellites
+    topic: /mavros/gpsstatus/gps1/raw
+    message_type: mavros_msgs.msg.GPSRAW
+    field_path: satellites_visible
+    data_transform: identity
+
+  - property: HorizontalAccuracy
+    topic: /mavros/gpsstatus/gps1/raw
+    message_type: mavros_msgs.msg.GPSRAW
+    field_path: eph
+    data_transform: identity
+
+  - property: VerticalAccuracy
+    topic: /mavros/gpsstatus/gps1/raw
+    message_type: mavros_msgs.msg.GPSRAW
+    field_path: epv
+    data_transform: identity
+
+  # --- High-Frequency Properties (Total 29.60 Hz) ---
+  - property: Altitude
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.position.z
+    data_transform: identity
+
+  - property: Pitch
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation
+    data_transform: quaternion_to_pitch
+
+  - property: HorizontalSpeed
+    topic: /mavros/local_position/velocity_local
+    message_type: geometry_msgs.msg.TwistStamped
+    field_path: twist.linear
+    data_transform: vector_magnitude_2d
+
+  - property: Heading
+    topic: /mavros/global_position/compass_hdg
+    message_type: std_msgs.msg.Float64
+    field_path: data
+    data_transform: identity
+
+# MAVROS enum mappings for transformations
+mavros_enums:
+  navsatfix_status:
+    -1: "NO_FIX"
+    0: "FIX_NOT_AVAILABLE"
+    1: "GPS_FIX"
+    2: "DGPS_FIX"
+
+  mavros_modes:
+    "MANUAL": "MANUAL"
+    "ACRO": "ACRO"
+    "ALTCTL": "ALTITUDE_CONTROL"
+    "POSCTL": "POSITION_CONTROL"
+    "OFFBOARD": "OFFBOARD"
+    "STABILIZED": "STABILIZED"
+    "RATTITUDE": "RATTITUDE"
+    "AUTO.MISSION": "AUTO_MISSION"
+    "AUTO.LOITER": "AUTO_LOITER"
+    "AUTO.RTL": "AUTO_RTL"
+    "AUTO.LAND": "AUTO_LAND"
+    "AUTO.RTGS": "AUTO_RTGS"
+    "AUTO.READY": "AUTO_READY"
+    "AUTO.TAKEOFF": "AUTO_TAKEOFF"
