@@ -1,0 +1,1687 @@
+<?xml version="1.0" ?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd">
+  <NamespaceUris>
+    <Uri>http://matheus.edu/UAV-AAS/</Uri>
+  </NamespaceUris>
+  <Models>
+    <Model ModelUri="http://matheus.edu/UAV-AAS/" Version="1.0.0" PublicationDate="2025-11-22T17:18:12Z"/>
+  </Models>
+  <UAObject NodeId="ns=1;s=AAS" BrowseName="1:AAS">
+    <DisplayName>Quadcopter AAS</DisplayName>
+    <References>
+      <Reference ReferenceType="i=35" IsForward="false">i=85</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAObject NodeId="ns=1;s=UAV" BrowseName="1:UAV">
+    <Description>This submodel aims to digitally represent a UAV by providing a comprehensive view of its static technical data, general components, and real-time operational data. By integrating these aspects, the digital representation offers a detailed overview of the UAV, allowing for an in-depth understanding of the asset’s structure and performance.</Description>
+    <DisplayName>UAV</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=AAS</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAObject NodeId="ns=1;s=UAV/ActuatorSpec" BrowseName="1:ActuatorSpec">
+    <Description>The ActuatorSpec Submodel Collection encapsulates detailed specifications and operational parameters of the actuators used in UAVs.</Description>
+    <DisplayName>ActuatorSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/CommunicationProtocol" BrowseName="1:CommunicationProtocol" DataType="String" AccessLevel="3">
+    <Description>This property specifies the protocol used for communication between the actuator and other systems.</Description>
+    <DisplayName>CommunicationProtocol</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/ControlSignalType" BrowseName="1:ControlSignalType" DataType="String" AccessLevel="3">
+    <Description>This property details the type of control signal used to operate the actuator.</Description>
+    <DisplayName>ControlSignalType</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/CurrentState" BrowseName="1:CurrentState" DataType="Boolean" AccessLevel="3">
+    <Description>This property describes the current operational state of the actuator, such as on/off or extended/retracted.</Description>
+    <DisplayName>CurrentState</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/CurrentValue" BrowseName="1:CurrentValue" DataType="Float" AccessLevel="3">
+    <Description>This property measures the current operational metrics of the actuator, such as position, speed, or force, essential for monitoring and control purposes.</Description>
+    <DisplayName>CurrentValue</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/DutyCycle" BrowseName="1:DutyCycle" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the percentage of time the actuator is active compared to the total time.</Description>
+    <DisplayName>DutyCycle</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/FeedbackMechanism" BrowseName="1:FeedbackMechanism" DataType="String" AccessLevel="3">
+    <Description>This property specifies the type of feedback mechanism used by the actuator, such as encoders or potentiometers, to provide accurate position or state feedback.</Description>
+    <DisplayName>FeedbackMechanism</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/Height" BrowseName="1:Height" DataType="Float" AccessLevel="3">
+    <Description>This property gives the vertical dimension of the actuator, relevant for fitting and integration within the UAV’s structure.</Description>
+    <DisplayName>Height</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s actuator have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/Length" BrowseName="1:Length" DataType="Float" AccessLevel="3">
+    <Description>This property provides the longitudinal dimension of the actuator, crucial for ensuring it fits properly within its designated space.</Description>
+    <DisplayName>Length</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/PowerConsumption" BrowseName="1:PowerConsumption" DataType="Float" AccessLevel="3">
+    <Description>This property measures how much power the actuator consumes during operation, which impacts the UAV's overall energy efficiency.</Description>
+    <DisplayName>PowerConsumption</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/ResponseTime" BrowseName="1:ResponseTime" DataType="Float" AccessLevel="3">
+    <Description>This property describes how quickly the actuator responds to control inputs, a critical factor for applications requiring precise timing and speed.</Description>
+    <DisplayName>ResponseTime</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/SupplyVoltage" BrowseName="1:SupplyVoltage" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the supply voltage that the actuator can operate with, ensuring it matches the UAV's power supply specifications.</Description>
+    <DisplayName>SupplyVoltage</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/Type" BrowseName="1:Type" DataType="String" AccessLevel="3">
+    <Description>This property identifies the type or category of the actuator.</Description>
+    <DisplayName>Type</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/Weight" BrowseName="1:Weight" DataType="Float" AccessLevel="3">
+    <Description>This property measures the weight of the actuator, important for calculating the total payload and balancing the UAV.</Description>
+    <DisplayName>Weight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/ActuatorSpec/Width" BrowseName="1:Width" DataType="Float" AccessLevel="3">
+    <Description>This property provides the lateral dimension of the actuator, necessary for space planning and design considerations.</Description>
+    <DisplayName>Width</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/ActuatorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/BatterySpec" BrowseName="1:BatterySpec">
+    <Description>This submodel collection provides a detailed representation of the UAV’s battery characteristics. It includes various properties that capture essential aspects of the battery, such as its capacity, voltage, type, and discharge rates.</Description>
+    <DisplayName>BatterySpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/Capacity" BrowseName="1:Capacity" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the total amount of electrical energy that the UAV’s battery can store, measured in milliampere-hours (mAh) or ampere-hours (Ah). It defines the battery's ability to supply power to the UAV's systems and propulsion over time.</Description>
+    <DisplayName>Capacity</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/ChargeTime" BrowseName="1:ChargeTime" DataType="String" AccessLevel="3">
+    <Description>This property specifies the duration required to fully charge the UAV’s battery from an empty state to full capacity. Measured in hours or minutes, this property is crucial for understanding how long it takes to prepare the battery for subsequent flights or missions.</Description>
+    <DisplayName>ChargeTime</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/CurrentBatteryLevel" BrowseName="1:CurrentBatteryLevel" DataType="Float" AccessLevel="3">
+    <Description>This property represents the current percentage of remaining battery charge. It provides a real-time indication of how much charge is left in the battery, expressed as a percentage of the total battery capacity.</Description>
+    <DisplayName>CurrentBatteryLevel</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/DischargeRate" BrowseName="1:DischargeRate" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the rate at which the UAV’s battery can deliver its stored energy, typically expressed as a C-rate (e.g., 1C, 2C). This value represents the maximum current that can be drawn from the battery safely without causing performance issues or damage.</Description>
+    <DisplayName>DischargeRate</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/EnergyDensity" BrowseName="1:EnergyDensity" DataType="Float" AccessLevel="3">
+    <Description>This property represents the amount of energy stored in the UAV’s battery relative to its weight or volume, typically measured in watt-hours per kilogram (Wh/kg) or watt-hours per liter (Wh/L).</Description>
+    <DisplayName>EnergyDensity</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/Height" BrowseName="1:Height" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the vertical dimension of the UAV’s battery, measured from the base to the top.</Description>
+    <DisplayName>Height</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s batteries have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/Lenght" BrowseName="1:Lenght" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the horizontal dimension of the UAV’s battery, measured from one end to the other.</Description>
+    <DisplayName>Lenght</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/LifeCycle" BrowseName="1:LifeCycle" DataType="Int32" AccessLevel="3">
+    <Description>This property refers to the expected lifespan of the UAV’s battery, including the number of charge-discharge cycles it can undergo before its performance significantly degrades.</Description>
+    <DisplayName>LifeCycle</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/Type" BrowseName="1:Type" DataType="String" AccessLevel="3">
+    <Description>This property specifies the chemical composition and design of the UAV’s battery, such as Lithium-Polymer (LiPo), Lithium-Ion (Li-ion), or Nickel-Metal Hydride (NiMH).</Description>
+    <DisplayName>Type</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/Voltage" BrowseName="1:Voltage" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the electrical potential difference provided by the UAV’s battery, measured in volts (V). This value indicates the battery's ability to deliver power to the UAV's systems and components.</Description>
+    <DisplayName>Voltage</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/Weight" BrowseName="1:Weight" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the mass of the UAV’s battery, measured in kilograms (kg) or grams (g). This value includes the total mass of the battery, encompassing all its components and materials.</Description>
+    <DisplayName>Weight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/BatterySpec/Width" BrowseName="1:Width" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the lateral dimension of the UAV’s battery, measured across its breadth from one side to the other.</Description>
+    <DisplayName>Width</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/BatterySpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/FlightControllerSpec" BrowseName="1:FlightControllerSpec">
+    <DisplayName>FlightControllerSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/Barometer" BrowseName="1:Barometer" DataType="String" AccessLevel="3">
+    <Description>This property provides details about the barometer included in the FC, used to measure atmospheric pressure for altitude determination and weather forecasting.</Description>
+    <DisplayName>Barometer</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/CPU" BrowseName="1:CPU" DataType="String" AccessLevel="3">
+    <Description>This property details the type and specifications of the central processing unit used in the FC, including its clock speed and core count</Description>
+    <DisplayName>CPU</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/FlighStatus" BrowseName="1:FlighStatus" DataType="String" AccessLevel="3">
+    <Description>This property indicates the current phase or activity of the UAV during its operation. It describes the UAV’s active state, such as takeoff, in-flight, landing, or hovering</Description>
+    <DisplayName>FlighStatus</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/GPSModule" BrowseName="1:GPSModule" DataType="String" AccessLevel="3">
+    <Description>This property might specify the integration and type of GPS module used for navigation and positioning</Description>
+    <DisplayName>GPSModule</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec" BrowseName="1:InertialMeasurementUnitSpec">
+    <Description>Specifications of the IMU (Inertial Measurement Unit) integrated into the flight controller, including the types of sensors (gyroscope, accelerometer, barometer) and their sensitivity. </Description>
+    <DisplayName>InertialMeasurementUnitSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec/Accelerometer" BrowseName="1:Accelerometer" DataType="String" AccessLevel="3">
+    <Description>This property details the accelerometer component within the IMU, which measures linear acceleration along its axes.</Description>
+    <DisplayName>Accelerometer</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec/DataRate" BrowseName="1:DataRate" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the frequency at which the IMU outputs data.</Description>
+    <DisplayName>DataRate</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec/Gyroscope" BrowseName="1:Gyroscope" DataType="String" AccessLevel="3">
+    <Description>This property outlines the gyroscope component within the IMU, which measures the rate of rotation around its axes.</Description>
+    <DisplayName>Gyroscope</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection this asset have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec/Magnometer" BrowseName="1:Magnometer" DataType="String" AccessLevel="3">
+    <Description>This property should be corrected to &quot;Magnetometer,&quot; which describes the magnetometer component within the IMU.</Description>
+    <DisplayName>Magnometer</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec/SupplyVoltage" BrowseName="1:SupplyVoltage" DataType="Float" AccessLevel="3">
+    <Description>This property provides the operating voltage required by the IMU, crucial for ensuring proper functionality without risk of damage.</Description>
+    <DisplayName>SupplyVoltage</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec/InertialMeasurementUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection this asset have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/IOInterfaces" BrowseName="1:IOInterfaces" DataType="String" AccessLevel="3">
+    <Description>The types and numbers of input/output ports available on the  the FC for connecting external devices, sensors, or communication modules.</Description>
+    <DisplayName>IOInterfaces</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/LocalPose" BrowseName="1:LocalPose" DataType="String" AccessLevel="3">
+    <Description>This property provides detailed information about the UAV's current position (x, y, z coordinates) and orientation (roll, pitch, yaw) relative to a designated local reference frame.</Description>
+    <DisplayName>LocalPose</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/NetworkConnectivity" BrowseName="1:NetworkConnectivity" DataType="String" AccessLevel="3">
+    <Description>The types of network interfaces and protocols supported by the FC for data communication and remote management.</Description>
+    <DisplayName>NetworkConnectivity</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/PowerConsumption" BrowseName="1:PowerConsumption" DataType="Float" AccessLevel="3">
+    <Description>The electrical power required by the FC during operation, important for assessing battery life and overall energy efficiency.</Description>
+    <DisplayName>PowerConsumption</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/RAM" BrowseName="1:RAM" DataType="Float" AccessLevel="3">
+    <Description>The amount and type of volatile memory available for the FC, which influences the ability to handle multiple tasks simultaneously.</Description>
+    <DisplayName>RAM</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/RedundancyLanes" BrowseName="1:RedundancyLanes" DataType="Int32" AccessLevel="3">
+    <Description>This property specifies the number of redundancy lanes and their configuration within the FC, ensuring system reliability and safety by maintaining operational capabilities even in the event of a component failure.</Description>
+    <DisplayName>RedundancyLanes</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/StorageCapacity" BrowseName="1:StorageCapacity" DataType="Float" AccessLevel="3">
+    <Description>This property could specify the total data storage capacity of the flight controller, important for applications requiring local data logging or extensive computational tasks.</Description>
+    <DisplayName>StorageCapacity</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/SupplyVoltage" BrowseName="1:SupplyVoltage" DataType="Float" AccessLevel="3">
+    <Description>This property provides the operating voltage required by the FC, crucial for ensuring proper functionality without risk of damage.</Description>
+    <DisplayName>SupplyVoltage</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FlightControllerSpec/VibrationDumping" BrowseName="1:VibrationDumping" DataType="String" AccessLevel="3">
+    <Description>This property describes the mechanisms or systems implemented in the FC to reduce the impact of vibration on sensor readings and electronic components</Description>
+    <DisplayName>VibrationDumping</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FlightControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/FrameSpec" BrowseName="1:FrameSpec">
+    <Description>The Frame submodel collection provides a comprehensive representation of the UAV’s structural and mechanical attributes. It includes details on the UAV's frame construction, materials, dimensions, and structural integrity. This submodel ensures a thorough understanding of the UAV's physical framework, supporting detailed analysis of its robustness and design.</Description>
+    <DisplayName>FrameSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/FrameSpec/Arrangement " BrowseName="1:Arrangement " DataType="String" AccessLevel="3">
+    <Description>This property details the structural layout and configuration of the UAV's frame. This includes the specific arrangement of components such as arms, body, and mounting points for motors, sensors, and other equipment.</Description>
+    <DisplayName>Arrangement </DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FrameSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FrameSpec/Design" BrowseName="1:Design" DataType="String" AccessLevel="3">
+    <Description>This property refers to the structural layout and configuration of the UAV's frame, detailing how it supports and connects all components. This includes the number and arrangement of arms (e.g., quadcopter with four arms, hexacopter with six arms) and the overall structural configuration (e.g., fixed wing).</Description>
+    <DisplayName>Design</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FrameSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FrameSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s frame have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FrameSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FrameSpec/Material" BrowseName="1:Material" DataType="String" AccessLevel="3">
+    <Description>This property specifies the type of material used in the construction of the UAV’s frame. This includes information on the composition and characteristics of the materials, such as carbon fiber, aluminum, plastic, or composite materials. </Description>
+    <DisplayName>Material</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FrameSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/FrameSpec/Weight" BrowseName="1:Weight" DataType="String" AccessLevel="3">
+    <Description>This property represents the weight of the UAV’s frame, encompassing all structural components such as the arms, central body, and motor mounts. This weight does not include the motors, electronics, batteries, or payload. </Description>
+    <DisplayName>Weight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/FrameSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/GPSModuleSpec" BrowseName="1:GPSModuleSpec">
+    <Description>The GPSModuleSpec Submodel Collection outlines the specifications and performance metrics of the GPS modules integrated into UAVs.</Description>
+    <DisplayName>GPSModuleSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/Altitude" BrowseName="1:Altitude" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the altitude of the UAV relative to sea level, measured in meters.</Description>
+    <DisplayName>Altitude</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/AntennaType" BrowseName="1:AntennaType" DataType="String" AccessLevel="3">
+    <Description>This property describes the type of antenna used by the GPS module, which affects signal reception quality and accuracy.</Description>
+    <DisplayName>AntennaType</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/FixType" BrowseName="1:FixType" DataType="String" AccessLevel="3">
+    <Description>This property describes the type of GPS fix obtained, such as 2D fix, 3D fix, or Differential GPS (DGPS), which affects positional accuracy.</Description>
+    <DisplayName>FixType</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/FrequencyBands" BrowseName="1:FrequencyBands" DataType="String" AccessLevel="3">
+    <Description>This property lists the frequency bands supported by the GPS module, such as L1, L2, and L5, which influence the accuracy and integrity of the GPS signals.</Description>
+    <DisplayName>FrequencyBands</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/GlobalPose" BrowseName="1:GlobalPose" DataType="String" AccessLevel="3">
+    <Description>This property encapsulates the UAV's precise global position (latitude, longitude, altitude) and orientation (heading, pitch, roll) in a universally recognized geographic coordinate system.</Description>
+    <DisplayName>GlobalPose</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/HDilutionOfPrecision" BrowseName="1:HDilutionOfPrecision" DataType="Float" AccessLevel="3">
+    <Description>This property measures the level of precision dilution in the horizontal plane, indicating the effect of satellite geometry on positioning accuracy.</Description>
+    <DisplayName>HDilutionOfPrecision</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/Heading" BrowseName="1:Heading" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the UAV's current travel direction relative to true north, measured in degrees.</Description>
+    <DisplayName>Heading</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/Height" BrowseName="1:Height" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the vertical dimension of the GPS module, which can impact the overall size and fit within the UAV.</Description>
+    <DisplayName>Height</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/HorizontalAccuracy" BrowseName="1:HorizontalAccuracy" DataType="Float" AccessLevel="3">
+    <Description>This property describes the accuracy of the GPS position in the horizontal plane, typically measured in meters.</Description>
+    <DisplayName>HorizontalAccuracy</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/HorizontalSpeed" BrowseName="1:HorizontalSpeed" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the speed of the UAV across the horizontal plane, measured in meters per second.</Description>
+    <DisplayName>HorizontalSpeed</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s GPS module have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/NumberOfSatellites" BrowseName="1:NumberOfSatellites" DataType="Int32" AccessLevel="3">
+    <Description>This property counts the number of satellites currently being tracked by the GPS module, which influences the accuracy and reliability of the GPS data.</Description>
+    <DisplayName>NumberOfSatellites</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/SignalStrength" BrowseName="1:SignalStrength" DataType="Float" AccessLevel="3">
+    <Description>This property measures the strength of the GPS signal received by the module, influencing the quality and reliability of the fix.</Description>
+    <DisplayName>SignalStrength</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/Status" BrowseName="1:Status" DataType="String" AccessLevel="3">
+    <Description>This property indicates the operational status of the GPS module, such as whether it is functioning correctly, searching for satellites, or experiencing interference.</Description>
+    <DisplayName>Status</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/SupportedConstellations" BrowseName="1:SupportedConstellations" DataType="String" AccessLevel="3">
+    <Description>This property lists the satellite constellations that the GPS module can utilize, such as GPS, GLONASS, Galileo, or BeiDou, which enhances positional accuracy and reliability.</Description>
+    <DisplayName>SupportedConstellations</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/TimeToFirstFix" BrowseName="1:TimeToFirstFix" DataType="Float" AccessLevel="3">
+    <Description>This property measures the time required for the GPS module to achieve its first position fix from a cold start, indicating its initial responsiveness.</Description>
+    <DisplayName>TimeToFirstFix</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/UpdateRate" BrowseName="1:UpdateRate" DataType="Float" AccessLevel="3">
+    <Description>This property specifies how frequently the GPS module updates its data, such as once per second, influencing the timeliness of the positional information.</Description>
+    <DisplayName>UpdateRate</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/VDilutionOfPrecision" BrowseName="1:VDilutionOfPrecision" DataType="Float" AccessLevel="3">
+    <Description>This property measures the level of precision dilution in the vertical plane, indicating how satellite geometry affects altitude accuracy.</Description>
+    <DisplayName>VDilutionOfPrecision</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/VerticalAccuracy" BrowseName="1:VerticalAccuracy" DataType="Float" AccessLevel="3">
+    <Description>This property describes the accuracy of the GPS position in the vertical plane, typically measured in meters.</Description>
+    <DisplayName>VerticalAccuracy</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/GPSModuleSpec/VerticalSpeed" BrowseName="1:VerticalSpeed" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the speed of the UAV's ascent or descent, measured in meters per second.</Description>
+    <DisplayName>VerticalSpeed</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/GPSModuleSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/MotorSpec" BrowseName="1:MotorSpec">
+    <Description>The MotorSpec Submodel Collection provides a detailed representation of the motors used in UAVs, capturing their essential properties and performance parameters. </Description>
+    <DisplayName>MotorSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/Category" BrowseName="1:Category" DataType="String" AccessLevel="3">
+    <Description>This property specifies the category or classification of the motor, such as brushless, brushed, inrunner, or outrunner, which determines its operational characteristics and compatibility with the UAV.</Description>
+    <DisplayName>Category</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec" BrowseName="1:ElectronicSpeedControllerSpec">
+    <Description>The ESC (Electronic Speed Controller) Submodel Collection is designed to encapsulate the various properties and parameters associated with the electronic speed controllers used in UAVs.</Description>
+    <DisplayName>ElectronicSpeedControllerSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/BECOutput" BrowseName="1:BECOutput" DataType="Float" AccessLevel="3">
+    <Description>This property details the specifications of the Battery Eliminator Circuit (BEC) output, which powers the UAV’s electronics by providing a regulated voltage supply, eliminating the need for a separate battery.</Description>
+    <DisplayName>BECOutput</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/BurstCurrentRating" BrowseName="1:BurstCurrentRating" DataType="Float" AccessLevel="3">
+    <Description>This property defines the maximum current the ESC can handle for short bursts, typically up to 10 seconds, allowing the UAV to perform maneuvers that require additional power.</Description>
+    <DisplayName>BurstCurrentRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/CommunicationProtocol" BrowseName="1:CommunicationProtocol" DataType="String" AccessLevel="3">
+    <Description>This property specifies the protocol used for communication between the ESC and the flight controller, ensuring that the ESC can correctly interpret and execute control commands.</Description>
+    <DisplayName>CommunicationProtocol</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/ConnectorType" BrowseName="1:ConnectorType" DataType="String" AccessLevel="3">
+    <Description>This property describes the type of connectors used for interfacing the ESC with motors, power supply, and control signals, which is crucial for ensuring compatibility with other UAV components.</Description>
+    <DisplayName>ConnectorType</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/ContinuousCurrentRating" BrowseName="1:ContinuousCurrentRating" DataType="Float" AccessLevel="3">
+    <Description>This property defines the maximum continuous current the ESC can handle without overheating, which is critical for sustained flight and overall performance.</Description>
+    <DisplayName>ContinuousCurrentRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/Height" BrowseName="1:Height" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the vertical dimension of the ESC, which is important for fitting it within the UAV’s frame and ensuring proper heat dissipation.</Description>
+    <DisplayName>Height</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s ESC have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/Length" BrowseName="1:Length" DataType="Float" AccessLevel="3">
+    <Description>This property details the longitudinal dimension of the ESC, affecting how it fits into the UAV’s design and layout.</Description>
+    <DisplayName>Length</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/SignalFrequency" BrowseName="1:SignalFrequency" DataType="Float" AccessLevel="3">
+    <Description>This property defines the range of input signal frequencies the ESC can interpret for controlling motor speed, directly impacting the precision of throttle response.</Description>
+    <DisplayName>SignalFrequency</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/SupplyVoltage" BrowseName="1:SupplyVoltage" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the input voltages the ESC can accept, indicating its compatibility with different battery types and ensuring proper power management.</Description>
+    <DisplayName>SupplyVoltage</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/Type" BrowseName="1:Type" DataType="String" AccessLevel="3">
+    <Description>This property indicates the type of ESC, reflecting the technology and features it supports, such as brushed or brushless motor compatibility.</Description>
+    <DisplayName>Type</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/Weight" BrowseName="1:Weight" DataType="Float" AccessLevel="3">
+    <Description>This property describes the weight of the ESC, contributing to the overall weight of the UAV and influencing its performance characteristics.</Description>
+    <DisplayName>Weight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec/Width" BrowseName="1:Width" DataType="Float" AccessLevel="3">
+    <Description>This property defines the lateral dimension of the ESC, affecting how it integrates with other components within the UAV's frame.</Description>
+    <DisplayName>Width</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec/ElectronicSpeedControllerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/ID" BrowseName="1:ID" DataType="String" AccessLevel="3">
+    <Description>A unique identifier for the motor associated with the attached UAV, for identifying its position in the UAV structure.</Description>
+    <DisplayName>ID</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/IngressProtection" BrowseName="1:IngressProtection" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s motors have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtection</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/MaximumRPM" BrowseName="1:MaximumRPM" DataType="Float" AccessLevel="3">
+    <Description>This property defines the maximum revolutions per minute (RPM) that the motor can achieve.</Description>
+    <DisplayName>MaximumRPM</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/MountingDirection" BrowseName="1:MountingDirection" DataType="String" AccessLevel="3">
+    <Description>This property specifies whether the motor is mounted facing up or down on the UAV.</Description>
+    <DisplayName>MountingDirection</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/Orientation" BrowseName="1:Orientation" DataType="String" AccessLevel="3">
+    <Description>This property indicates the orientation or mounting direction of the motor on the UAV, e.g., horizontal or vertical.</Description>
+    <DisplayName>Orientation</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/Power " BrowseName="1:Power " DataType="Float" AccessLevel="3">
+    <Description>This property indicates the amount of power the motor can deliver, influencing the thrust and performance capabilities of the UAV.</Description>
+    <DisplayName>Power </DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/RotationDirection" BrowseName="1:RotationDirection" DataType="String" AccessLevel="3">
+    <Description>This property specifies the direction in which the motor rotates, typically clockwise or counterclockwise.</Description>
+    <DisplayName>RotationDirection</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/Type" BrowseName="1:Type" DataType="String" AccessLevel="3">
+    <Description>This property defines the type of motor, which can be electric or combustion, and it determines the energy source and efficiency of the UAV's propulsion system.</Description>
+    <DisplayName>Type</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/VelocityConstant" BrowseName="1:VelocityConstant" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the velocity constant (KV) of the motor, which describes how many revolutions per minute (RPM) the motor will turn per volt of input, affecting the UAV's speed and power efficiency.</Description>
+    <DisplayName>VelocityConstant</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/Voltage" BrowseName="1:Voltage" DataType="Float" AccessLevel="3">
+    <Description>This property defines the operating voltage of the motor, ensuring that the motor receives the correct electrical input to function efficiently and safely.</Description>
+    <DisplayName>Voltage</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/MotorSpec/Weight" BrowseName="1:Weight" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the weight of the motor.</Description>
+    <DisplayName>Weight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/MotorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec" BrowseName="1:OnboardProcessingUnitSpec">
+    <Description>The OnboardProcessingUnitSpec Submodel Collection encapsulates detailed specifications and operational capabilities of the onboard processing units utilized in UAVs. </Description>
+    <DisplayName>OnboardProcessingUnitSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/CPU" BrowseName="1:CPU" DataType="String" AccessLevel="3">
+    <Description>This property provides details about the central processing unit used in the OPU, including type, number of cores, and clock speed.</Description>
+    <DisplayName>CPU</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/GPU" BrowseName="1:GPU" DataType="String" AccessLevel="3">
+    <Description>This property describes the Graphics Processing Unit (GPU) used in the Onboard Processing Unit of the UAV.</Description>
+    <DisplayName>GPU</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/IdentificationCode" BrowseName="1:IdentificationCode" DataType="String" AccessLevel="3">
+    <Description>This property provides a unique alphanumeric identifier assigned to each OPU within the UAV. It is a parameter that can be changed by the user if needed, used for identification, tracking, and administrative purposes.</Description>
+    <DisplayName>IdentificationCode</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection this asset have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/IOInterfaces" BrowseName="1:IOInterfaces" DataType="String" AccessLevel="3">
+    <Description>This property specifies the types and numbers of input/output ports available on the OPU for connecting external devices, sensors, or communication modules.</Description>
+    <DisplayName>IOInterfaces</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/NetworkConnectivity" BrowseName="1:NetworkConnectivity" DataType="String" AccessLevel="3">
+    <Description>The types of network interfaces supported by the OPU for data communication and remote management.</Description>
+    <DisplayName>NetworkConnectivity</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/OS" BrowseName="1:OS" DataType="String" AccessLevel="3">
+    <Description>The operating system or software environment running on the OPU, which supports the execution of applications and management of hardware resources.</Description>
+    <DisplayName>OS</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/PowerConsumption" BrowseName="1:PowerConsumption" DataType="Float" AccessLevel="3">
+    <Description>The electrical power required by the OPU during operation, important for assessing battery life and overall energy efficiency.</Description>
+    <DisplayName>PowerConsumption</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/RAM" BrowseName="1:RAM" DataType="String" AccessLevel="3">
+    <Description>The amount and type of volatile memory available for the OPU, which influences the ability to handle multiple tasks simultaneously.</Description>
+    <DisplayName>RAM</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/StorageCapacity" BrowseName="1:StorageCapacity" DataType="Float" AccessLevel="3">
+    <Description>This property could specify the total data storage capacity of the OPU, important for applications requiring local data logging or extensive computational tasks.</Description>
+    <DisplayName>StorageCapacity</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/OnboardProcessingUnitSpec/SupplyVoltage" BrowseName="1:SupplyVoltage" DataType="Float" AccessLevel="3">
+    <Description>This property provides the operating voltage required by the OPU, crucial for ensuring proper functionality without risk of damage.</Description>
+    <DisplayName>SupplyVoltage</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/OnboardProcessingUnitSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/PropellerSpec" BrowseName="1:PropellerSpec">
+    <Description>submodel collection details the specifications of the UAV's propellers, including key attributes such as blade shape, diameter, pitch, rotation speed, and weight. </Description>
+    <DisplayName>PropellerSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/AngleOfAttack" BrowseName="1:AngleOfAttack" DataType="Float" AccessLevel="3">
+    <Description>This property refers to the angle between the propeller's blade and the direction of the oncoming airflow. This property influences the efficiency of thrust generation and the overall performance of the propulsion system.</Description>
+    <DisplayName>AngleOfAttack</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/BladeShape" BrowseName="1:BladeShape" DataType="String" AccessLevel="3">
+    <Description>This property defines the aerodynamic design and contour of the UAV propeller blades, e.g, curved, flat, twisted, or specific designs like scimitar or circular.</Description>
+    <DisplayName>BladeShape</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/Diameter" BrowseName="1:Diameter" DataType="Float" AccessLevel="3">
+    <Description>This property defines the total length across the propeller from tip to tip.</Description>
+    <DisplayName>Diameter</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s propellers have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/Length" BrowseName="1:Length" DataType="Float" AccessLevel="3">
+    <Description>This property refers to the measurement of the propeller blade from its root (where it attaches to the motor) to its tip.</Description>
+    <DisplayName>Length</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/Material" BrowseName="1:Material" DataType="String" AccessLevel="3">
+    <Description>This property specifies the material type from which the UAV’s propeller blades are constructed. This includes materials such as carbon fiber, plastic, aluminum, or composites.</Description>
+    <DisplayName>Material</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/MaxThrust" BrowseName="1:MaxThrust" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the maximum amount of thrust that the UAV’s propeller can generate under optimal conditions.</Description>
+    <DisplayName>MaxThrust</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/Mounting" BrowseName="1:Mounting" DataType="String" AccessLevel="3">
+    <Description>This property refers to the method or system used to attach the UAV’s propeller to the motor or hub. This property describes how the propeller is secured in place, e.g, direct mounting, adapter mount, quick-release or locking mechanism.</Description>
+    <DisplayName>Mounting</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/NumberOfBlades" BrowseName="1:NumberOfBlades" DataType="Int32" AccessLevel="3">
+    <Description>This property specifies the total count of blades on the UAV’s propeller.</Description>
+    <DisplayName>NumberOfBlades</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/Pitch" BrowseName="1:Pitch" DataType="Float" AccessLevel="3">
+    <Description>This property defines the angle of the propeller blades relative to the plane of rotation. This angle affects the propeller's ability to generate thrust and its efficiency in converting rotational energy into forward motion.</Description>
+    <DisplayName>Pitch</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/RotationSpeed" BrowseName="1:RotationSpeed" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the rate at which the UAV’s propeller blades spin, typically measured in revolutions per minute (RPM).</Description>
+    <DisplayName>RotationSpeed</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/PropellerSpec/Weight" BrowseName="1:Weight" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the mass of the UAV's propeller. It includes the combined weight of all its components, such as blades and hub, but does not account for additional attachments or modifications.</Description>
+    <DisplayName>Weight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/PropellerSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/SensorSpec" BrowseName="1:SensorSpec">
+    <Description>The SensorSpec Submodel Collection systematically organizes and details the specifications and performance characteristics of the sensors equipped on UAVs.</Description>
+    <DisplayName>SensorSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/Accuracy" BrowseName="1:Accuracy" DataType="Float" AccessLevel="3">
+    <Description>This property defines the precision and correctness of the sensor's measurements, crucial for ensuring reliable data collection.</Description>
+    <DisplayName>Accuracy</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/CommunicationProtocol" BrowseName="1:CommunicationProtocol" DataType="String" AccessLevel="3">
+    <Description>This property specifies the protocol used for data transmission between the sensor and other system components, ensuring compatibility and reliable connectivity.</Description>
+    <DisplayName>CommunicationProtocol</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/CurrentValue" BrowseName="1:CurrentValue" DataType="Float" AccessLevel="3">
+    <Description>This property represents the current measurement value or values being output by the sensor, which can be a single value or an array of values, providing real-time data for operational decisions.</Description>
+    <DisplayName>CurrentValue</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/DataFormat" BrowseName="1:DataFormat" DataType="String" AccessLevel="3">
+    <Description>This property could specify the format in which data is outputted from the sensor, important for data integration and analysis processes.</Description>
+    <DisplayName>DataFormat</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/Height" BrowseName="1:Height" DataType="Float" AccessLevel="3">
+    <Description>This property measures the vertical dimension of the sensor, important for integration and spatial arrangement within the UAV’s design.</Description>
+    <DisplayName>Height</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s sensor have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/Length" BrowseName="1:Length" DataType="Float" AccessLevel="3">
+    <Description>This property provides the longitudinal dimension of the sensor, crucial for fitting the sensor within the UAV’s structure.</Description>
+    <DisplayName>Length</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/OutputSignalType" BrowseName="1:OutputSignalType" DataType="String" AccessLevel="3">
+    <Description>This property describes the type of signal output by the sensor, such as analog voltage, digital, or serial, affecting how the data is processed and used by other UAV systems.</Description>
+    <DisplayName>OutputSignalType</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/PowerConsumption" BrowseName="1:PowerConsumption" DataType="Float" AccessLevel="3">
+    <Description>This property indicates how much power the sensor uses during operation, impacting the overall energy efficiency of the UAV.</Description>
+    <DisplayName>PowerConsumption</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/RefreshRate" BrowseName="1:RefreshRate" DataType="Float" AccessLevel="3">
+    <Description>This property defines how frequently the sensor updates its measurements.</Description>
+    <DisplayName>RefreshRate</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/Resolution" BrowseName="1:Resolution" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the smallest detectable increment of measurement the sensor can resolve.</Description>
+    <DisplayName>Resolution</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/Sensitivity" BrowseName="1:Sensitivity" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the sensor’s ability to detect small changes or low levels of the quantity being measured.</Description>
+    <DisplayName>Sensitivity</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/SupplyVoltage" BrowseName="1:SupplyVoltage" DataType="Float" AccessLevel="3">
+    <Description>This property provides the operating voltage required by the sensor, crucial for ensuring proper functionality without risk of damage.</Description>
+    <DisplayName>SupplyVoltage</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/Type" BrowseName="1:Type" DataType="String" AccessLevel="3">
+    <Description>This property describes the type or category of the sensor, such as temperature, pressure, optical, or ultrasonic, defining its specific applications and capabilities.</Description>
+    <DisplayName>Type</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/Weight" BrowseName="1:Weight" DataType="Float" AccessLevel="3">
+    <Description>This property measures the weight of the sensor, significant for calculating the overall payload and balance of the UAV.</Description>
+    <DisplayName>Weight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/SensorSpec/Width" BrowseName="1:Width" DataType="Float" AccessLevel="3">
+    <Description>This property provides the lateral dimension of the sensor, necessary for space planning and hardware integration.</Description>
+    <DisplayName>Width</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/SensorSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/TechnicalSpecifications" BrowseName="1:TechnicalSpecifications">
+    <Description>The TechnicalSpec submodel collection is designed to represent various technical characteristics of the UAV asset, capturing both its intrinsic properties and configurable system parameters. These specifications are organized into submodel element collections, ensuring a structured and detailed representation of the UAV's technical attributes, enabling precise analysis and configuration.</Description>
+    <DisplayName>TechnicalSpecifications</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/ApplicationType" BrowseName="1:ApplicationType" DataType="String" AccessLevel="3">
+    <Description>The specific purposes or missions for which the UAV is designed and optimized. This specification outlines the primary use cases and operational environments where the UAV can perform effectively, helping to match the UAV’s capabilities with appropriate tasks.</Description>
+    <DisplayName>ApplicationType</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory" BrowseName="1:ComplianceAndRegulatory">
+    <Description>The ComplianceAndRegulatory submodel collection provides an overview of the legal and safety standards that the UAV complies with. It includes adherence to aviation authorities, environmental regulations, specific operational restrictions, safety standards, ensuring that the UAV operates within established legal and safety guidelines.</Description>
+    <DisplayName>ComplianceAndRegulatory</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory/AviationAuthoritiesCompliance" BrowseName="1:AviationAuthoritiesCompliance" DataType="String" AccessLevel="3">
+    <Description>This property represents the UAV’s compliance status with relevant aviation authorities, including organizations such as the FAA, EASA, ICAO, and others. This property ensures that the UAV meets all required regulations and standards set by these authorities.</Description>
+    <DisplayName>AviationAuthoritiesCompliance</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory/EnvironmentalCompliance" BrowseName="1:EnvironmentalCompliance" DataType="String" AccessLevel="3">
+    <Description>This property details the UAV’s adherence to environmental regulations, including standards for noise and emissions. This ensures that the UAV operates within established environmental guidelines, minimizing its impact on the surrounding environment.</Description>
+    <DisplayName>EnvironmentalCompliance</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the overall level of protection the UAV  have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory/OperationalRestrictions" BrowseName="1:OperationalRestrictions" DataType="String" AccessLevel="3">
+    <Description>This property outlines any legal or regulatory constraints on the UAV's operation, including restrictions on no-fly zones, altitude limits, and time-of-day limitations. This ensures that the UAV’s use complies with applicable laws and regulations.</Description>
+    <DisplayName>OperationalRestrictions</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory/OperatorLicensingRequirements" BrowseName="1:OperatorLicensingRequirements" DataType="String" AccessLevel="3">
+    <Description>This property specifies the necessary licenses and qualifications required for the UAV operator to legally operate the UAV. This ensures that the operator meets all legal and regulatory standards for safe and compliant UAV operation.</Description>
+    <DisplayName>OperatorLicensingRequirements</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory/RegistrationNumber" BrowseName="1:RegistrationNumber" DataType="String" AccessLevel="3">
+    <Description>This property denotes the official registration number assigned to the UAV by the relevant aviation authority. This unique identifier is essential for tracking and ensuring compliance with regulatory requirements.</Description>
+    <DisplayName>RegistrationNumber</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory/SafetyStandardCompliance" BrowseName="1:SafetyStandardCompliance" DataType="String" AccessLevel="3">
+    <Description>This property indicates the UAV’s adherence to industry safety standards and guidelines. This ensures that the UAV meets established safety criteria, contributing to its safe operation and risk management.</Description>
+    <DisplayName>SafetyStandardCompliance</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/ComplianceAndRegulatory</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions" BrowseName="1:EnvironmentalConditions">
+    <Description>The EnvironmentalConditions submodel collection defines the operational environment necessary for the UAV. It provides an overview of the required conditions and parameters that ensure safe and efficient operation, focusing on the external factors that can influence the UAV’s performance during launch, landing, and flight.</Description>
+    <DisplayName>EnvironmentalConditions</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions/MaximumAltitude" BrowseName="1:MaximumAltitude" DataType="Float" AccessLevel="3">
+    <Description>This property represents the highest altitude above sea level at which the UAV can maintain stable flight and full operational capability. This parameter ensures that the UAV can operate effectively without experiencing performance degradation or risk of failure.</Description>
+    <DisplayName>MaximumAltitude</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions/MaximumHumidity" BrowseName="1:MaximumHumidity" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the highest level of relative humidity at which the UAV can operate safely and effectively. This ensures that the UAV’s electronics, sensors, and structural components function properly without experiencing performance degradation or risk of failure.</Description>
+    <DisplayName>MaximumHumidity</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions/MaximumPressure" BrowseName="1:MaximumPressure" DataType="Float" AccessLevel="3">
+    <Description>This property defines the upper limit of atmospheric pressure at which the UAV can perform its functions reliably. This ensures that the UAV operates effectively and maintains performance standards under varying pressure conditions.</Description>
+    <DisplayName>MaximumPressure</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions/MaximumWindSpeed" BrowseName="1:MaximumWindSpeed" DataType="Int32" AccessLevel="3">
+    <Description>This property describes the maximum wind conditions under which the UAV can safely operate. This specification ensures that the UAV remains stable and functional in high-wind environments, maintaining safety and performance.</Description>
+    <DisplayName>MaximumWindSpeed</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions/RequiredLandingArea" BrowseName="1:RequiredLandingArea" DataType="String" AccessLevel="3">
+    <Description>This property specifies the minimum area needed to safely land the UAV, considering its size, landing method, and any ground support equipment. This ensures that the UAV can achieve a stable and controlled landing while avoiding obstacles.</Description>
+    <DisplayName>RequiredLandingArea</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions/RequiredLaunchArea" BrowseName="1:RequiredLaunchArea" DataType="String" AccessLevel="3">
+    <Description>This property defines the minimum area needed to safely launch the UAV, considering factors such as the UAV’s size, takeoff method, and any ground support equipment. This ensures that the UAV can achieve stable flight from a stationary or moving start while avoiding obstacles.</Description>
+    <DisplayName>RequiredLaunchArea</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/EnvironmentalConditions</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/TechnicalSpecifications/OperationalSetup" BrowseName="1:OperationalSetup">
+    <Description>The OperationalSetup submodel collection outlines the conditions and methods necessary for safely and efficiently operating the UAV. It provides a comprehensive view of the operational environment, detailing the UAV’s operational modes, methods for launching and landing, and the environmental parameters that must be adhered to during operation.</Description>
+    <DisplayName>OperationalSetup</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/OperationalSetup/CurrentOperationMode" BrowseName="1:CurrentOperationMode" DataType="String" AccessLevel="3">
+    <Description>This property defines the UAV’s current mode of operation, specifying how it is being controlled or managed. The available modes may include options such as Manual, Autonomous, Stabilized, Follow-me, Loiter, and First-Person View (FPV).</Description>
+    <DisplayName>CurrentOperationMode</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/OperationalSetup</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/OperationalSetup/LandingMethod" BrowseName="1:LandingMethod" DataType="String" AccessLevel="3">
+    <Description>This property specifies the method or technique used to safely land the UAV after completing its mission. It encompasses various landing approaches, such as manual landing, autonomous landing, parachute recovery, and vertical landing. </Description>
+    <DisplayName>LandingMethod</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/OperationalSetup</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/OperationalSetup/LaunchMethod" BrowseName="1:LaunchMethod" DataType="String" AccessLevel="3">
+    <Description>This property describes the method or technique used to initiate the UAV's flight. It includes various launch approaches, such as Hand Launch, Catapult Launch, Vertical Takeoff, and Runway Takeoff. </Description>
+    <DisplayName>LaunchMethod</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/OperationalSetup</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/OperationalSetup/OperationModes" BrowseName="1:OperationModes" DataType="String" AccessLevel="3">
+    <Description>This property outlines the different modes of operation that the UAV can perform, detailing the capabilities and functionalities available in each mode. Examples include Manual, Autonomous, Stabilized, Follow-me, Loiter, and First-Person View (FPV). </Description>
+    <DisplayName>OperationModes</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/OperationalSetup</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/OperationalSetup/RecoveryMethod" BrowseName="1:RecoveryMethod" DataType="String" AccessLevel="3">
+    <Description>This property defines the method or technique used to retrieve the UAV after flight, ensuring its safe return and minimizing the risk of damage. It includes various approaches such as Manual Recovery, Autonomous Recovery, Parachute Recovery, and Net Capture.</Description>
+    <DisplayName>RecoveryMethod</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/OperationalSetup</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics" BrowseName="1:PhysicalCharacteristics">
+    <Description>The PhysicalCharacteristics submodel collection provides a detailed representation of the UAV's physical attributes, including dimensions, weight, and other essential physical properties. This collection captures the tangible aspects of the UAV, offering crucial data for understanding its design, structure, and physical performance.</Description>
+    <DisplayName>PhysicalCharacteristics</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/HeightFolded" BrowseName="1:HeightFolded" DataType="Float" AccessLevel="3">
+    <Description>The physical height dimension of the UAV when it is in its folded or stowed configuration. This specification ensures the UAV’s portability and ease of transport.</Description>
+    <DisplayName>HeightFolded</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/HeightUnfolded" BrowseName="1:HeightUnfolded" DataType="Float" AccessLevel="3">
+    <Description>The physical height dimension of the UAV when it is in its fully unfolded or deployed configuration. This specification ensures the UAV’s size is appropriate for its operational environment and mission requirements.</Description>
+    <DisplayName>HeightUnfolded</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the overall level of protection that the UAV’s have against the intrusion of solid objects and liquids. Defined by the international standard IEC 60529, this rating is crucial for evaluating the assets durability and operational reliability under various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/LengthFolded" BrowseName="1:LengthFolded" DataType="Float" AccessLevel="3">
+    <Description>The physical length dimension of the UAV when it is in its folded or stowed configuration. This specification ensures the UAV’s portability and ease of transport. (Length, Width, Height)</Description>
+    <DisplayName>LengthFolded</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/LengthUnfolded" BrowseName="1:LengthUnfolded" DataType="String" AccessLevel="3">
+    <Description>The physical lenght dimension of the UAV when it is in its fully unfolded or deployed configuration. This specification ensures the UAV’s size is appropriate for its operational environment and mission requirements.</Description>
+    <DisplayName>LengthUnfolded</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/PayloadCapacityType" BrowseName="1:PayloadCapacityType" DataType="String" AccessLevel="3">
+    <Description>This property defines the types of payloads that the UAV can carry, including specific categories of equipment and cargo. This specification details the UAV's compatibility with various payloads, ensuring that mission planning and execution are effective and well-aligned with the UAV's carrying capabilities.</Description>
+    <DisplayName>PayloadCapacityType</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/PayloadCapacityWeight" BrowseName="1:PayloadCapacityWeight" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the maximum weight of additional equipment or cargo that the UAV can carry during flight. This includes all external loads, such as cameras, sensors, and other mission-specific payloads, ensuring that the UAV's performance and stability are not compromised.</Description>
+    <DisplayName>PayloadCapacityWeight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/RotorClassification" BrowseName="1:RotorClassification" DataType="String" AccessLevel="3">
+    <Description>This property categorizes the UAV based on its rotor configuration, such as single rotor, quadcopter, or hexacopter. This classification provides insight into the UAV's design and operational characteristics, influencing its stability, maneuverability, and flight performance.</Description>
+    <DisplayName>RotorClassification</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/TotalWeight" BrowseName="1:TotalWeight" DataType="Float" AccessLevel="3">
+    <Description>This property represents the combined weight of the UAV, including all attached components and their individual weights. This comprehensive measurement accounts for the UAV's structure, payload, and any additional equipment, providing a complete picture of its overall mass.</Description>
+    <DisplayName>TotalWeight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/WidthFolded" BrowseName="1:WidthFolded" DataType="Float" AccessLevel="3">
+    <Description>The physical width dimension of the UAV when it is in its folded or stowed configuration. This specification ensures the UAV’s portability and ease of transport. </Description>
+    <DisplayName>WidthFolded</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/WidthUnfolded" BrowseName="1:WidthUnfolded" DataType="Float" AccessLevel="3">
+    <Description>The physical width dimension of the UAV when it is in its fully unfolded or deployed configuration. This specification ensures the UAV’s size is appropriate for its operational environment and mission requirements.</Description>
+    <DisplayName>WidthUnfolded</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics/WingClassification" BrowseName="1:WingClassification" DataType="String" AccessLevel="3">
+    <Description>This property categorizes the UAV based on its wing design, including fixed-wing, rotary-wing, and hybrid VTOL (Vertical Takeoff and Landing) configurations. This classification helps define the UAV's flight capabilities, operational modes, and suitability for various mission types.</Description>
+    <DisplayName>WingClassification</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PhysicalCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics" BrowseName="1:PerformanceCharacteristics">
+    <Description>The PerformanceCharacteristics submodel collection provides an overarching representation of the UAV's operational capabilities and limitations. It encompasses the key performance parameters that define the UAV’s behavior and efficiency during operation, offering a comprehensive overview of its functional characteristics under various conditions.</Description>
+    <DisplayName>PerformanceCharacteristics</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumAltitude" BrowseName="1:MaximumAltitude" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the highest altitude above sea level at which the UAV can maintain stable flight and full operational capability without experiencing performance degradation or risk of failure.</Description>
+    <DisplayName>MaximumAltitude</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumAngularAcceleration" BrowseName="1:MaximumAngularAcceleration" DataType="Float" AccessLevel="3">
+    <Description>This property defines the highest rate of change of rotational velocity that the UAV can achieve and maintain safely. It ensures that the UAV operates within its structural limits and maintains control during rapid changes in orientation. </Description>
+    <DisplayName>MaximumAngularAcceleration</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumClimbRate" BrowseName="1:MaximumClimbRate" DataType="Float" AccessLevel="3">
+    <Description>This property indicates the maximum vertical speed at which the UAV can safely ascend. It defines the highest rate of altitude gain achievable by the UAV while maintaining safe operation and performance.</Description>
+    <DisplayName>MaximumClimbRate</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumDescentRate" BrowseName="1:MaximumDescentRate" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the maximum vertical speed at which the UAV can safely descend. It defines the highest rate of altitude loss the UAV can handle while ensuring stable and controlled descent.</Description>
+    <DisplayName>MaximumDescentRate</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumEndurance" BrowseName="1:MaximumEndurance" DataType="String" AccessLevel="3">
+    <Description>This property represents the maximum duration, measured in minutes, that the UAV can operate under normal conditions without requiring recharging or refueling. </Description>
+    <DisplayName>MaximumEndurance</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumFlightRange" BrowseName="1:MaximumFlightRange" DataType="Float" AccessLevel="3">
+    <Description>This property defines the maximum distance the UAV can cover under normal operating conditions without requiring recharging or refueling. It is a key parameter for evaluating the UAV's endurance and planning missions.</Description>
+    <DisplayName>MaximumFlightRange</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumHeight" BrowseName="1:MaximumHeight" DataType="Float" AccessLevel="3">
+    <Description>This property defines the highest altitude above the ground level at which the UAV can safely operate while maintaining full functionality. It ensures that the UAV can perform its tasks effectively without encountering performance issues or risking structural damage.</Description>
+    <DisplayName>MaximumHeight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumLinearAcceleration" BrowseName="1:MaximumLinearAcceleration" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the highest rate of change in velocity that the UAV can achieve and maintain along a straight path without compromising structural integrity or control.</Description>
+    <DisplayName>MaximumLinearAcceleration</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumPitchAngle" BrowseName="1:MaximumPitchAngle" DataType="Float" AccessLevel="3">
+    <Description>This property defines the maximum angle to which the UAV can pitch from its level flight position. It indicates the extreme forward or backward tilt the UAV can achieve safely without affecting its stability or control.</Description>
+    <DisplayName>MaximumPitchAngle</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumRollAngle" BrowseName="1:MaximumRollAngle" DataType="Float" AccessLevel="3">
+    <Description>This property defines the maximum angle to which the UAV can roll from its level flight position. It specifies the extreme lateral tilt the UAV can achieve safely without compromising its stability or control.</Description>
+    <DisplayName>MaximumRollAngle</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumSpeed" BrowseName="1:MaximumSpeed" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the upper limit of airspeed at which the UAV can operate reliably. It ensures that the UAV can maintain structural integrity and control without risking damage or instability. </Description>
+    <DisplayName>MaximumSpeed</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/MaximumTakeoffWeight" BrowseName="1:MaximumTakeoffWeight" DataType="String" AccessLevel="3">
+    <Description>This property defines the highest allowable weight at which the UAV can safely take off. It encompasses the total weight of the UAV, including its payload, fuel, batteries, and any additional equipment.</Description>
+    <DisplayName>MaximumTakeoffWeight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics/StallSpeed" BrowseName="1:StallSpeed" DataType="Float" AccessLevel="3">
+    <Description>This property specifies the minimum airspeed at which the UAV can maintain level flight. Below this speed, the wings of the UAV cannot generate sufficient lift to support its weight, leading to a stall.</Description>
+    <DisplayName>StallSpeed</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/TechnicalSpecifications/PerformanceCharacteristics</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;s=UAV/WingSpec" BrowseName="1:WingSpec">
+    <Description>The WingSpec submodel collection represents the various specifications and attributes of a UAV's wings. It includes details such as wing design, material, dimensions, and mounting methods, providing a comprehensive overview of the wing's characteristics.</Description>
+    <DisplayName>WingSpec</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV</Reference>
+      <Reference ReferenceType="i=40">i=61</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/Airfoil" BrowseName="1:Airfoil" DataType="String" AccessLevel="3">
+    <Description>This property represents the cross-sectional shape of the UAV's wing, which determines the aerodynamic characteristics of the wing, such as lift, drag, and stability. The airfoil design is crucial for optimizing the UAV's performance, influencing factors like flight efficiency, maneuverability, and speed.</Description>
+    <DisplayName>Airfoil</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/AngleOfAttack" BrowseName="1:AngleOfAttack" DataType="Float" AccessLevel="3">
+    <Description>This property represents the angle between the UAV wing’s chord line and the direction of the oncoming airflow. This property is critical for understanding and controlling the lift generated by the wings during flight.</Description>
+    <DisplayName>AngleOfAttack</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/Chord" BrowseName="1:Chord" DataType="Float" AccessLevel="3">
+    <Description>This property represents the distance from the leading edge to the trailing edge of the wing, measured perpendicular to the wing span.</Description>
+    <DisplayName>Chord</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/DihedralAngle" BrowseName="1:DihedralAngle" DataType="Float" AccessLevel="3">
+    <Description>This property refers to the upward or downward angle of the UAV’s wings relative to the horizontal plane. A positive dihedral angle means the wings tilt upwards from the fuselage, which enhances roll stability and helps the UAV maintain level flight.</Description>
+    <DisplayName>DihedralAngle</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/IngressProtectionRating" BrowseName="1:IngressProtectionRating" DataType="String" AccessLevel="3">
+    <Description>This property indicates the level of protection the UAV’s wings have against the intrusion of solid objects (like dust) and liquids (like water). This rating is essential for assessing the UAV’s durability and operational reliability in various environmental conditions.</Description>
+    <DisplayName>IngressProtectionRating</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/Length" BrowseName="1:Length" DataType="Float" AccessLevel="3">
+    <Description>This property refers to the span of the UAV's wing, measured from one wingtip to the other.</Description>
+    <DisplayName>Length</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/Material" BrowseName="1:Material" DataType="String" AccessLevel="3">
+    <Description>This property refers to the type of material used in the construction of the UAV’s wings, such as carbon fiber, fiberglass, or foam.</Description>
+    <DisplayName>Material</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/Mounting" BrowseName="1:Mounting" DataType="String" AccessLevel="3">
+    <Description>This property indicates the method or system used to attach the wings to the UAV’s main body. This property details whether the wings are fixed or detachable.</Description>
+    <DisplayName>Mounting</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;s=UAV/WingSpec/Weight" BrowseName="1:Weight" DataType="Float" AccessLevel="3">
+    <Description>This property refers to the total mass of the UAV’s wings, including all structural components.</Description>
+    <DisplayName>Weight</DisplayName>
+    <References>
+      <Reference ReferenceType="i=47" IsForward="false">ns=1;s=UAV/WingSpec</Reference>
+      <Reference ReferenceType="i=40">i=63</Reference>
+    </References>
+  </UAVariable>
+</UANodeSet>

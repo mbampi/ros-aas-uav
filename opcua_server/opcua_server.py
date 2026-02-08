@@ -82,6 +82,9 @@ class ConfigLoader:
         if ident_part.startswith("i="):
             identifier = int(ident_part.split("=")[-1])
             return ua.NodeId(identifier, ns)
+        elif ident_part.startswith("s="):
+            identifier = ident_part.split("=")[-1]
+            return ua.NodeId(identifier, ns)
         raise ValueError(f"Unsupported NodeId format: {nodeid_str}")
 
 class VariableChangeHandler:
