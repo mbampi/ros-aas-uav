@@ -31,11 +31,11 @@ topics_to_properties:
   # ==============================================================================
   # VehicleType/AutopilotType are typically static or heartbeat params
   # Mapping SystemStatus to the dynamic state field
-  - property: Status/SystemStatus
-    topic: /mavros/state
-    message_type: mavros_msgs.msg.State
-    field_path: system_status
-    data_transform: identity
+  # - property: Status/SystemStatus
+  #   topic: /mavros/state
+  #   message_type: mavros_msgs.msg.State
+  #   field_path: system_status
+  #   data_transform: identity
 
   - property: Status/VehicleType
     topic: /mavros/vehicle_info
@@ -64,11 +64,11 @@ topics_to_properties:
     field_path: current
     data_transform: identity
 
-  - property: Power/Remaining
-    topic: /mavros/battery
-    message_type: sensor_msgs.msg.BatteryState
-    field_path: percentage
-    data_transform: identity
+  # - property: Power/Remaining
+  #   topic: /mavros/battery
+  #   message_type: sensor_msgs.msg.BatteryState
+  #   field_path: percentage
+  #   data_transform: identity
 
   # ==============================================================================
   # 4. NAVIGATION
@@ -93,11 +93,11 @@ topics_to_properties:
     field_path: altitude
     data_transform: identity
 
-  - property: Navigation/GlobalPosition/Heading
-    topic: /mavros/global_position/compass_hdg
-    message_type: std_msgs.msg.Float64
-    field_path: data
-    data_transform: identity
+  # - property: Navigation/GlobalPosition/Heading
+  #   topic: /mavros/global_position/compass_hdg
+  #   message_type: std_msgs.msg.Float64
+  #   field_path: data
+  #   data_transform: identity
 
   # --- LocalPositionNED ---
   - property: Navigation/LocalPositionNED/X
@@ -137,36 +137,36 @@ topics_to_properties:
     data_transform: identity
 
   # --- GPS_Raw ---
-  - property: Navigation/GPS_Raw/FixType
-    topic: /mavros/gpsstatus/gps1/raw
-    message_type: mavros_msgs.msg.GPSRAW
-    field_path: fix_type
-    data_transform: identity
+  # - property: Navigation/GPS_Raw/FixType
+  #   topic: /mavros/gpsstatus/gps1/raw
+  #   message_type: mavros_msgs.msg.GPSRAW
+  #   field_path: fix_type
+  #   data_transform: identity
 
-  - property: Navigation/GPS_Raw/SatellitesVisible
-    topic: /mavros/gpsstatus/gps1/raw
-    message_type: mavros_msgs.msg.GPSRAW
-    field_path: satellites_visible
-    data_transform: identity
+  # - property: Navigation/GPS_Raw/SatellitesVisible
+  #   topic: /mavros/gpsstatus/gps1/raw
+  #   message_type: mavros_msgs.msg.GPSRAW
+  #   field_path: satellites_visible
+  #   data_transform: identity
 
-  - property: Navigation/GPS_Raw/HDOP
-    topic: /mavros/gpsstatus/gps1/raw
-    message_type: mavros_msgs.msg.GPSRAW
-    field_path: eph
-    data_transform: identity
+  # - property: Navigation/GPS_Raw/HDOP
+  #   topic: /mavros/gpsstatus/gps1/raw
+  #   message_type: mavros_msgs.msg.GPSRAW
+  #   field_path: eph
+  #   data_transform: identity
 
-  # --- TerrainData ---
-  - property: Navigation/TerrainData/TerrainAltitude
-    topic: /mavros/altitude
-    message_type: mavros_msgs.msg.Altitude
-    field_path: terrain
-    data_transform: identity
+  # # --- TerrainData ---
+  # - property: Navigation/TerrainData/TerrainAltitude
+  #   topic: /mavros/altitude
+  #   message_type: mavros_msgs.msg.Altitude
+  #   field_path: terrain
+  #   data_transform: identity
 
-  - property: Navigation/TerrainData/BottomClearance
-    topic: /mavros/altitude
-    message_type: mavros_msgs.msg.Altitude
-    field_path: bottom_clearance
-    data_transform: identity
+  # - property: Navigation/TerrainData/BottomClearance
+  #   topic: /mavros/altitude
+  #   message_type: mavros_msgs.msg.Altitude
+  #   field_path: bottom_clearance
+  #   data_transform: identity
 
   # ==============================================================================
   # 5. ATTITUDE
@@ -191,24 +191,24 @@ topics_to_properties:
     field_path: pose.orientation
     data_transform: quaternion_to_yaw
 
-  # --- Euler Rates ---
-  - property: Attitude/EulerAngles/RollSpeed
-    topic: /mavros/local_position/velocity_body
-    message_type: geometry_msgs.msg.TwistStamped
-    field_path: twist.angular.x
-    data_transform: identity
+  # # --- Euler Rates ---
+  # - property: Attitude/EulerAngles/RollSpeed
+  #   topic: /mavros/local_position/velocity_body
+  #   message_type: geometry_msgs.msg.TwistStamped
+  #   field_path: twist.angular.x
+  #   data_transform: identity
 
-  - property: Attitude/EulerAngles/PitchSpeed
-    topic: /mavros/local_position/velocity_body
-    message_type: geometry_msgs.msg.TwistStamped
-    field_path: twist.angular.y
-    data_transform: identity
+  # - property: Attitude/EulerAngles/PitchSpeed
+  #   topic: /mavros/local_position/velocity_body
+  #   message_type: geometry_msgs.msg.TwistStamped
+  #   field_path: twist.angular.y
+  #   data_transform: identity
 
-  - property: Attitude/EulerAngles/YawSpeed
-    topic: /mavros/local_position/velocity_body
-    message_type: geometry_msgs.msg.TwistStamped
-    field_path: twist.angular.z
-    data_transform: identity
+  # - property: Attitude/EulerAngles/YawSpeed
+  #   topic: /mavros/local_position/velocity_body
+  #   message_type: geometry_msgs.msg.TwistStamped
+  #   field_path: twist.angular.z
+  #   data_transform: identity
 
   # --- Quaternion ---
   # MAVLink Q1 (w), Q2 (x), Q3 (y), Q4 (z) 
@@ -266,29 +266,29 @@ topics_to_properties:
   # ==============================================================================
 
   # --- ServoOutput (RCOut) ---
-  - property: Actuation/ServoOutput/Servo1
-    topic: /mavros/rc/out
-    message_type: mavros_msgs.msg.RCOut
-    field_path: channels[0]
-    data_transform: identity
+  # - property: Actuation/ServoOutput/Servo1
+  #   topic: /mavros/rc/out
+  #   message_type: mavros_msgs.msg.RCOut
+  #   field_path: channels[0]
+  #   data_transform: identity
 
-  - property: Actuation/ServoOutput/Servo2
-    topic: /mavros/rc/out
-    message_type: mavros_msgs.msg.RCOut
-    field_path: channels[1]
-    data_transform: identity
+  # - property: Actuation/ServoOutput/Servo2
+  #   topic: /mavros/rc/out
+  #   message_type: mavros_msgs.msg.RCOut
+  #   field_path: channels[1]
+  #   data_transform: identity
 
-  - property: Actuation/ServoOutput/Servo3
-    topic: /mavros/rc/out
-    message_type: mavros_msgs.msg.RCOut
-    field_path: channels[2]
-    data_transform: identity
+  # - property: Actuation/ServoOutput/Servo3
+  #   topic: /mavros/rc/out
+  #   message_type: mavros_msgs.msg.RCOut
+  #   field_path: channels[2]
+  #   data_transform: identity
 
-  - property: Actuation/ServoOutput/Servo4
-    topic: /mavros/rc/out
-    message_type: mavros_msgs.msg.RCOut
-    field_path: channels[3]
-    data_transform: identity
+  # - property: Actuation/ServoOutput/Servo4
+  #   topic: /mavros/rc/out
+  #   message_type: mavros_msgs.msg.RCOut
+  #   field_path: channels[3]
+  #   data_transform: identity
 
   # --- ESC Status ---
   # Assuming ESC Telemetry plugin is active
@@ -325,16 +325,16 @@ topics_to_properties:
     field_path: groundspeed
     data_transform: identity
 
-  - property: HUD/Heading
-    topic: /mavros/vfr_hud
-    message_type: mavros_msgs.msg.VfrHud
-    field_path: heading
-    data_transform: identity
+  # - property: HUD/Heading
+  #   topic: /mavros/vfr_hud
+  #   message_type: mavros_msgs.msg.VfrHud
+  #   field_path: heading
+  #   data_transform: identity
 
-  - property: HUD/Throttle
-    topic: /mavros/vfr_hud
-    message_type: mavros_msgs.msg.VfrHud
-    field_path: throttle
+  # - property: HUD/Throttle
+  #   topic: /mavros/vfr_hud
+  #   message_type: mavros_msgs.msg.VfrHud
+  #   field_path: throttle
     data_transform: identity
 
   - property: HUD/Altitude

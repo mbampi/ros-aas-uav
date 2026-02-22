@@ -23,7 +23,7 @@ services:
       # - "/dev/ttyAMA0:/dev/ttyAMA0" # Example for serial device (UART)
     command: >
       bash -c "source /opt/ros/humble/setup.bash && 
-        ros2 run mavros mavros_node --ros-args -p fcu_url:=udp://:14550@ -p tgt_system:=2 -p conn_debug:=true --log-level mavros:=DEBUG"
+        ros2 run mavros mavros_node --ros-args -p fcu_url:=udp://:14550@ -p tgt_system:=2 -p conn_debug:=true --log-level mavros:=INFO"
 
   # cadvisor:
   #   image: gcr.io/cadvisor/cadvisor:latest
@@ -84,20 +84,19 @@ services:
   #   profiles:
   #     - mavlink-mock
 
-  # resource_monitor:
-  #   image: docker:latest
-  #   container_name: resource_monitor
-  #   command: >
-  #     sh -c '
-  #       while true; do
-  #         TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
-  #         STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
-  #         echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
-  #         sleep 1;
-  #       done
-  #     '
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ./logs/resource_monitor:/logs
-  #   depends_on:
-  #     - aas_gateway
+  resource_monitor:
+    image: docker:latest
+    container_name: resource_monitor
+    command: >
+      sh -c '
+        while true; do
+          TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
+          STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
+          echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
+        done
+      '
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./logs/resource_monitor:/logs
+    depends_on:
+      - aas_gateway
