@@ -14,27 +14,35 @@
 
 import time
 import threading
-from queue import LifoQueue, Full
+import json
+from collections import deque
 from opcua import Client
 from typing import Dict, Optional
 
 class OPCUAClient:
     """
     A client to connect to and interact with an OPC UA server using a 
-    non-blocking background thread and message buffer.
+    non-blocking background thread and a bounded FIFO message buffer with TTL.
     """
     def __init__(self, endpoint: str, logger):
         """
         Initializes the OPCUAClient with a background worker.
         """
-        self.client = Client(endpoint)
+        self.client = Client(endpoint, timeout=1.0)
         self.logger = logger
         self.endpoint = endpoint
         self.is_connected = False
+
+        self.namespace_uri = "http://matheus.edu/UAV-AAS/"
+        self.ns_idx = 2 # default fallback, will be updated after connection
         
-        # Resilient buffering during outages
-        self.buffer = LifoQueue(maxsize=100)
+        # Resilient buffering: Bounded deque (FIFO)
+        # maxlen=200 allows buffering ~2 seconds of data at 100Hz
+        self.buffer = deque(maxlen=200)
+        self.buffer_lock = threading.Lock()
+        
         self._node_cache: Dict[str, object] = {}
+        self.MAX_AGE_SECONDS = 1.5  # TTL to prevent ghosting
         
         # Performance and health metrics
         self._write_count = 0
@@ -43,6 +51,7 @@ class OPCUAClient:
         # Asynchronous task for reconnection and background writing
         self._worker_thread = threading.Thread(target=self._worker, daemon=True)
         self._worker_thread.start()
+        self.retry_interval = 0.1
 
     def _worker(self):
         """Background worker to handle server communication and queue flushing."""
@@ -51,17 +60,35 @@ class OPCUAClient:
             if not self.is_connected:
                 try:
                     self.client.connect()
+                    self.ns_idx = self.client.get_namespace_index(self.namespace_uri)
                     self.is_connected = True
-                    self.logger.info(f"Connected to OPC UA server at {self.endpoint}")
+                    self.logger.info(f"Connected to OPC UA server at {self.endpoint}. Target URI is at ns={self.ns_idx}")
                 except Exception:
-                    time.sleep(1) # Retry interval
+                    time.sleep(self.retry_interval)
                     continue
             
-            # Process the next message from the buffer
-            item = self.buffer.get()
+            item = None
+            with self.buffer_lock:
+                if self.buffer:
+                    item = self.buffer.popleft() # FIFO: get oldest buffered message
+            
+            if not item:
+                time.sleep(0.005) # Yield thread if queue is empty
+                continue
+
+            # TTL Check: Prevent Ghosting
+            try:
+                payload_data = json.loads(item['payload'])
+                age = time.time() - payload_data['recv_ts']
+                if age > self.MAX_AGE_SECONDS:
+                    # Drop stale data to avoid ghosting the UAV dashboard
+                    continue
+            except json.JSONDecodeError:
+                pass 
+
+            # Write to Server
             node_id = item['node_id']
             json_payload = item['payload']
-            
             try:
                 node = self._get_cached_node(node_id)
                 if node is not None:
@@ -69,21 +96,28 @@ class OPCUAClient:
                 else:
                     self._failed_writes += 1
             except Exception as e:
-                self.logger.error(f"OPC UA write failed, marking as disconnected: {e}")
-                self.is_connected = False
-            finally:
-                self.buffer.task_done()
+                error_msg = str(e)
+                if "BadTypeMismatch" in error_msg:
+                    self.logger.error(f"Type mismatch on node {node_id}. Server refused the value. Error: {error_msg}")
+                    self._failed_writes += 1
+                else:
+                    self.logger.error(f"OPC UA network write failed, marking as disconnected: {e}")
+                    self.is_connected = False                    
+                    # Clear the cache because node references are tied to the active session
+                    self._node_cache.clear()
 
     def _get_cached_node(self, node_id: str) -> Optional[object]:
         """Fetch and cache OPC UA node handles."""
-        if node_id in self._node_cache:
-            return self._node_cache[node_id]
+        full_node_id = f"ns={self.ns_idx};{node_id}"
+        if full_node_id in self._node_cache:
+            return self._node_cache[full_node_id]
             
         try:
-            node = self.client.get_node(node_id)
-            self._node_cache[node_id] = node
+            node = self.client.get_node(full_node_id)
+            self._node_cache[full_node_id] = node
             return node
-        except Exception:
+        except Exception as e:
+            self.logger.error(f"Failed to get node {full_node_id}: {e}")
             return None
 
     def write_value(self, node_id: str, json_payload: str):
@@ -91,11 +125,10 @@ class OPCUAClient:
         Non-blocking write. Adds data to the queue and returns immediately.
         Matches the paper's claim of 'minimal latency' during ROS callbacks.
         """
-        try:
-            self._write_count += 1
-            self.buffer.put_nowait({'node_id': node_id, 'payload': json_payload})
-        except Full:
-            self.logger.warning("Gateway buffer full. Dropping oldest telemetry message.")
+        self._write_count += 1
+        with self.buffer_lock:
+            # Append to the right. If full, the oldest item on the left is automatically discarded by the deque.
+            self.buffer.append({'node_id': node_id, 'payload': json_payload})
 
     def disconnect(self):
         """Disconnects the client and stops the background state."""
