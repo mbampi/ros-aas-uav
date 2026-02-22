@@ -67,14 +67,20 @@ class TopicNodeIdMapper:
             root = tree.getroot()
             ns = {"": "http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"}
             node_id_map = {}
-            for obj in root.findall(".//UAObject", namespaces=ns):
-                node_id = obj.get("NodeId")
-                browse_name = obj.get("BrowseName")
-                if node_id and browse_name:
-                    simple_name = browse_name.split(":")[-1]
-                    node_id_map[simple_name] = node_id
+            
+            for tag in [".//UAObject", ".//UAVariable"]:
+                for obj in root.findall(tag, namespaces=ns):
+                    node_id_raw = obj.get("NodeId")
+                    
+                    if node_id_raw:
+                        identifier = node_id_raw.split(";", 1)[-1] 
+                        if identifier.startswith("s="):
+                            property_key = identifier[2:]
+                            node_id_map[property_key] = identifier
+                            
             self.logger.info(f"Extracted {len(node_id_map)} node IDs from XML")
             return node_id_map
+            
         except FileNotFoundError:
             self.logger.error(f"XML file not found: {file_path}")
             return {}
