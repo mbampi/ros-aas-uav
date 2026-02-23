@@ -504,23 +504,22 @@ class MessageHandler:
         """
         def callback(msg):
             try:
-                recv_ts = time.time()
+                # [T0] Message received
+                t_recv = time.time()
                 processed_value = self.process_message(msg, field_path, transform_type)
-                processed_ts = time.time()
+                
+                # [T1] Message processed
+                t_proc = time.time()
 
                 if processed_value is not None:
-                    write_payload = json.dumps({
-                        'id': str(uuid.uuid4()),
-                        'topic': topic,
-                        'field_path': field_path,
-                        'property': property_name,
-                        'recv_ts': recv_ts,
-                        'processed_ts': processed_ts,
-                        'value': processed_value
-                    })
-                    self.logger.debug(f"Adding message to write buffer for topic {topic}: {write_payload}")
-                    self.logger.debug(f"Buffering topic {topic} -> Node {node_id}: {processed_value}")
-                    opcua_client.write_value(node_id, processed_value)
+                    trace = {
+                        'msg_id': str(uuid.uuid4())[:8],
+                        'node_id': node_id,
+                        't_recv': t_recv,
+                        't_proc': t_proc
+                    }
+                    
+                    opcua_client.write_value(node_id, processed_value, trace)
                     
                     self._message_count += 1
                     if self._message_count % 1000 == 0:

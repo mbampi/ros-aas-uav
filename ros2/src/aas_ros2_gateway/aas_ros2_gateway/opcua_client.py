@@ -57,14 +57,23 @@ class OPCUAClient:
                 if not batch_items:
                     continue
 
-                # 1. Deduplicate & TTL Check: Keep only the newest value per node
+                # 1. Deduplicate & TTL Check
                 latest_updates = {}
+                dropped_traces = []
                 current_time = time.time()
+                
                 for item in batch_items:
-                    if (current_time - item['recv_ts']) <= self.MAX_AGE_SECONDS:
-                        latest_updates[item['node_id']] = item['value']
+                    trace = item['trace']
+                    if (current_time - trace['t_recv']) <= self.MAX_AGE_SECONDS:
+                        node_id = item['node_id']
+                        if node_id in latest_updates:
+                            dropped_traces.append((latest_updates[node_id]['trace'], "DROPPED_DEDUP"))
+                        latest_updates[node_id] = item
                     else:
-                        self.logger.debug(f"Dropped stale data for node {item['node_id']}")
+                        dropped_traces.append((trace, "DROPPED_TTL"))
+
+                for trace, reason in dropped_traces:
+                    self.logger.info(f"[LATENCY_TRACE] id={trace['msg_id']}|node={trace['node_id']}|status={reason}|t0={trace['t_recv']:.4f}|t1={trace['t_proc']:.4f}|t2={trace['t_buf']:.4f}|t3=0|t4=0")
 
                 if not latest_updates:
                     continue
@@ -72,30 +81,48 @@ class OPCUAClient:
                 # 2. Prepare the batch
                 nodes_to_write = []
                 values_to_write = []
+                valid_items = []
                 
-                for node_id, value in latest_updates.items():
+                for node_id, item in latest_updates.items():
                     node = self._get_cached_node(node_id)
                     if node is not None:
                         nodes_to_write.append(node)
-                        values_to_write.append(value)
+                        values_to_write.append(item['value'])
+                        valid_items.append(item)
                     else:
                         self._failed_writes += 1
+                        trace = item['trace']
+                        self.logger.info(f"[LATENCY_TRACE] id={trace['msg_id']}|node={trace['node_id']}|status=FAILED_NO_NODE|t0={trace['t_recv']:.4f}|t1={trace['t_proc']:.4f}|t2={trace['t_buf']:.4f}|t3=0|t4=0")
 
-                # 3. Network Write: Send ALL updates in a single TCP payload
+                # 3. Network Write
                 if nodes_to_write:
-                    self.logger.info(f"Attempting batch write of {len(nodes_to_write)} nodes...")
+                    # [T3] Start sending
+                    t_send_start = time.time()
+                    
                     self.client.set_values(nodes_to_write, values_to_write)
                     
-                    for node_id, value in latest_updates.items():
-                        self.logger.info(f"✅ Successfully written to server: Node {node_id} = {value}")
+                    # [T4] Finish sending
+                    t_send_end = time.time()
+                    
+                    # Log successful writes
+                    for item in valid_items:
+                        trace = item['trace']
+                        self.logger.info(f"[LATENCY_TRACE] id={trace['msg_id']}|node={trace['node_id']}|status=SUCCESS|t0={trace['t_recv']:.4f}|t1={trace['t_proc']:.4f}|t2={trace['t_buf']:.4f}|t3={t_send_start:.4f}|t4={t_send_end:.4f}")
 
             except Exception as e:
+                # [T4] Failed on network level
+                t_send_end = time.time()
                 error_msg = str(e)
-                if "BadTypeMismatch" in error_msg:
-                    self.logger.error(f"Type mismatch during batch write. Error: {error_msg}")
+                status = "FAILED_TYPE" if "BadTypeMismatch" in error_msg else "FAILED_NET"
+                
+                # Log the entire batch as failed
+                for item in valid_items:
+                    trace = item['trace']
+                    self.logger.error(f"[LATENCY_TRACE] id={trace['msg_id']}|node={trace['node_id']}|status={status}|t0={trace['t_recv']:.4f}|t1={trace['t_proc']:.4f}|t2={trace['t_buf']:.4f}|t3={t_send_start:.4f}|t4={t_send_end:.4f}")
+                
+                if status == "FAILED_TYPE":
                     self._failed_writes += len(nodes_to_write)
                 else:
-                    self.logger.error(f"OPC UA worker thread encountered a network error: {e}")
                     self.is_connected = False                    
                     self._node_cache.clear()
                     time.sleep(self.retry_interval)
@@ -114,13 +141,17 @@ class OPCUAClient:
             self.logger.error(f"Failed to get node {full_node_id}: {e}")
             return None
 
-    def write_value(self, node_id: str, value: any):
+    def write_value(self, node_id: str, value: any, trace: dict):
         """
-        Non-blocking write. Adds data to the queue and returns immediately.
+        Non-blocking write. Adds data to the queue and wakes the worker instantly.
         """
         self._write_count += 1
+        
+        # [T2] Added to buffer
+        trace['t_buf'] = time.time() 
+        
         with self.buffer_lock:
-            self.buffer.append({'node_id': node_id, 'value': value, 'recv_ts': time.time()})
+            self.buffer.append({'node_id': node_id, 'value': value, 'trace': trace})
         self.data_available.set()
 
     def disconnect(self):
