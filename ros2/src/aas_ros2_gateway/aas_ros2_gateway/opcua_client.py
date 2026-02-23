@@ -20,6 +20,7 @@ class OPCUAClient:
         
         self.buffer = deque(maxlen=200)
         self.buffer_lock = threading.Lock()
+        self.data_available = threading.Event()
         
         self._node_cache: Dict[str, object] = {}
         self.MAX_AGE_SECONDS = 1.5  
@@ -40,44 +41,59 @@ class OPCUAClient:
                         self.client.connect()
                         self.ns_idx = self.client.get_namespace_index(self.namespace_uri)
                         self.is_connected = True
-                        self.logger.info(f"Connected to OPC UA server at {self.endpoint}. Target URI is at ns={self.ns_idx}")
+                        self.logger.info(f"Connected to OPC UA server at {self.endpoint}")
                     except Exception as e:
                         time.sleep(self.retry_interval)
                         continue
                 
-                item = None
+                self.data_available.wait(timeout=0.1) 
+                
+                batch_items = []
                 with self.buffer_lock:
-                    if self.buffer:
-                        item = self.buffer.popleft() 
+                    while self.buffer:
+                        batch_items.append(self.buffer.popleft())
+                    self.data_available.clear()
                 
-                if not item:
-                    time.sleep(0.005) 
+                if not batch_items:
                     continue
 
-                # TTL Check: Prevent Ghosting
-                age = time.time() - item['recv_ts']
-                if age > self.MAX_AGE_SECONDS:
-                    self.logger.debug(f"Dropped stale data for node {item['node_id']}")
+                # 1. Deduplicate & TTL Check: Keep only the newest value per node
+                latest_updates = {}
+                current_time = time.time()
+                for item in batch_items:
+                    if (current_time - item['recv_ts']) <= self.MAX_AGE_SECONDS:
+                        latest_updates[item['node_id']] = item['value']
+                    else:
+                        self.logger.debug(f"Dropped stale data for node {item['node_id']}")
+
+                if not latest_updates:
                     continue
 
-                # Write to Server
-                node_id = item['node_id']
-                value = item['value']
+                # 2. Prepare the batch
+                nodes_to_write = []
+                values_to_write = []
                 
-                node = self._get_cached_node(node_id)
-                if node is not None:
-                    self.logger.debug(f"Attempting to write value '{value}' to node '{node_id}'...")
-                    node.set_value(value)
-                    self.logger.info(f"✅ Successfully written to server: Node {node_id} = {value}")
-                else:
-                    self._failed_writes += 1
+                for node_id, value in latest_updates.items():
+                    node = self._get_cached_node(node_id)
+                    if node is not None:
+                        nodes_to_write.append(node)
+                        values_to_write.append(value)
+                    else:
+                        self._failed_writes += 1
+
+                # 3. Network Write: Send ALL updates in a single TCP payload
+                if nodes_to_write:
+                    self.logger.info(f"Attempting batch write of {len(nodes_to_write)} nodes...")
+                    self.client.set_values(nodes_to_write, values_to_write)
+                    
+                    for node_id, value in latest_updates.items():
+                        self.logger.info(f"✅ Successfully written to server: Node {node_id} = {value}")
 
             except Exception as e:
-                # Differentiate between a data type error and a hard network disconnect
                 error_msg = str(e)
                 if "BadTypeMismatch" in error_msg:
-                    self.logger.error(f"Type mismatch on node {item['node_id']}. Server refused the value '{item['value']}'. Error: {error_msg}")
-                    self._failed_writes += 1
+                    self.logger.error(f"Type mismatch during batch write. Error: {error_msg}")
+                    self._failed_writes += len(nodes_to_write)
                 else:
                     self.logger.error(f"OPC UA worker thread encountered a network error: {e}")
                     self.is_connected = False                    
@@ -105,6 +121,7 @@ class OPCUAClient:
         self._write_count += 1
         with self.buffer_lock:
             self.buffer.append({'node_id': node_id, 'value': value, 'recv_ts': time.time()})
+        self.data_available.set()
 
     def disconnect(self):
         """Disconnects the client and stops the background state."""
