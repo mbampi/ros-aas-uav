@@ -47,12 +47,12 @@ class OPCUAClient:
                         continue
                 
                 self.data_available.wait(timeout=0.1) 
+                self.data_available.clear()
                 
                 batch_items = []
                 with self.buffer_lock:
                     while self.buffer:
                         batch_items.append(self.buffer.popleft())
-                    self.data_available.clear()
                 
                 if not batch_items:
                     continue

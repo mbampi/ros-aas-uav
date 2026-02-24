@@ -93,6 +93,7 @@ services:
           TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
           STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
           echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
+          sleep 0.5;
         done
       '
     volumes:
