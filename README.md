@@ -101,7 +101,7 @@ This project is part of ongoing research at Federal University of Rio Grande do 
 
 ## 📄 License
 
-This project is associated with academic research. Please refer to individual component licenses and cite appropriately if used in academic work.
+Licensed under the Apache License 2.0. See [LICENSE](LICENSE). Please cite appropriately if used in academic work.
 
 ---
  
