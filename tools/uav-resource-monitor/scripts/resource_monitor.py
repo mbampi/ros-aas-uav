@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 UAV Resource Monitor
-Comprehensive system resource monitoring for Raspberry Pi companion computers.
-Collects CPU, memory, disk, network, temperature, and other system metrics.
+Collects CPU, memory, disk, network, temperature, and other system metrics
+on Raspberry Pi companion computers.
 """
 
 import os
@@ -86,8 +86,6 @@ class ResourceMonitor:
                 'cpu': '/sys/class/thermal/thermal_zone0/temp',
                 'gpu': '/sys/class/thermal/thermal_zone1/temp'  # May not exist on all Pi models
             },
-            'voltage_path': '/sys/firmware/devicetree/base/system/linux,revision',  # Pi-specific
-            'network_interface': None,  # Auto-detect primary interface
             'disk_path': '/',
             'enable_detailed_logging': True
         }

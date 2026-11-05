@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 UAV Resource Monitor Statistics Generator
-Analyzes collected system resource data and generates comprehensive statistics,
-reports, and visualizations.
+Analyzes collected system resource data and generates statistics, reports,
+and visualizations.
 """
 
 import json
@@ -105,7 +105,6 @@ class StatsGenerator:
                     'q75': float(series.quantile(0.75))
                 }
                 
-                # Add specific insights
                 if col == 'cpu_percent':
                     high_cpu_threshold = 80
                     high_cpu_time = (series > high_cpu_threshold).sum() * stats['session_info']['sample_rate_hz']
@@ -142,26 +141,6 @@ class StatsGenerator:
                 'max_download_mbps': float(df['net_recv_mbps'].max()),
                 'total_sent_gb': float(df['network_bytes_sent'].max() / (1024**3)),
                 'total_recv_gb': float(df['network_bytes_recv'].max() / (1024**3))
-            }
-        
-        # System stability metrics
-        if 'cpu_percent' in df.columns:
-            cpu_series = df['cpu_percent'].dropna()
-            metrics['stability'] = {
-                'cpu_coefficient_of_variation': float(cpu_series.std() / cpu_series.mean()),
-                'cpu_stability_score': float(max(0, 100 - (cpu_series.std() / cpu_series.mean()) * 100))
-            }
-        
-        # Resource efficiency
-        if 'memory_percent' in df.columns and 'cpu_percent' in df.columns:
-            memory_series = df['memory_percent'].dropna()
-            cpu_series = df['cpu_percent'].dropna()
-            
-            # Calculate efficiency as inverse of resource usage
-            avg_resource_usage = (memory_series.mean() + cpu_series.mean()) / 2
-            metrics['efficiency'] = {
-                'average_resource_usage': float(avg_resource_usage),
-                'efficiency_score': float(max(0, 100 - avg_resource_usage))
             }
         
         return metrics
@@ -298,7 +277,7 @@ class StatsGenerator:
         return None
     
     def generate_summary_report(self, stats: Dict, performance: Dict, session_name: str) -> str:
-        """Generate a comprehensive text report"""
+        """Generate a text report"""
         report_lines = [
             f"UAV RESOURCE MONITORING REPORT - {session_name}",
             "=" * 60,
@@ -324,7 +303,6 @@ class StatsGenerator:
                 ""
             ])
             
-            # Add specific insights
             if 'high_usage_seconds' in data:
                 report_lines.extend([
                     f"  High CPU Usage (>80%): {data['high_usage_seconds']:.1f}s ({data['high_usage_percent']:.1f}%)",
@@ -334,13 +312,13 @@ class StatsGenerator:
             if 'thermal_throttling_risk' in data:
                 if data['thermal_throttling_risk']:
                     report_lines.extend([
-                        f"  ⚠️  THERMAL WARNING: Temperature exceeded 70°C",
+                        f"  WARNING: Temperature exceeded 70°C",
                         f"  Time above threshold: {data['time_above_threshold']:.1f}s",
                         ""
                     ])
                 else:
                     report_lines.extend([
-                        f"  ✅ Thermal: Operating within safe limits",
+                        f"  Temperature stayed below 70°C",
                         ""
                     ])
         
@@ -350,19 +328,6 @@ class StatsGenerator:
                 "PERFORMANCE ANALYSIS:",
                 "-" * 20,
             ])
-            
-            if 'stability' in performance:
-                report_lines.extend([
-                    f"System Stability Score: {performance['stability']['cpu_stability_score']:.1f}/100",
-                    ""
-                ])
-            
-            if 'efficiency' in performance:
-                report_lines.extend([
-                    f"Resource Efficiency Score: {performance['efficiency']['efficiency_score']:.1f}/100",
-                    f"Average Resource Usage: {performance['efficiency']['average_resource_usage']:.1f}%",
-                    ""
-                ])
             
             if 'network' in performance:
                 net = performance['network']
@@ -375,36 +340,7 @@ class StatsGenerator:
                     ""
                 ])
         
-        # Add recommendations
         report_lines.extend([
-            "RECOMMENDATIONS:",
-            "-" * 15,
-        ])
-        
-        recommendations = []
-        
-        if 'cpu_percent' in stats['system_stats']:
-            cpu_avg = stats['system_stats']['cpu_percent']['mean']
-            if cpu_avg > 80:
-                recommendations.append("• High CPU usage detected. Consider optimizing running processes.")
-            elif cpu_avg < 20:
-                recommendations.append("• Low CPU utilization. System has spare processing capacity.")
-        
-        if 'memory_percent' in stats['system_stats']:
-            mem_avg = stats['system_stats']['memory_percent']['mean']
-            if mem_avg > 85:
-                recommendations.append("• High memory usage detected. Monitor for memory leaks.")
-            
-        if 'cpu_temp' in stats['system_stats']:
-            if stats['system_stats']['cpu_temp'].get('thermal_throttling_risk', False):
-                recommendations.append("• Temperature concerns detected. Improve cooling or reduce load.")
-        
-        if not recommendations:
-            recommendations.append("• System performance appears optimal.")
-        
-        report_lines.extend(recommendations)
-        report_lines.extend([
-            "",
             f"Report generated: {datetime.now().isoformat()}",
             ""
         ])

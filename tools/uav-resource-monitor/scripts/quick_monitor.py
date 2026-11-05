@@ -78,8 +78,7 @@ def print_system_status():
     cpu_bar_width = 50
     cpu_filled = int(cpu_percent / 100 * cpu_bar_width)
     cpu_bar = "█" * cpu_filled + "░" * (cpu_bar_width - cpu_filled)
-    cpu_color = "🟢" if cpu_percent < 50 else "🟡" if cpu_percent < 80 else "🔴"
-    print(f"║ {cpu_color} [{cpu_bar}] {'':<20} ║")
+    print(f"║ [{cpu_bar}] {'':<20} ║")
     
     print(f"║ Load Avg: {load_avg[0]:.2f}, {load_avg[1]:.2f}, {load_avg[2]:.2f} (1m, 5m, 15m){'':<31} ║")
     
@@ -95,8 +94,7 @@ def print_system_status():
     # Memory usage bar
     mem_filled = int(memory.percent / 100 * cpu_bar_width)
     mem_bar = "█" * mem_filled + "░" * (cpu_bar_width - mem_filled)
-    mem_color = "🟢" if memory.percent < 60 else "🟡" if memory.percent < 85 else "🔴"
-    print(f"║ {mem_color} [{mem_bar}] {'':<20} ║")
+    print(f"║ [{mem_bar}] {'':<20} ║")
     
     if swap.total > 0:
         print(f"║ Swap: {swap.percent:7.1f}% │ Used: {format_bytes(swap.used):<12} │ Total: {format_bytes(swap.total):<11} ║")
