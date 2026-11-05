@@ -168,7 +168,7 @@ def quick_test(duration: int = 30):
         print("\nTest interrupted.")
         return
     
-    print(f"\n\nTest completed! {len(samples)} samples collected.")
+    print(f"\n\n{len(samples)} samples collected.")
     
     # Calculate simple statistics
     if samples:
@@ -184,7 +184,6 @@ def quick_test(duration: int = 30):
 
 
 def main():
-    """Main entry point"""
     parser = argparse.ArgumentParser(description='Quick UAV Resource Monitor')
     parser.add_argument('--live', '-l', action='store_true', 
                        help='Run live monitoring display')

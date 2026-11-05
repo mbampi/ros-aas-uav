@@ -2,7 +2,7 @@
 """
 Mock Publisher Launch File
 
-Launches the PX4 mock publisher for academic experiments.
+Launches the PX4 mock publisher.
 Configuration is read from config/mock_config.yaml
 
 Usage:

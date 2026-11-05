@@ -62,7 +62,7 @@ class MultiTopicSubscriber(Node):
             self.get_logger().info("Setting up subscriptions...")
             self._setup_subscriptions(mapping_path, aas_path)
             
-            self.get_logger().info("AAS Gateway initialization complete!")
+            self.get_logger().info("AAS Gateway initialized")
         except Exception as e:
             self.get_logger().error(f"Failed to initialize AAS Gateway: {e}")
             import traceback

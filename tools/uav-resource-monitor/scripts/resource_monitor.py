@@ -22,7 +22,7 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class SystemMetrics:
-    """Data class for system metrics"""
+    """One sample of system metrics"""
     timestamp: str
     cpu_percent: float
     cpu_freq_current: float
@@ -54,7 +54,7 @@ class SystemMetrics:
 
 
 class ResourceMonitor:
-    """Main resource monitoring class"""
+    """Samples system metrics and writes them to CSV and JSONL files"""
     
     def __init__(self, config_path: str = None):
         self.config = self._load_config(config_path)
@@ -265,7 +265,6 @@ class ResourceMonitor:
             self.json_file.flush()
     
     def _cleanup(self):
-        """Cleanup resources"""
         if hasattr(self, 'csv_file') and self.csv_file:
             self.csv_file.close()
         if hasattr(self, 'json_file') and self.json_file:
@@ -273,12 +272,11 @@ class ResourceMonitor:
         self.logger.info("Resource Monitor stopped")
     
     def _signal_handler(self, signum, frame):
-        """Handle shutdown signals gracefully"""
+        """Stop monitoring on SIGINT or SIGTERM"""
         self.logger.info(f"Received signal {signum}, shutting down...")
         self.stop()
     
     def start(self, session_id: str = None, duration: float = None):
-        """Start monitoring"""
         if session_id is None:
             session_id = f"session_{int(time.time())}"
         
@@ -324,12 +322,10 @@ class ResourceMonitor:
             self._cleanup()
     
     def stop(self):
-        """Stop monitoring"""
         self.running = False
 
 
 def main():
-    """Main entry point"""
     parser = argparse.ArgumentParser(description='UAV Resource Monitor')
     parser.add_argument('--config', '-c', help='Configuration file path')
     parser.add_argument('--session-id', '-s', help='Session identifier')

@@ -131,7 +131,7 @@ class LatencyAnalyzer:
         for latency_type, data in self.latency_data.items():
             stats[latency_type] = self.calculate_statistics(data)
         
-        # Convert to milliseconds for better readability
+        # Convert to milliseconds
         table_data = []
         for latency_type, stat in stats.items():
             table_data.append([
@@ -191,15 +191,15 @@ class LatencyAnalyzer:
         total_stats = self.calculate_statistics(self.latency_data['total_latency'])
         
         print(f"Step 1 - Processing Latency (recv_ts → processed_ts):")
-        print(f"  • Mean: {processing_stats['mean']*1000:.2f} ms")
-        print(f"  • Percentage of total: {(processing_stats['mean']/total_stats['mean']*100):.1f}%")
+        print(f"  - Mean: {processing_stats['mean']*1000:.2f} ms")
+        print(f"  - Percentage of total: {(processing_stats['mean']/total_stats['mean']*100):.1f}%")
         
         print(f"\nStep 2 - Server Latency (processed_ts → server_recv_ts):")
-        print(f"  • Mean: {server_stats['mean']*1000:.2f} ms")
-        print(f"  • Percentage of total: {(server_stats['mean']/total_stats['mean']*100):.1f}%")
+        print(f"  - Mean: {server_stats['mean']*1000:.2f} ms")
+        print(f"  - Percentage of total: {(server_stats['mean']/total_stats['mean']*100):.1f}%")
         
         print(f"\nTotal End-to-End Latency (recv_ts → server_recv_ts):")
-        print(f"  • Mean: {total_stats['mean']*1000:.2f} ms")
+        print(f"  - Mean: {total_stats['mean']*1000:.2f} ms")
         
     def display_frequency_analysis(self) -> None:
         """Display event frequency and timing analysis."""
@@ -237,14 +237,14 @@ class LatencyAnalyzer:
         
         # Frequency statistics
         print(f"Data Collection Period:")
-        print(f"  • First Event: {first_event_str}")
-        print(f"  • Last Event:  {last_event_str}")
-        print(f"  • Duration:    {total_duration:.2f} seconds ({total_duration/60:.2f} minutes)")
+        print(f"  - First Event: {first_event_str}")
+        print(f"  - Last Event:  {last_event_str}")
+        print(f"  - Duration:    {total_duration:.2f} seconds ({total_duration/60:.2f} minutes)")
         
         print(f"\nEvent Statistics:")
-        print(f"  • Total Events:       {total_events}")
-        print(f"  • Events with Latency: {len(self.latency_data['total_latency'])}")
-        print(f"  • Average Frequency:   {events_per_second:.2f} events/second")
+        print(f"  - Total Events:       {total_events}")
+        print(f"  - Events with Latency: {len(self.latency_data['total_latency'])}")
+        print(f"  - Average Frequency:   {events_per_second:.2f} events/second")
         
         if intervals:
             avg_interval = mean(intervals)
@@ -252,10 +252,10 @@ class LatencyAnalyzer:
             max_interval = max(intervals)
             
             print(f"\nInter-Event Intervals:")
-            print(f"  • Average Interval: {avg_interval:.3f} seconds")
-            print(f"  • Min Interval:     {min_interval:.3f} seconds")
-            print(f"  • Max Interval:     {max_interval:.3f} seconds")
-            print(f"  • Expected Rate:    {1/avg_interval:.2f} events/second")
+            print(f"  - Average Interval: {avg_interval:.3f} seconds")
+            print(f"  - Min Interval:     {min_interval:.3f} seconds")
+            print(f"  - Max Interval:     {max_interval:.3f} seconds")
+            print(f"  - Expected Rate:    {1/avg_interval:.2f} events/second")
         
         # Per-variable frequency analysis
         print(f"\nPer-Variable Event Counts:")
@@ -266,7 +266,7 @@ class LatencyAnalyzer:
         
         for variable, count in sorted(variable_counts.items(), key=lambda x: x[1], reverse=True):
             rate = count / total_duration if total_duration > 0 else 0
-            print(f"  • {variable:18s}: {count:3d} events ({rate:.2f}/sec)")
+            print(f"  - {variable:18s}: {count:3d} events ({rate:.2f}/sec)")
         
     def generate_charts(self, output_dir: str = "charts") -> None:
         """Generate latency analysis charts."""
@@ -440,10 +440,10 @@ class LatencyAnalyzer:
                 plt.close()
         
         print(f"Charts saved to {output_path}/")
-        print(f"  • latency_distributions.png - Histogram and box plot analysis")
-        print(f"  • latency_time_series.png - Latency over time (scatter plot)")
-        print(f"  • latency_rolling_average.png - Rolling average latency over time")
-        print(f"  • latency_by_variable.png - Per-variable comparison")
+        print(f"  - latency_distributions.png - Histogram and box plot analysis")
+        print(f"  - latency_time_series.png - Latency over time (scatter plot)")
+        print(f"  - latency_rolling_average.png - Rolling average latency over time")
+        print(f"  - latency_by_variable.png - Per-variable comparison")
 
 
 def main():
@@ -478,10 +478,8 @@ Examples:
     args = parser.parse_args()
     
     try:
-        # Initialize analyzer
         analyzer = LatencyAnalyzer(args.file)
         
-        # Load and parse data
         analyzer.load_and_parse_data()
         
         if not analyzer.latency_data['total_latency']:
@@ -489,17 +487,15 @@ Examples:
             print("Events need recv_ts, processed_ts, and server_recv_ts fields.")
             sys.exit(1)
         
-        # Display terminal statistics
         analyzer.display_overall_statistics()
         analyzer.display_per_variable_statistics()
         analyzer.display_processing_steps_breakdown()
         analyzer.display_frequency_analysis()
         
-        # Generate charts if requested
         if args.charts:
             analyzer.generate_charts(args.output_dir)
         
-        print(f"\nAnalysis complete! Processed {len(analyzer.events)} total events.")
+        print(f"\nProcessed {len(analyzer.events)} total events.")
         
     except KeyboardInterrupt:
         print("\nOperation cancelled by user.")

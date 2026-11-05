@@ -454,7 +454,6 @@ class MessageHandler:
             Callback function for the subscription
         """
         def callback(msg):
-            """Generated callback for topic subscription."""
             try:
                 # Capture timestamp immediately
                 recv_ts = time.time()
@@ -475,7 +474,7 @@ class MessageHandler:
                     
                     opcua_client.write_value(node_id, write_payload)
                     
-                    # Metrics every 1000 messages (to avoid overhead)
+                    # Log the rate every 1000 messages
                     self._message_count += 1
                     if self._message_count % 1000 == 0:
                         current_time = time.time()

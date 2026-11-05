@@ -345,7 +345,7 @@ class StatsGenerator:
         return "\n".join(report_lines)
     
     def analyze_session(self, data_file: str, session_name: str = None) -> Dict:
-        """Main analysis function"""
+        """Analyze one data file and write the report, statistics and plots"""
         if session_name is None:
             session_name = Path(data_file).stem
         
@@ -385,8 +385,7 @@ class StatsGenerator:
         with open(json_path, 'w') as f:
             json.dump(combined_stats, f, indent=2, default=str)
         
-        print(f"\nAnalysis complete!")
-        print(f"Report saved to: {report_path}")
+        print(f"\nReport saved to: {report_path}")
         print(f"Statistics saved to: {json_path}")
         print(f"Plots saved to: {self.output_dir}")
         
@@ -402,7 +401,6 @@ class StatsGenerator:
 
 
 def main():
-    """Main entry point"""
     parser = argparse.ArgumentParser(description='UAV Resource Monitor Statistics Generator')
     parser.add_argument('data_file', nargs='?', help='Path to data file (CSV or JSONL)')
     parser.add_argument('--data-dir', '-d', default='../data', help='Data directory path')

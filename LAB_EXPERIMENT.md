@@ -91,7 +91,7 @@ Logs esperados:
 
 ```
 Created 15 topic subscriptions
-AAS Gateway initialization complete!
+AAS Gateway initialized
 aas_gateway node has been started.
 ```
 

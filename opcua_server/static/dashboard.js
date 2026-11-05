@@ -19,7 +19,6 @@ class UAVDashboard {
     }
 
     initializeUI() {
-        // Initialize summary cards
         this.elements = {
             totalEvents: document.getElementById('totalEvents'),
             activeProperties: document.getElementById('activeProperties'),
@@ -33,7 +32,6 @@ class UAVDashboard {
     }
 
     setupEventListeners() {
-        // Log controls
         document.getElementById('clearLogBtn').addEventListener('click', () => {
             this.clearLog();
         });
@@ -47,7 +45,6 @@ class UAVDashboard {
             this.trimLog();
         });
 
-        // Refresh rate control
         const refreshSelect = document.getElementById('refreshRate');
         if (refreshSelect) {
             this.pollIntervalMs = parseInt(localStorage.getItem('ui_poll_ms') || '500');
@@ -57,7 +54,6 @@ class UAVDashboard {
                 if (!isNaN(ms) && ms > 0) {
                     this.pollIntervalMs = ms;
                     localStorage.setItem('ui_poll_ms', String(ms));
-                    // Restart polling with new interval
                     if (this.pollingActive) {
                         this.stopPolling();
                         this.startPolling();
@@ -105,7 +101,6 @@ class UAVDashboard {
             }
         };
 
-        // Battery Chart
         const batteryCtx = document.getElementById('batteryChart').getContext('2d');
         this.charts.set('battery', new Chart(batteryCtx, {
             type: 'line',
@@ -130,7 +125,6 @@ class UAVDashboard {
             }
         }));
 
-        // Altitude Chart
         const altitudeCtx = document.getElementById('altitudeChart').getContext('2d');
         this.charts.set('altitude', new Chart(altitudeCtx, {
             type: 'line',
@@ -155,7 +149,6 @@ class UAVDashboard {
             }
         }));
 
-        // Speed Chart
         const speedCtx = document.getElementById('speedChart').getContext('2d');
         this.charts.set('speed', new Chart(speedCtx, {
             type: 'line',
@@ -189,7 +182,6 @@ class UAVDashboard {
             }
         }));
 
-        // Attitude Chart
         const attitudeCtx = document.getElementById('attitudeChart').getContext('2d');
         this.charts.set('attitude', new Chart(attitudeCtx, {
             type: 'line',
@@ -291,7 +283,6 @@ class UAVDashboard {
         const eventsElement = card.querySelector('.property-events');
         const timestampElement = card.querySelector('.property-timestamp');
 
-        // Format value based on type
         let displayValue = property.value;
         if (typeof displayValue === 'number') {
             displayValue = displayValue.toFixed(2);
@@ -323,7 +314,6 @@ class UAVDashboard {
     updateCharts(variableName, property) {
         const numericValue = this.parseNumericValue(property.value);
 
-        // Update relevant charts based on variable name
         const varLower = variableName.toLowerCase();
 
         if (varLower.includes('battery') || varLower.includes('currentbatterylevel')) {
@@ -347,7 +337,6 @@ class UAVDashboard {
 
         const dataset = chart.data.datasets[datasetIndex];
 
-        // Add new data point with simple x index
         const nextX = dataset.data.length;
         dataset.data.push({ x: nextX, y: value });
 
@@ -448,7 +437,6 @@ class UAVDashboard {
         console.log('Starting API polling...');
         this.pollingActive = true;
         
-        // Start polling immediately
         this.pollData();
         
         this.pollInterval = setInterval(() => {
@@ -474,10 +462,8 @@ class UAVDashboard {
                 return response.json();
             })
             .then(data => {
-                // Show connected status when we successfully fetch data
                 this.updateConnectionStatus(true);
 
-                // Update summary stats
                 if (data.summary) {
                     this.totalEvents = data.summary.total_events || 0;
                     this.updateSummaryCards();
@@ -490,7 +476,6 @@ class UAVDashboard {
                     }
                 }
 
-                // Update properties
                 if (data.properties) {
                     Object.entries(data.properties).forEach(([name, propData]) => {
                         this.updatePropertyFromAPI(name, propData);
@@ -499,13 +484,11 @@ class UAVDashboard {
             })
             .catch(error => {
                 console.error('API polling failed:', error);
-                // Show disconnected status when polling fails
                 this.updateConnectionStatus(false);
             });
     }
 
     updatePropertyFromAPI(name, propData) {
-        // Create property if it doesn't exist
         if (!this.properties.has(name)) {
             this.properties.set(name, {
                 name: name,
@@ -522,16 +505,13 @@ class UAVDashboard {
         const property = this.properties.get(name);
         const hasValueChanged = property.value !== propData.value;
 
-        // Update property data
         property.lastValue = property.value;
         property.value = propData.value;
         property.eventCount = propData.event_count || 0;
         property.lastUpdate = propData.last_update ? new Date(propData.last_update * 1000) : null;
 
-        // Update UI elements with change information
         this.updatePropertyCard(name, hasValueChanged);
 
-        // Update charts if value changed
         if (hasValueChanged && propData.value !== null && propData.value !== undefined) {
             this.updateCharts(name, property);
             
@@ -548,7 +528,6 @@ class UAVDashboard {
     }
 }
 
-// Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new UAVDashboard();
 });

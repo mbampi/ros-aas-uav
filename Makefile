@@ -28,11 +28,10 @@ collect-logs:
 		echo "Warning: no opcua_server .jsonl files found"; \
 	fi
 	
-	@echo "Log collection complete! Files saved to: experiments/$(TIMESTAMP)/"
+	@echo "Logs saved to: experiments/$(TIMESTAMP)/"
 	@echo "Contents:"
 	@ls -la "experiments/$(TIMESTAMP)/"
 
-# A phony target to avoid conflicts with a file named 'clean' or 'logs'
 .PHONY: all clean logs collect-logs
 
 move_logs:

@@ -96,9 +96,9 @@ EOF
 systemctl daemon-reload
 systemctl enable uav-resource-monitor.service
 
-echo -e "${YELLOW}Creating command-line aliases...${NC}"
+echo -e "${YELLOW}Installing uav-monitor command...${NC}"
 
-# Create convenient command-line tools
+# Install the uav-monitor command
 cat > /usr/local/bin/uav-monitor << 'EOF'
 #!/bin/bash
 # UAV Resource Monitor CLI tool
@@ -170,7 +170,7 @@ EOF
 
 chmod +x /usr/local/bin/uav-monitor
 
-echo -e "${GREEN}Installation completed successfully!${NC}"
+echo -e "${GREEN}Installation complete.${NC}"
 echo ""
 echo "Usage:"
 echo "  uav-monitor start          # Start monitoring service"

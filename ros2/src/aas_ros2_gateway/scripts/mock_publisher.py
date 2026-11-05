@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PX4 Mock Publisher for Academic Experiments
+PX4 Mock Publisher for Experiments
 
 Focuses on two key variables:
 1. Number of topics (which topics to enable)
@@ -242,7 +242,6 @@ class Px4MockPublisher(Node):
 
 
 def main():
-    """Main function."""
     rclpy.init()
     
     try:
