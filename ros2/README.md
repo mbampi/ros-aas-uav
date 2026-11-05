@@ -52,3 +52,40 @@ docker compose down
 - OPC UA server running (see `../opcua_server/` directory)
 
 For more details, see the main project README.
+
+
+## Build on MacOS &* Run on RaspberryPi
+
+Build the Docker images for ARM64 architecture
+```sh
+docker buildx build --platform linux/arm64 -t aas-gateway-app:latest --load -f Dockerfile .
+docker buildx build --platform linux/arm64 -t mavros-app:latest --load -f Dockerfile.mavros .
+```
+
+Save the images to tar files
+```sh
+docker save aas-gateway-app:latest -o aas-gateway-app.tar
+docker save mavros-app:latest -o mavros-app.tar
+```
+
+Transfer the tar files to the Raspberry Pi using scp or another method
+```sh
+scp aas-gateway-app.tar pi@raspberrypi.local:/home/pi/ros-aas-uav/
+scp mavros-app.tar pi@raspberrypi.local:/home/pi/ros-aas-uav/
+```
+
+ssh into the Raspberry Pi
+```sh
+ssh pi@raspberrypi.local
+```
+
+Load the images on the Raspberry Pi
+```sh
+docker load -i aas-gateway-app.tar
+docker load -i mavros-app.tar
+```
+
+Run the Docker Compose setup on the Raspberry Pi
+```sh
+docker compose up --no-build
+```

@@ -33,3 +33,9 @@ mavproxy.py --master=udpin:127.0.0.1:14560 --out=udp:<TARGET_IP>:14550
 ```
 This command routes the MavLink messages to another computer over UDP.
 
+### Capture Mavlink logs
+To capture Mavlink logs, you can use the following command:
+
+```bash
+mavproxy.py --master=udpin:127.0.0.1:14550 --logfile=logs/mavlink.log
+```

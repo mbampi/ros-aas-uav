@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     git \
     python3-pip \
     ros-humble-mavros-msgs \
-    && pip install opcua \
+    && pip install asyncua \
     && rosdep update \
     && rm -rf /var/lib/apt/lists/*
 
@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=builder /ros2_ws/install /ros2_ws/install
 
-# opcua is installed with pip, so it isn't part of the workspace
+# asyncua is installed with pip, so it isn't part of the workspace
 COPY --from=builder /usr/local/lib/python3.10/dist-packages/ /usr/local/lib/python3.10/dist-packages/
 
 COPY docker-entrypoint.sh /entrypoint.sh

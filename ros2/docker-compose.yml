@@ -1,6 +1,7 @@
 services:
   aas_gateway:
     container_name: aas_gateway
+    image: aas-gateway-app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,6 +15,7 @@ services:
     network_mode: "host" 
 
   mavros:
+    image: mavros-app:latest
     build:
       context: .
       dockerfile: Dockerfile.mavros
@@ -84,20 +86,42 @@ services:
   #   profiles:
   #     - mavlink-mock
 
+  # resource_monitor:
+  #   image: docker:latest
+  #   container_name: resource_monitor
+  #   command: >
+  #     sh -c '
+  #       while true; do
+  #         TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
+  #         STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
+  #         echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
+  #         sleep 0.5;
+  #       done
+  #     '
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./logs/resource_monitor:/logs
+  #   depends_on:
+  #     - aas_gateway
+
   resource_monitor:
-    image: docker:latest
+    image: alpine:latest
     container_name: resource_monitor
+    pid: "host"
     command: >
       sh -c '
-        while true; do
-          TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
-          STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
-          echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
-          sleep 0.5;
-        done
+        apk add --no-cache sysstat procps coreutils;
+        
+        echo "Looking for aas_gateway process...";
+        while ! pgrep -f "aas_gateway" > /dev/null; do sleep 1; done;
+        
+        GATEWAY_PID=$$(pgrep -f "aas_gateway" | grep -v "bash" | head -n 1);
+        echo "Found gateway at PID: $$GATEWAY_PID. Starting 1Hz monitor.";
+        
+        # Changed 0.5 to 1. pidstat will now measure the exact CPU delta over 1 second.
+        stdbuf -oL pidstat -p $$GATEWAY_PID -u -r -h 1 >> /logs/native_resource_usage.log 2>&1;
       '
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - ./logs/resource_monitor:/logs
     depends_on:
       - aas_gateway
