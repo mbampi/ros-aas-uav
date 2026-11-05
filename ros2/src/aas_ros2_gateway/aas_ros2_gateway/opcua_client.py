@@ -14,7 +14,6 @@
 
 import time
 from opcua import Client
-from threading import Lock
 from typing import Dict, Optional
 
 class OPCUAClient:
@@ -34,13 +33,10 @@ class OPCUAClient:
         self.endpoint = endpoint
         self.is_connected = False
         
-        # Caching for performance
         self._node_cache: Dict[str, object] = {}
-        self._connection_lock = Lock()
         self._write_count = 0
         self._failed_writes = 0
-        self._last_health_check = 0
-        
+
         self.connect()
     
     def _get_cached_node(self, node_id: str) -> Optional[object]:
@@ -79,9 +75,8 @@ class OPCUAClient:
     
     def write_value(self, node_id: str, json_payload: str):
         """
-        Writes a JSON payload directly to OPC UA server with minimal latency.
-        Uses cached node handles and direct connection for maximum speed.
-        
+        Writes a JSON payload to the OPC UA server using cached node handles.
+
         Args:
             node_id (str): The ID of the node to write to.
             json_payload (str): JSON string containing timestamps and value

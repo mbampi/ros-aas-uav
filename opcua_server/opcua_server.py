@@ -100,12 +100,6 @@ class VariableChangeHandler:
             pass
         self._fp = open(self.latency_log_path, 'a', buffering=1)  # line-buffered
 
-    def _safe_float(self, v):
-        try:
-            return float(v)
-        except Exception:
-            return None
-
     def datachange_notification(self, node, val, data):
         """Callback triggered when a subscribed variable changes its value.
 
@@ -276,7 +270,7 @@ class OPCUAServer:
 
         latency_log = os.path.join(events_dir, f"{ts}.jsonl")
         
-        # Use UI-enhanced handler if web UI is enabled, otherwise use original handler
+        # The UI handler also feeds the dashboard
         if self.enable_ui and self.data_manager and self.web_server:
             handler = UIVariableChangeHandler(
                 self.variable_map, 

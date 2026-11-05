@@ -145,37 +145,30 @@ class WebUIServer:
 
 
 class UIVariableChangeHandler:
-    """Enhanced variable change handler that integrates with the web UI."""
-    
+    """Variable change handler that also feeds the web UI."""
+
     def __init__(self, variable_map: Dict, latency_log_path: str, data_manager: DataManager, web_server: WebUIServer):
-        """Initialize with original handler functionality plus UI integration."""
+        """Initialize the latency log and keep references to the UI components."""
         self.variable_map = variable_map
         self.latency_log_path = latency_log_path
         self.data_manager = data_manager
         self.web_server = web_server
         
-        # Setup original logging functionality
         try:
             os.makedirs(os.path.dirname(self.latency_log_path) or '.', exist_ok=True)
         except Exception:
             pass
         self._fp = open(self.latency_log_path, 'a', buffering=1)  # line-buffered
-    
-    def _safe_float(self, v):
-        try:
-            return float(v)
-        except Exception:
-            return None
-    
+
     def datachange_notification(self, node, val, data):
-        """Handle variable changes - original functionality plus UI integration."""
+        """Update the UI data and write a latency record for each variable change."""
         server_recv_ts = time.time()
         label = self.variable_map.get(node.nodeid, "unknown")
         
         parsed = None
         raw_payload = None
         
-        # Parse the incoming value (same logic as original)
+        # Parse the incoming value
         try:
             if isinstance(val, bytes):
                 raw_payload = val.decode('utf-8', errors='replace')
@@ -230,7 +223,6 @@ class UIVariableChangeHandler:
             timestamp=server_recv_ts
         )
         
-        # Original logging functionality
         record = {
             'event': 'variable_updated',
             'node_id': str(node.nodeid),

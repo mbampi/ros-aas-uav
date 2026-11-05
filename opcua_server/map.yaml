@@ -1,6 +1,5 @@
 # PX4 ROS2 Gateway Configuration
 # Maps PX4 topics to OPC UA properties for UAV data integration
-# Updated for real PX4+ROS2+Gazebo system integration
 
 topics_to_properties:
   # Battery monitoring from PX4

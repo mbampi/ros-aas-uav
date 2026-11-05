@@ -1,10 +1,8 @@
-# clock_client.py
 import time
 from opcua import Client
 import sys
 
-# --- Configuration ---
-# IMPORTANT: Replace this with your Mac's actual local IP address
+# Local IP address of the machine running clock_server.py
 SERVER_IP = "192.168.1.15"
 SERVER_PORT = 4840
 SAMPLES_TO_TAKE = 15 # Number of measurements to take for accuracy
@@ -39,7 +37,7 @@ if __name__ == "__main__":
     try:
         print(f"Connecting to server at {server_url}...")
         client.connect()
-        print("✅ Connection successful.")
+        print("Connection successful.")
 
         # Resolve the correct namespace index / NodeId for the GetServerTime method.
         # The server registered a namespace named 'ClockSyncServer', but its
@@ -94,18 +92,18 @@ if __name__ == "__main__":
         best_offset_s = best_measurement['offset']
 
         print("\n--- Results ---")
-        print(f"📈 Best measurement (based on lowest RTT of {best_rtt_ms:.2f} ms):")
+        print(f"Best measurement (based on lowest RTT of {best_rtt_ms:.2f} ms):")
 
         if best_offset_s > 0:
-            print(f"⏱️ The server clock is ahead of this client by: {abs(best_offset_s):.6f} seconds.")
+            print(f"The server clock is ahead of this client by: {abs(best_offset_s):.6f} seconds.")
         else:
-            print(f"⏱️ The server clock is behind this client by: {abs(best_offset_s):.6f} seconds.")
+            print(f"The server clock is behind this client by: {abs(best_offset_s):.6f} seconds.")
 
         print("\nUse this offset to normalize your timestamps:")
         print("Normalized_Server_Time = Original_Server_Time - ({:.6f})".format(best_offset_s))
 
     except Exception as e:
-        print(f"❌ An error occurred: {e}")
+        print(f"An error occurred: {e}")
         print("Please check:")
         print("1. The server script is running on the macOS machine.")
         print(f"2. The SERVER_IP ('{SERVER_IP}') is correct.")

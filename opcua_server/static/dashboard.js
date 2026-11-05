@@ -50,7 +50,6 @@ class UAVDashboard {
         // Refresh rate control
         const refreshSelect = document.getElementById('refreshRate');
         if (refreshSelect) {
-            // Default 500ms (0.5 seconds) as requested
             this.pollIntervalMs = parseInt(localStorage.getItem('ui_poll_ms') || '500');
             refreshSelect.value = String(this.pollIntervalMs);
             refreshSelect.addEventListener('change', (e) => {
@@ -397,7 +396,7 @@ class UAVDashboard {
         const nextX = dataset.data.length;
         dataset.data.push({ x: nextX, y: value });
 
-        // Keep only last 30 points for better performance
+        // Keep only last 30 points
         if (dataset.data.length > 30) {
             dataset.data.shift();
             // Recalculate x values to keep them sequential
@@ -508,7 +507,7 @@ class UAVDashboard {
         if (this.pollingActive) {
             return;
         }
-        console.log('🔄 Starting API polling...');
+        console.log('Starting API polling...');
         this.pollingActive = true;
         
         // Start polling immediately
@@ -524,7 +523,7 @@ class UAVDashboard {
             clearInterval(this.pollInterval);
             this.pollInterval = null;
             this.pollingActive = false;
-            console.log('⏹️ Stopped polling.');
+            console.log('Stopped polling.');
         }
     }
 
@@ -537,7 +536,7 @@ class UAVDashboard {
                 return response.json();
             })
             .then(data => {
-                console.log('📡 API data received:', data);
+                console.log('API data received:', data);
                 
                 // Show connected status when we successfully fetch data
                 this.updateConnectionStatus(true);
@@ -563,7 +562,7 @@ class UAVDashboard {
                 }
             })
             .catch(error => {
-                console.error('❌ API polling failed:', error);
+                console.error('API polling failed:', error);
                 // Show disconnected status when polling fails
                 this.updateConnectionStatus(false);
             });

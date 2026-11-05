@@ -63,7 +63,7 @@ class MultiTopicSubscriber(Node):
             self.get_logger().info("Setting up subscriptions...")
             self._setup_subscriptions(mapping_path, aas_path)
             
-            self.get_logger().info("✅ AAS Gateway initialization complete!")
+            self.get_logger().info("AAS Gateway initialization complete!")
         except Exception as e:
             self.get_logger().error(f"Failed to initialize AAS Gateway: {e}")
             import traceback
@@ -116,7 +116,7 @@ class MultiTopicSubscriber(Node):
             raise RuntimeError("No valid mappings found in configuration")
         
         # Initialize message handler
-        self.get_logger().info("🛠️ Initializing message handler...")
+        self.get_logger().info("Initializing message handler...")
         self.message_handler = MessageHandler(self.get_logger(), enums)
         
         # Create subscriptions for each topic

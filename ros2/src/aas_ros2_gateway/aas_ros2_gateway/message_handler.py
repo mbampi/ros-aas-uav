@@ -40,9 +40,7 @@ class MessageHandler:
         self._message_type_cache = {}
         self._transformations = self._build_transformation_map()
         self._field_path_cache = {}  # Cache parsed field paths
-        self._node_handle_cache = {}  # Cache for OPC UA node handles
-        
-        # Performance counters (minimal overhead)
+
         self._message_count = 0
         self._last_stats_time = time.time()
     
@@ -104,18 +102,14 @@ class MessageHandler:
                 elif isinstance(part, int):
                     # Array/list indexing
                     current_value = current_value[part]
-                elif isinstance(part, tuple):
-                    # Slice notation (if needed in the future)
-                    start, end = part
-                    current_value = current_value[start:end]
-            
+
             return current_value
             
         except (AttributeError, IndexError, TypeError) as e:
             self.logger.error(f"Failed to extract field '{field_path}' from message: {e}")
             return None
     
-    def _parse_field_path(self, field_path: str) -> List[Union[str, int, tuple]]:
+    def _parse_field_path(self, field_path: str) -> List[Union[str, int]]:
         """
         Parse a field path string into a list of access operations with caching.
         
