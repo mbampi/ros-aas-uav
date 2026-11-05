@@ -7,6 +7,8 @@ from typing import Dict, Any, Optional
 from flask import Flask, render_template_string, send_from_directory
 import logging
 
+from payload import parse_payload
+
 log = logging.getLogger(__name__)
 
 
@@ -165,55 +167,10 @@ class UIVariableChangeHandler:
         server_recv_ts = time.time()
         label = self.variable_map.get(node.nodeid, "unknown")
         
-        parsed = None
-        raw_payload = None
-        
-        # Parse the incoming value
-        try:
-            if isinstance(val, bytes):
-                raw_payload = val.decode('utf-8', errors='replace')
-            elif isinstance(val, str):
-                raw_payload = val
-            else:
-                if hasattr(val, 'Value'):
-                    inner = val.Value
-                    if isinstance(inner, bytes):
-                        raw_payload = inner.decode('utf-8', errors='replace')
-                    elif isinstance(inner, str):
-                        raw_payload = inner
-                    else:
-                        try:
-                            raw_payload = json.dumps(inner, default=str)
-                        except Exception:
-                            raw_payload = str(inner)
-                else:
-                    try:
-                        raw_payload = json.dumps(val, default=str)
-                    except Exception:
-                        raw_payload = str(val)
-            
-            # Try to parse as JSON
-            try:
-                parsed = json.loads(raw_payload) if raw_payload is not None else None
-            except Exception:
-                try:
-                    import re
-                    if raw_payload:
-                        m = re.search(r"\{.*\}", raw_payload)
-                        if m:
-                            parsed = json.loads(m.group(0))
-                except Exception:
-                    parsed = None
-        except Exception:
-            parsed = None
-        
-        if not isinstance(parsed, dict):
-            parsed = {}
+        parsed = parse_payload(val)
         
         # Extract the actual value for UI display
         ui_value = parsed.get('value', val)
-        if hasattr(ui_value, 'Value'):
-            ui_value = ui_value.Value
         
         # Update data manager (UI will poll for updates)
         self.data_manager.update_property(

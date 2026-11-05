@@ -11,6 +11,8 @@ from typing import Dict, List
 import os
 import logging
 
+from payload import parse_payload
+
 # Web UI imports: will be imported only if --ui flag is used
 try:
     from web_ui import DataManager, WebUIServer, UIVariableChangeHandler
@@ -113,56 +115,7 @@ class VariableChangeHandler:
         server_recv_ts = time.time()
         label = self.variable_map.get(node.nodeid, "unknown")
 
-        parsed = None
-        raw_payload = None
-
-        # Normalize incoming value into a string containing JSON when possible
-        try:
-            # Common cases: bytes or str
-            if isinstance(val, bytes):
-                raw_payload = val.decode('utf-8', errors='replace')
-            elif isinstance(val, str):
-                raw_payload = val
-            else:
-                # Some OPC UA libraries wrap values; try to extract .Value
-                if hasattr(val, 'Value'):
-                    inner = val.Value
-                    if isinstance(inner, bytes):
-                        raw_payload = inner.decode('utf-8', errors='replace')
-                    elif isinstance(inner, str):
-                        raw_payload = inner
-                    else:
-                        # Best-effort serialization
-                        try:
-                            raw_payload = json.dumps(inner, default=str)
-                        except Exception:
-                            raw_payload = str(inner)
-                else:
-                    # Fallback: try to serialize the value
-                    try:
-                        raw_payload = json.dumps(val, default=str)
-                    except Exception:
-                        raw_payload = str(val)
-
-            # First, try to parse the whole payload as JSON
-            try:
-                parsed = json.loads(raw_payload) if raw_payload is not None else None
-            except Exception:
-                # If that fails, try to find a JSON object inside the string
-                try:
-                    import re
-                    if raw_payload:
-                        m = re.search(r"\{.*\}", raw_payload)
-                        if m:
-                            parsed = json.loads(m.group(0))
-                except Exception:
-                    parsed = None
-
-        except Exception:
-            parsed = None
-
-        if not isinstance(parsed, dict):
-            parsed = {}
+        parsed = parse_payload(val)
 
         record = {
             'event': 'variable_updated',
