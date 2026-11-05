@@ -1,12 +1,7 @@
-# =====================================================================
-# Stage 1: "builder" - Compiles the ROS2 workspace
-# =====================================================================
 FROM ros:humble-ros-base-jammy as builder
 
-# Set shell to bash for all RUN commands
 SHELL ["/bin/bash", "-c"]
 
-# Install build tools and python dependencies
 RUN apt-get update && apt-get install -y \
     python3-rosdep \
     python3-colcon-common-extensions \
@@ -16,52 +11,34 @@ RUN apt-get update && apt-get install -y \
     && rosdep update \
     && rm -rf /var/lib/apt/lists/*
 
-# Create the workspace directory
 WORKDIR /ros2_ws
 
-# =====================================================================
-# px4_msgs layer - This will be cached and only rebuilt when px4_msgs changes
-# =====================================================================
-# Clone and build px4_msgs first as a separate layer for better caching
+# px4_msgs is slow to build, so it gets its own layer
 RUN git clone --branch main https://github.com/PX4/px4_msgs.git src/px4_msgs && \
     source /opt/ros/humble/setup.bash && \
     rosdep install --from-paths src/px4_msgs --ignore-src -y --rosdistro humble && \
-    colcon build --packages-select px4_msgs && \
-    echo "px4_msgs build completed and cached"
+    colcon build --packages-select px4_msgs
 
-# =====================================================================
-# Application layer - This will rebuild when your code changes
-# =====================================================================
-# Copy package definition files first for dependency resolution
 COPY src/aas_ros2_gateway/package.xml ./src/aas_ros2_gateway/
 
-# Install dependencies for our package (excluding px4_msgs which is already built)
 RUN source /opt/ros/humble/setup.bash && \
     rosdep install --from-paths src/aas_ros2_gateway --ignore-src -y --rosdistro humble --skip-keys "python3-opcua px4_msgs"
 
-# Now copy the rest of the source code
 COPY src/aas_ros2_gateway ./src/aas_ros2_gateway
 
-# Build only our package (px4_msgs is already built)
 RUN source /opt/ros/humble/setup.bash && \
     source install/setup.bash && \
     colcon build --packages-select aas_ros2_gateway
 
-# =====================================================================
-# Stage 2: "final" - The lean runtime image
-# =====================================================================
 FROM ros:humble-ros-base-jammy
 
-# Copy compiled workspace from the builder stage
 COPY --from=builder /ros2_ws/install /ros2_ws/install
 
-# Copy the pip-installed dependency from the builder stage
+# opcua is installed with pip, so it isn't part of the workspace
 COPY --from=builder /usr/local/lib/python3.10/dist-packages/ /usr/local/lib/python3.10/dist-packages/
 
-# Create and set up the entrypoint script
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-# The default command to run when the container starts
 CMD ["ros2", "run", "aas_ros2_gateway", "aas_gateway"]
