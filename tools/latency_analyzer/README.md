@@ -4,7 +4,7 @@ A Python CLI tool for analyzing latency metrics from UAV telemetry JSONL files.
 
 ## Features
 
-- **Terminal Statistics**: Comprehensive latency analysis with mean, median, standard deviation, percentiles
+- **Terminal Statistics**: Latency analysis with mean, median, standard deviation, percentiles
 - **Per-Variable Analysis**: Breakdown of latency by telemetry variable
 - **Processing Steps**: Analysis of different processing stages (recv → processed → server)
 - **Chart Generation**: Optional visualization with histograms, time-series, and comparison charts
@@ -54,7 +54,7 @@ When `--charts` is specified, generates four PNG files:
 
 - `latency_distributions.png`: Histograms and box plots for all latency types
 - `latency_time_series.png`: Latency over time scatter plot  
-- `latency_rolling_average.png`: Rolling average latency over time with trend analysis
+- `latency_rolling_average.png`: Rolling average latency over time
 - `latency_by_variable.png`: Mean latency comparison by variable
 
 ## Data Format

@@ -1,35 +1,33 @@
 # UAV Resource Monitor
 
-A comprehensive system resource monitoring solution designed specifically for Raspberry Pi UAV companion computers. This tool provides real-time monitoring, data collection, and statistical analysis of system performance metrics.
+System resource monitoring for Raspberry Pi UAV companion computers, with live display, data collection, and statistical analysis.
 
 ## Features
 
-### 🔍 **Comprehensive Monitoring**
+### Monitoring
 - CPU usage, frequency, and temperature
 - Memory and swap utilization
-- Disk usage and I/O
+- Disk usage
 - Network throughput and packets
 - System load averages
 - Process count and uptime
 - Raspberry Pi specific metrics (GPU temperature, voltage)
 
-### 📊 **Data Collection**
+### Data Collection
 - Multiple output formats (CSV, JSON)
 - Configurable sampling intervals
 - Session-based data organization
 - Automatic timestamping
-- Robust error handling
 
-### 📈 **Statistical Analysis**
-- Comprehensive performance statistics
+### Statistical Analysis
+- Summary statistics
 - Time series visualizations
 - Distribution analysis
 - Correlation heatmaps
-- Performance scoring
 - Thermal analysis with warnings
 
-### 🚀 **Easy Deployment**
-- One-command installation
+### Deployment
+- Installation script
 - Systemd service integration
 - Command-line interface
 - Live monitoring display
@@ -126,17 +124,7 @@ Edit `config/monitor_config.json` to customize monitoring behavior:
 ```json
 {
   "sample_interval": 1.0,
-  "output_format": "both",
-  "alert_thresholds": {
-    "cpu_percent": 90,
-    "memory_percent": 95,
-    "cpu_temp": 75
-  },
-  "monitoring_presets": {
-    "high_frequency": {"sample_interval": 0.5},
-    "standard": {"sample_interval": 1.0},
-    "battery_saver": {"sample_interval": 10.0}
-  }
+  "output_format": "both"
 }
 ```
 
@@ -222,8 +210,7 @@ python3 scripts/resource_monitor.py --interval 0.1 --session-id stress-test --du
 
 ### Statistics Generated
 - **Basic Stats**: Mean, median, min, max, standard deviation, quartiles
-- **Performance Scores**: Stability score, efficiency score
-- **Thermal Analysis**: Thermal throttling risk assessment
+- **Thermal Analysis**: Warning when CPU temperature exceeds 70°C
 - **Network Analysis**: Throughput calculations and total data transfer
 - **Time Analysis**: High usage periods, duration analysis
 
@@ -248,7 +235,6 @@ sudo chown -R uav-monitor:uav-monitor /opt/uav-resource-monitor
 
 **High resource usage from monitoring:**
 - Increase sampling interval: `--interval 5.0`
-- Use battery saver preset in config
 
 **Service won't start:**
 ```bash

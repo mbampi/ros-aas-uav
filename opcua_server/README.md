@@ -64,7 +64,6 @@ The optional web dashboard provides real-time visualization of UAV data:
 - **Interactive Charts**: Time-series visualization for battery, altitude, speed, attitude
 - **Statistics Dashboard**: Event counts, timestamps, and current values
 - **Event Log**: Real-time streaming log of variable changes
-- **Modern UI**: Responsive design with dark/light themes
 
 ### Dashboard Sections
 - **Summary Cards**: Total events, active properties, server uptime

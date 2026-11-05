@@ -36,9 +36,9 @@ colcon build --packages-select aas_ros2_gateway
 ros2 run aas_ros2_gateway aas_gateway_node --ros-args -p mapping_path:=config/map.yaml -p aas_path:=config/uav_submodel.xml
 ```
 
-### 🐳 Running with Docker Compose
+### Running with Docker Compose
 
-You can also run the gateway using Docker Compose for a more isolated and reproducible environment.
+You can also run the gateway using Docker Compose.
 
 1.  **Build and run the container**:
     ```bash
