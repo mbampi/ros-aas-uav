@@ -39,10 +39,6 @@ This repository implements a middleware solution that bridges UAV telemetry data
 - Interactive charts for UAV metrics (battery, altitude, speed, attitude)
 - Event logging and performance monitoring
 
-### Academic Research
-- Performance benchmarking and latency analysis
-- Resource utilization studies for embedded deployment
-
 ## Technology Stack
 
 - **UAV**: PX4 Autopilot
@@ -50,13 +46,6 @@ This repository implements a middleware solution that bridges UAV telemetry data
 - **Communication**: OPC UA + Asset Administration Shell
 - **Deployment**: Docker + Docker Compose
 - **Monitoring**: Web Dashboard with real-time charts
-
-## Documentation
-
-| Component     | Documentation                                    |
-| ------------- | ------------------------------------------------ |
-| ROS2 Gateway  | [ros2/README.md](ros2/README.md)                 |
-| OPC UA Server | [opcua_server/README.md](opcua_server/README.md) |
 
 ## Development
 

@@ -1,264 +1,76 @@
 # UAV Resource Monitor
 
-System resource monitoring for Raspberry Pi UAV companion computers, with live display, data collection, and statistical analysis.
+Records system metrics on a Raspberry Pi companion computer and generates reports from them.
 
-## Features
+It collects CPU usage, frequency and temperature, memory and swap, disk usage, network counters, load averages, process count and uptime. On a Raspberry Pi it also reads GPU temperature and core voltage.
 
-### Monitoring
-- CPU usage, frequency, and temperature
-- Memory and swap utilization
-- Disk usage
-- Network throughput and packets
-- System load averages
-- Process count and uptime
-- Raspberry Pi specific metrics (GPU temperature, voltage)
+## Setup
 
-### Data Collection
-- Multiple output formats (CSV, JSON)
-- Configurable sampling intervals
-- Session-based data organization
-- Automatic timestamping
+For local use:
 
-### Statistical Analysis
-- Summary statistics
-- Time series visualizations
-- Distribution analysis
-- Correlation heatmaps
-- Thermal analysis with warnings
-
-### Deployment
-- Installation script
-- Systemd service integration
-- Command-line interface
-- Live monitoring display
-- Quick test functionality
-
-## Installation
-
-### Quick Install (Raspberry Pi)
 ```bash
-# Clone or copy the uav-resource-monitor directory to your Pi
+./setup_local.sh
+source venv/bin/activate
+```
+
+To install it as a service on a Raspberry Pi:
+
+```bash
 sudo ./install.sh
 ```
 
-### Manual Installation
-```bash
-# Install Python dependencies
-pip3 install -r requirements.txt
-
-# Make scripts executable
-chmod +x scripts/*.py
-chmod +x install.sh
-```
+This installs to `/opt/uav-resource-monitor`, enables a systemd service, and adds the `uav-monitor` command.
 
 ## Usage
 
-### Basic Monitoring
+Paths in `config/monitor_config.json` are relative to the directory you run from, so run the scripts from `scripts/`.
 
-#### Start Background Monitoring Service
 ```bash
-# Start the service
+cd scripts
+
+# Record for 5 minutes
+python3 resource_monitor.py --config ../config/monitor_config.json --session-id flight-1 --duration 300
+
+# Sample every 0.5 seconds
+python3 resource_monitor.py --config ../config/monitor_config.json --interval 0.5
+
+# Show the current status, a live display, or a 60 second test
+python3 quick_monitor.py
+python3 quick_monitor.py --live
+python3 quick_monitor.py --test 60
+
+# Generate a report
+python3 stats_generator.py ../data/resource_metrics_flight-1_20250824_123045.csv
+```
+
+When installed as a service:
+
+```bash
 uav-monitor start
-
-# Check status
 uav-monitor status
-
-# View logs
 uav-monitor logs
-
-# Stop the service
 uav-monitor stop
-```
-
-#### Manual Monitoring Sessions
-```bash
-# Run for 5 minutes with custom session ID
-uav-monitor run --duration 300 --session-id flight-test-1
-
-# Run with high frequency sampling
-python3 scripts/resource_monitor.py --interval 0.5 --session-id stress-test
-
-# Run with custom configuration
-python3 scripts/resource_monitor.py --config config/monitor_config.json
-```
-
-#### Quick Status Check
-```bash
-# Show current system status
-python3 scripts/quick_monitor.py
-
-# Live monitoring display
-python3 scripts/quick_monitor.py --live
-
-# Quick 60-second test
-python3 scripts/quick_monitor.py --test 60
-```
-
-### Data Analysis
-
-#### Generate Reports
-```bash
-# Analyze latest data (interactive selection)
+uav-monitor run --duration 300 --session-id flight-1
 uav-monitor analyze
-
-# Analyze specific file
-uav-monitor analyze data/resource_metrics_flight-test-1_20250824_123045.csv
-
-# Custom analysis with different output directory
-python3 scripts/stats_generator.py data/my_data.csv --output-dir custom_reports/
 ```
 
-#### List Available Data
-```bash
-# List all collected data files
-uav-monitor data
+## Output
 
-# List generated reports
-uav-monitor reports
-```
+Data files, in `data/`:
+
+- `resource_metrics_[session]_[timestamp].csv`
+- `resource_metrics_[session]_[timestamp].jsonl`
+
+Reports, in `reports/`:
+
+- `[session]_report.txt`
+- `[session]_stats.json`
+- `[session]_timeseries.png`
+- `[session]_distributions.png`
+- `[session]_correlation.png`
 
 ## Configuration
 
-Edit `config/monitor_config.json` to customize monitoring behavior:
+`config/monitor_config.json` sets the sample interval, output directories, output format (`csv`, `json` or `both`), temperature sensor paths and the disk path to measure.
 
-```json
-{
-  "sample_interval": 1.0,
-  "output_format": "both"
-}
-```
-
-## Output Files
-
-### Data Files
-- **CSV Format**: `data/resource_metrics_[session]_[timestamp].csv`
-- **JSON Format**: `data/resource_metrics_[session]_[timestamp].jsonl`
-
-### Analysis Reports
-- **Text Report**: `reports/[session]_report.txt`
-- **Statistics JSON**: `reports/[session]_stats.json`
-- **Time Series Plot**: `reports/[session]_timeseries.png`
-- **Distribution Plot**: `reports/[session]_distributions.png`
-- **Correlation Heatmap**: `reports/[session]_correlation.png`
-
-## Example Workflows
-
-### Flight Testing Workflow
-```bash
-# 1. Start monitoring before flight
-uav-monitor run --session-id pre-flight-check --duration 120
-
-# 2. Monitor during flight
-uav-monitor run --session-id flight-mission-1 --duration 1800
-
-# 3. Analyze performance after flight
-uav-monitor analyze data/resource_metrics_flight-mission-1_*.csv
-```
-
-### Development Workflow
-```bash
-# 1. Start background monitoring
-uav-monitor start
-
-# 2. Run your development/testing
-# ... your code runs ...
-
-# 3. Stop and analyze
-uav-monitor stop
-uav-monitor analyze
-```
-
-### Stress Testing
-```bash
-# High frequency monitoring for stress testing
-python3 scripts/resource_monitor.py --interval 0.1 --session-id stress-test --duration 600
-```
-
-## System Requirements
-
-### Raspberry Pi Models
-- Raspberry Pi 3B+ or newer recommended
-- Raspberry Pi OS (Raspbian) or Ubuntu
-- At least 1GB RAM (2GB+ recommended)
-- 500MB free disk space
-
-### Python Dependencies
-- Python 3.7+
-- psutil (system metrics)
-- pandas (data analysis)
-- matplotlib, seaborn (visualizations)
-- numpy (numerical computing)
-
-## Monitoring Metrics
-
-| Metric          | Description                    | Units         |
-| --------------- | ------------------------------ | ------------- |
-| CPU Usage       | Current CPU utilization        | %             |
-| CPU Frequency   | Current/Max CPU frequency      | MHz           |
-| CPU Temperature | Processor temperature          | °C            |
-| Memory Usage    | RAM utilization                | % / Bytes     |
-| Swap Usage      | Swap space utilization         | % / Bytes     |
-| Disk Usage      | Storage utilization            | % / Bytes     |
-| Network I/O     | Bytes/packets sent/received    | Bytes/Packets |
-| Load Average    | System load (1m, 5m, 15m)      | Load units    |
-| Process Count   | Number of running processes    | Count         |
-| Uptime          | System uptime                  | Seconds       |
-| GPU Temperature | GPU temperature (if available) | °C            |
-| System Voltage  | Core voltage (Pi-specific)     | V             |
-
-## Performance Analysis Features
-
-### Statistics Generated
-- **Basic Stats**: Mean, median, min, max, standard deviation, quartiles
-- **Thermal Analysis**: Warning when CPU temperature exceeds 70°C
-- **Network Analysis**: Throughput calculations and total data transfer
-- **Time Analysis**: High usage periods, duration analysis
-
-### Visualizations
-- **Time Series**: Resource usage over time with thresholds
-- **Distributions**: Histograms with density curves for key metrics
-- **Correlation**: Heatmap showing relationships between metrics
-
-## Troubleshooting
-
-### Common Issues
-
-**Permission denied errors:**
-```bash
-# Ensure proper permissions
-sudo chown -R uav-monitor:uav-monitor /opt/uav-resource-monitor
-```
-
-**Missing temperature data:**
-- Some Pi models may not have all thermal zones
-- Check available thermal zones: `ls /sys/class/thermal/`
-
-**High resource usage from monitoring:**
-- Increase sampling interval: `--interval 5.0`
-
-**Service won't start:**
-```bash
-# Check service logs
-journalctl -u uav-resource-monitor.service -n 50
-
-# Check configuration
-python3 scripts/resource_monitor.py --config config/monitor_config.json --help
-```
-
-## File Structure
-
-```
-uav-resource-monitor/
-├── scripts/
-│   ├── resource_monitor.py    # Main monitoring script
-│   ├── stats_generator.py     # Analysis and reporting
-│   └── quick_monitor.py       # Quick status and live monitoring
-├── config/
-│   └── monitor_config.json    # Configuration file
-├── data/                      # Collected monitoring data
-├── logs/                      # Application logs
-├── reports/                   # Generated analysis reports
-├── requirements.txt           # Python dependencies
-├── install.sh                 # Installation script
-└── README.md                  # This file
-```
+Some Raspberry Pi models don't have every thermal zone. Check which ones exist with `ls /sys/class/thermal/`.

@@ -111,6 +111,7 @@ python opcua_server.py --endpoint opc.tcp://localhost:4840/test/
 opcua_server/
 ├── opcua_server.py          # Main server with UI integration
 ├── web_ui.py                # Web UI components  
+├── payload.py               # Gateway payload parsing
 ├── static/                  # Web dashboard files
 ├── requirements.txt         # Core dependencies
 ├── map.yaml                # Variable mapping config
