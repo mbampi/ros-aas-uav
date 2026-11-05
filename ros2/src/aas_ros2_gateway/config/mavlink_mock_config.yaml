@@ -1,4 +1,4 @@
-# MAVROS Mock Publisher Configuration for Academic Experiments
+# MAVROS Mock Publisher Configuration
 # 
 # Focus on two variables:
 # 1. Number of topics (enable/disable topics)

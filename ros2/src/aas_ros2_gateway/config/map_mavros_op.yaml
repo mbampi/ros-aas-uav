@@ -1,13 +1,11 @@
 # MAVROS ROS2 Gateway Configuration
 # Maps MAVROS topics to AAS/OPC UA properties
-# Based on AAS Submodel: quad_op.json
+# Based on the AAS submodel in quad_op.nodeset.xml
 
 topics_to_properties:
 
-  # ==============================================================================
-  # 1. IDENTIFICATION (Remote ID)
+  # Identification (Remote ID)
   # Note: Requires mavros_extras or specific OpenDroneID plugin enabled
-  # ==============================================================================
   - property: Identification/RemoteID_System/OperatorLocationType
     topic: /mavros/odid/system
     message_type: mavros_msgs.msg.OpenDroneIdSystem
@@ -26,9 +24,7 @@ topics_to_properties:
     field_path: classification_type
     data_transform: identity
 
-  # ==============================================================================
-  # 2. STATUS
-  # ==============================================================================
+  # Status
   # VehicleType/AutopilotType are typically static or heartbeat params
   # Mapping SystemStatus to the dynamic state field
   # - property: Status/SystemStatus
@@ -49,9 +45,7 @@ topics_to_properties:
     field_path: autopilot
     data_transform: identity
 
-  # ==============================================================================
-  # 3. POWER
-  # ==============================================================================
+  # Power
   - property: Power/Voltage
     topic: /mavros/battery
     message_type: sensor_msgs.msg.BatteryState
@@ -70,9 +64,7 @@ topics_to_properties:
   #   field_path: percentage
   #   data_transform: identity
 
-  # ==============================================================================
-  # 4. NAVIGATION
-  # ==============================================================================
+  # Navigation
   
   # --- GlobalPosition ---
   - property: Navigation/GlobalPosition/Latitude
@@ -168,9 +160,7 @@ topics_to_properties:
   #   field_path: bottom_clearance
   #   data_transform: identity
 
-  # ==============================================================================
-  # 5. ATTITUDE
-  # ==============================================================================
+  # Attitude
 
   # --- EulerAngles (Derived from Pose) ---
   - property: Attitude/EulerAngles/Roll
@@ -261,9 +251,7 @@ topics_to_properties:
     field_path: thrust
     data_transform: identity
 
-  # ==============================================================================
-  # 6. ACTUATION
-  # ==============================================================================
+  # Actuation
 
   # --- ServoOutput (RCOut) ---
   # - property: Actuation/ServoOutput/Servo1
@@ -310,9 +298,7 @@ topics_to_properties:
     field_path: esc_telemetry[0].current
     data_transform: identity
 
-  # ==============================================================================
-  # 7. HUD
-  # ==============================================================================
+  # HUD
   - property: HUD/Airspeed
     topic: /mavros/vfr_hud
     message_type: mavros_msgs.msg.VfrHud

@@ -16,17 +16,14 @@ import os
 def generate_launch_description():
     """Generate launch description for MAVROS mock publisher."""
     
-    # Get package share directory
     pkg_share = get_package_share_directory('aas_ros2_gateway')
     
-    # Declare launch arguments
     config_file_arg = DeclareLaunchArgument(
         'config_file',
         default_value=os.path.join(pkg_share, 'config', 'mavlink_mock_config.yaml'),
         description='Path to the MAVROS mock configuration file'
     )
     
-    # Create the mock publisher node
     mavlink_mock_node = Node(
         package='aas_ros2_gateway',
         executable='mavlink_mock_publisher',

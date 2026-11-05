@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MAVROS/MAVLink Mock Publisher for Academic Experiments
+MAVROS/MAVLink Mock Publisher for Experiments
 
 Simulates MAVROS topics by publishing standard ROS2 messages that MAVROS would publish.
 This allows testing without actual MAVLink hardware or simulation.
@@ -9,7 +9,7 @@ Focuses on two key variables:
 1. Number of topics (which topics to enable)
 2. Message frequency
 
-Publishes MAVROS-format messages with realistic data patterns.
+Publishes MAVROS-format messages with simple synthetic patterns.
 Configuration is done via a YAML file.
 """
 
@@ -27,7 +27,6 @@ from sensor_msgs.msg import BatteryState, NavSatFix
 from geometry_msgs.msg import PoseStamped, TwistStamped
 from std_msgs.msg import Float64, Header
 from mavros_msgs.msg import State, GPSRAW
-from builtin_interfaces.msg import Time
 
 
 class MavlinkMockPublisher(Node):
@@ -317,7 +316,6 @@ class MavlinkMockPublisher(Node):
 
 
 def main():
-    """Main function."""
     rclpy.init()
     
     try:
