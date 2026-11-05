@@ -10,14 +10,13 @@ import (
 	"time"
 )
 
-// --- Configuration ---
 const (
 	listenAddr    = "127.0.0.1:14550" // Port for SITL to send to
-	forwardAddr   = "127.0.0.1:14551" // Port for your AAS-Connector to listen on
+	forwardAddr   = "127.0.0.1:14551" // Port the system under test listens on
 	inLogFileName = "in_log.csv"
 )
 
-// Map of common MAVLink message IDs to their names, from your example.
+// Names of common MAVLink message IDs
 var mavlinkMessageNames = map[uint32]string{
 	0:   "HEARTBEAT",
 	1:   "SYS_STATUS",
@@ -58,7 +57,7 @@ var mavlinkMessageNames = map[uint32]string{
 	253: "STATUSTEXT",
 }
 
-// InLogEntry defines the structure of our input log
+// InLogEntry is one line of the input log
 type InLogEntry struct {
 	Timestamp int64  `json:"t_in_ns"`
 	MsgID     uint32 `json:"msg_id"`
@@ -69,8 +68,7 @@ type InLogEntry struct {
 // logWriter runs in its own goroutine to write to the file
 func logWriter(logChan <-chan *InLogEntry, logger *log.Logger) {
 	for entry := range logChan {
-		// Marshal the full message to JSON
-		// We log a single JSON object per line for easy parsing
+		// One JSON object per line
 		line, err := json.Marshal(entry)
 		if err != nil {
 			log.Printf("Error marshaling log entry: %v", err)
@@ -83,23 +81,19 @@ func logWriter(logChan <-chan *InLogEntry, logger *log.Logger) {
 // RunInProxy starts the input UDP proxy which forwards packets and logs MAVLink metadata.
 // It returns an error only on fatal setup failures; runtime errors are logged.
 func RunInProxy() error {
-	// --- Setup Logging ---
 	logFile, err := os.OpenFile(inLogFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		return fmt.Errorf("failed to open log file: %w", err)
 	}
-	// Create a logger that writes to the file
 	logger := log.New(logFile, "", 0)
 	logger.Println(`{"level":"info", "message":"MAVLink Input Logger Started (Raw Parser)"}`)
 
-	// Create a buffered channel for log entries
 	logChan := make(chan *InLogEntry, 2048)
 	go func() {
 		logWriter(logChan, logger)
 		logFile.Close()
 	}()
 
-	// --- Setup Forwarding ---
 	fwdAddr, err := net.ResolveUDPAddr("udp", forwardAddr)
 	if err != nil {
 		return fmt.Errorf("failed to resolve forward address: %w", err)
@@ -112,27 +106,23 @@ func RunInProxy() error {
 
 	fmt.Printf("Listening on %s. Forwarding to %s. Logging to %s\n", listenAddr, forwardAddr, inLogFileName)
 
-	buffer := make([]byte, 4096) // Re-usable buffer
+	buffer := make([]byte, 4096)
 
 	for {
-		// Read a raw UDP packet
 		n, _, err := conn.ReadFrom(buffer)
 		if err != nil {
 			log.Printf("Error reading from UDP: %v", err)
 			continue
 		}
 
-		// 1. Get timestamp (THIS IS T_in)
 		t_in := time.Now().UnixNano()
 
-		// 2. Forward the packet IMMEDIATELY
-		// We send the original buffer slice [0:n]
+		// Forward first, so logging doesn't add latency
 		_, err = conn.WriteTo(buffer[:n], fwdAddr)
 		if err != nil {
 			log.Printf("Error forwarding packet: %v", err)
 		}
 
-		// 3. Handle logging (raw parse)
 		packet := buffer[:n]
 		var msgID uint32
 		var msgName string
@@ -158,14 +148,12 @@ func RunInProxy() error {
 			continue // Not a MAVLink packet
 		}
 
-		// Get name from our map
 		name, ok := mavlinkMessageNames[msgID]
 		if !ok {
 			name = "Unknown"
 		}
 		msgName = name
 
-		// Create log entry
 		entry := &InLogEntry{
 			Timestamp: t_in,
 			MsgID:     msgID,
@@ -173,11 +161,10 @@ func RunInProxy() error {
 			PacketHex: hex.EncodeToString(packet), // Log the raw packet as hex
 		}
 
-		// Send to log writer (non-blocking)
+		// Non-blocking, so a full channel can't delay forwarding
 		select {
 		case logChan <- entry:
 		default:
-			// Log channel is full, drop log message to avoid blocking
 			log.Println("Log channel full. Dropping MAVLink log entry.")
 		}
 	}
