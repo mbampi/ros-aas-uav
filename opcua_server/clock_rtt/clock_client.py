@@ -1,6 +1,5 @@
 import time
 from opcua import Client
-import sys
 
 # Local IP address of the machine running clock_server.py
 SERVER_IP = "192.168.1.15"

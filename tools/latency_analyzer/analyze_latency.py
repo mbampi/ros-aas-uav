@@ -10,7 +10,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 from datetime import datetime
 from statistics import mean, median, stdev
 from collections import defaultdict
@@ -18,7 +18,6 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
-import pandas as pd
 from tabulate import tabulate
 
 

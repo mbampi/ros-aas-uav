@@ -10,7 +10,6 @@ import time
 import psutil
 import argparse
 from datetime import datetime
-from pathlib import Path
 
 
 def get_system_info():

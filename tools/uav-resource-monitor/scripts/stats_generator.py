@@ -6,7 +6,6 @@ and visualizations.
 """
 
 import json
-import csv
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,8 +13,8 @@ import seaborn as sns
 from pathlib import Path
 import argparse
 import sys
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from datetime import datetime
+from typing import Dict, List
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -61,8 +60,6 @@ class StatsGenerator:
     
     def calculate_basic_stats(self, df: pd.DataFrame) -> Dict:
         """Calculate basic statistical metrics"""
-        numeric_columns = df.select_dtypes(include=[np.number]).columns
-        
         stats = {
             'session_info': {
                 'start_time': df['timestamp'].min().isoformat(),

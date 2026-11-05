@@ -13,7 +13,7 @@ import logging
 
 from payload import parse_payload
 
-# Web UI imports: will be imported only if --ui flag is used
+# The web UI dependencies are optional
 try:
     from web_ui import DataManager, WebUIServer, UIVariableChangeHandler
     WEB_UI_AVAILABLE = True
@@ -168,7 +168,7 @@ class OPCUAServer:
         
         if self.enable_ui:
             if not WEB_UI_AVAILABLE:
-                log.error("Web UI requested but required dependencies not available. Install with: pip install flask flask-socketio")
+                log.error("Web UI requested but required dependencies not available. Install with: pip install flask")
                 log.info("Continuing without web UI...")
                 self.enable_ui = False
             else:
@@ -228,8 +228,7 @@ class OPCUAServer:
             handler = UIVariableChangeHandler(
                 self.variable_map, 
                 latency_log_path=latency_log,
-                data_manager=self.data_manager,
-                web_server=self.web_server
+                data_manager=self.data_manager
             )
         else:
             handler = VariableChangeHandler(self.variable_map, latency_log_path=latency_log)
@@ -288,7 +287,7 @@ Examples:
     # Check UI requirements if UI is requested
     if args.ui and not WEB_UI_AVAILABLE:
         print("ERROR: Web UI requested but required dependencies not available.")
-        print("Please install with: pip install flask flask-socketio")
+        print("Please install with: pip install flask")
         print("Continuing in CLI-only mode...")
         print()
         args.ui = False

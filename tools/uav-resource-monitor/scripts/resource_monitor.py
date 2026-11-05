@@ -16,8 +16,7 @@ import argparse
 import signal
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Optional, List
-import threading
+from typing import Dict, Optional
 from dataclasses import dataclass, asdict
 
 

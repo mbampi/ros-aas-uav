@@ -14,7 +14,6 @@
 
 import rclpy
 from .subscriber_node import MultiTopicSubscriber
-from .topic_mapper import TopicNodeIdMapper
 
 def main(args=None):
     """

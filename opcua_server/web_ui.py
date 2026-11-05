@@ -2,9 +2,8 @@ import json
 import os
 import threading
 import time
-from datetime import datetime
-from typing import Dict, Any, Optional
-from flask import Flask, render_template_string, send_from_directory
+from typing import Dict, Any
+from flask import Flask, send_from_directory
 import logging
 
 from payload import parse_payload
@@ -54,11 +53,6 @@ class DataManager:
             self.total_events += 1
             self.last_update = timestamp
     
-    def get_property_stats(self, variable: str) -> Optional[Dict[str, Any]]:
-        """Get statistics for a specific property."""
-        with self._lock:
-            return self.properties.get(variable, None)
-    
     def get_all_properties(self) -> Dict[str, Dict[str, Any]]:
         """Get all properties with their current stats."""
         with self._lock:
@@ -84,7 +78,6 @@ class WebUIServer:
         self.host = host
         self.port = port
         self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = 'opcua-server-ui-secret'
         
         self.setup_routes()
         
@@ -149,12 +142,11 @@ class WebUIServer:
 class UIVariableChangeHandler:
     """Variable change handler that also feeds the web UI."""
 
-    def __init__(self, variable_map: Dict, latency_log_path: str, data_manager: DataManager, web_server: WebUIServer):
+    def __init__(self, variable_map: Dict, latency_log_path: str, data_manager: DataManager):
         """Initialize the latency log and keep references to the UI components."""
         self.variable_map = variable_map
         self.latency_log_path = latency_log_path
         self.data_manager = data_manager
-        self.web_server = web_server
         
         try:
             os.makedirs(os.path.dirname(self.latency_log_path) or '.', exist_ok=True)

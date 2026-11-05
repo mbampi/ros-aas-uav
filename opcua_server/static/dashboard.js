@@ -238,51 +238,6 @@ class UAVDashboard {
         }
     }
 
-    handleVariableUpdate(data) {
-        const { variable, value, server_recv_ts, node_id } = data;
-
-        if (!variable) return;
-
-        // Update property data
-        if (!this.properties.has(variable)) {
-            this.properties.set(variable, {
-                name: variable,
-                value: null,
-                lastValue: null,
-                eventCount: 0,
-                lastUpdate: null,
-                nodeId: node_id,
-                history: []
-            });
-            this.createPropertyCard(variable);
-        }
-
-        const property = this.properties.get(variable);
-        property.lastValue = property.value;
-        property.value = value;
-        property.eventCount++;
-        property.lastUpdate = new Date(server_recv_ts * 1000);
-
-        // Keep history for charts (last 50 points)
-        property.history.push({
-            x: property.lastUpdate,
-            y: this.parseNumericValue(value)
-        });
-        if (property.history.length > 50) {
-            property.history.shift();
-        }
-
-        // Update UI
-        this.updatePropertyCard(variable);
-        this.updateCharts(variable, property);
-        this.addLogEntry(data);
-
-        // Update totals
-        this.totalEvents++;
-        this.updateSummaryCards();
-        this.elements.lastUpdate.textContent = `Last Update: ${new Date().toLocaleTimeString()}`;
-    }
-
     parseNumericValue(value) {
         if (typeof value === 'number') return value;
         if (typeof value === 'string') {
@@ -486,23 +441,6 @@ class UAVDashboard {
         }, 1000);
     }
 
-    updateServerStats(stats) {
-        // Persist server start time and last update for accurate uptime across refreshes
-        if (stats && stats.start_time) {
-            this.serverStartTs = stats.start_time; // seconds epoch
-        }
-        if (stats && stats.last_update) {
-            this.summaryLastUpdate = stats.last_update;
-            this.elements.lastUpdate.textContent = `Last Update: ${new Date(this.summaryLastUpdate * 1000).toLocaleTimeString()}`;
-        }
-        // Update totals if present
-        if (stats && typeof stats.total_events === 'number') {
-            this.totalEvents = stats.total_events;
-            this.updateSummaryCards();
-        }
-        console.log('Server stats:', stats);
-    }
-
     startPolling() {
         if (this.pollingActive) {
             return;
@@ -536,8 +474,6 @@ class UAVDashboard {
                 return response.json();
             })
             .then(data => {
-                console.log('API data received:', data);
-                
                 // Show connected status when we successfully fetch data
                 this.updateConnectionStatus(true);
 
