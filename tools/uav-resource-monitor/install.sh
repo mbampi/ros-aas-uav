@@ -1,8 +1,5 @@
 #!/bin/bash
-"""
-UAV Resource Monitor Installation Script
-Sets up the monitoring system on Raspberry Pi
-"""
+# Installs the UAV Resource Monitor on a Raspberry Pi
 
 set -e
 
