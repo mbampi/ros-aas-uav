@@ -170,6 +170,9 @@ class MessageHandler:
             'position_to_json': self._transform_position_to_json,
             'velocity_to_json': self._transform_velocity_to_json,
             'pose_to_json': self._transform_pose_to_json,
+            'navsatfix_to_json': self._transform_navsatfix_to_json,
+            'navsatfix_status_to_string': self._transform_navsatfix_status_to_string,
+            'bool_to_armed_string': self._transform_bool_to_armed_string,
             'degrees_to_radians': lambda value: math.radians(float(value)),
             'radians_to_degrees': lambda value: math.degrees(float(value)),
             'meters_per_second_to_kmh': lambda value: float(value) * 3.6
@@ -415,6 +418,46 @@ class MessageHandler:
             self.logger.error(f"Failed to convert pose to JSON: {e}")
             return json.dumps({'position': {'x': 0.0, 'y': 0.0, 'z': 0.0}})
     
+    def _transform_navsatfix_to_json(self, value: Any) -> str:
+        """Convert NavSatFix message to JSON string."""
+        try:
+            navsatfix_data = {}
+            
+            # Extract GPS coordinates
+            if hasattr(value, 'latitude') and hasattr(value, 'longitude') and hasattr(value, 'altitude'):
+                navsatfix_data = {
+                    'latitude': float(value.latitude),
+                    'longitude': float(value.longitude),
+                    'altitude': float(value.altitude)
+                }
+            
+            # Extract status if available
+            if hasattr(value, 'status') and hasattr(value.status, 'status'):
+                navsatfix_data['status'] = int(value.status.status)
+                
+            # Extract covariance if available
+            if hasattr(value, 'position_covariance'):
+                navsatfix_data['covariance'] = list(value.position_covariance)
+            
+            return json.dumps(navsatfix_data)
+        except Exception as e:
+            self.logger.error(f"Failed to convert NavSatFix to JSON: {e}")
+            return json.dumps({'latitude': 0.0, 'longitude': 0.0, 'altitude': 0.0})
+    
+    def _transform_navsatfix_status_to_string(self, value: Any) -> str:
+        """Convert NavSatFix status enum to string."""
+        navsatfix_status = self.enums.get('navsatfix_status', {
+            -1: "NO_FIX",
+            0: "FIX_NOT_AVAILABLE",
+            1: "GPS_FIX",
+            2: "DGPS_FIX"
+        })
+        return navsatfix_status.get(int(value), f"UNKNOWN_STATUS_{value}")
+    
+    def _transform_bool_to_armed_string(self, value: Any) -> str:
+        """Convert boolean armed state to string."""
+        return "ARMED" if bool(value) else "DISARMED"
+    
     def process_message(self, msg: Any, field_path: str, transform_type: str = "identity") -> Union[str, float, int, None]:
         """
         Complete message processing: extract field and apply transformation.
@@ -455,24 +498,22 @@ class MessageHandler:
         """
         def callback(msg):
             try:
-                # Capture timestamp immediately
-                recv_ts = time.time()
-                
-                # Process message 
+                # [T0] Message received
+                t_recv = time.time()
                 processed_value = self.process_message(msg, field_path, transform_type)
-                processed_ts = time.time()
                 
+                # [T1] Message processed
+                t_proc = time.time()
+
                 if processed_value is not None:
-                    # Create JSON payload
-                    write_payload = json.dumps({
-                        'id': str(uuid.uuid4()),
-                        'topic': topic,
-                        'recv_ts': recv_ts,
-                        'processed_ts': processed_ts,
-                        'value': processed_value
-                    })
+                    trace = {
+                        'msg_id': str(uuid.uuid4())[:8],
+                        'node_id': node_id,
+                        't_recv': t_recv,
+                        't_proc': t_proc
+                    }
                     
-                    opcua_client.write_value(node_id, write_payload)
+                    opcua_client.write_value(node_id, processed_value, trace)
                     
                     # Log the rate every 1000 messages
                     self._message_count += 1

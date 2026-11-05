@@ -1,0 +1,374 @@
+# MAVROS ROS2 Gateway Configuration
+# Maps MAVROS topics to AAS/OPC UA properties
+# Based on AAS Submodel: quad_op.json
+
+topics_to_properties:
+
+  # ==============================================================================
+  # 1. IDENTIFICATION (Remote ID)
+  # Note: Requires mavros_extras or specific OpenDroneID plugin enabled
+  # ==============================================================================
+  - property: Identification/RemoteID_System/OperatorLocationType
+    topic: /mavros/odid/system
+    message_type: mavros_msgs.msg.OpenDroneIdSystem
+    field_path: operator_location_type
+    data_transform: identity
+
+  - property: Identification/RemoteID_System/UAType
+    topic: /mavros/odid/system
+    message_type: mavros_msgs.msg.OpenDroneIdSystem
+    field_path: ua_type
+    data_transform: identity
+
+  - property: Identification/RemoteID_System/ClassificationType
+    topic: /mavros/odid/system
+    message_type: mavros_msgs.msg.OpenDroneIdSystem
+    field_path: classification_type
+    data_transform: identity
+
+  # ==============================================================================
+  # 2. STATUS
+  # ==============================================================================
+  # VehicleType/AutopilotType are typically static or heartbeat params
+  # Mapping SystemStatus to the dynamic state field
+  # - property: Status/SystemStatus
+  #   topic: /mavros/state
+  #   message_type: mavros_msgs.msg.State
+  #   field_path: system_status
+  #   data_transform: identity
+
+  - property: Status/VehicleType
+    topic: /mavros/vehicle_info
+    message_type: mavros_msgs.msg.VehicleInfo
+    field_path: type
+    data_transform: identity
+
+  - property: Status/AutopilotType
+    topic: /mavros/vehicle_info
+    message_type: mavros_msgs.msg.VehicleInfo
+    field_path: autopilot
+    data_transform: identity
+
+  # ==============================================================================
+  # 3. POWER
+  # ==============================================================================
+  - property: Power/Voltage
+    topic: /mavros/battery
+    message_type: sensor_msgs.msg.BatteryState
+    field_path: voltage
+    data_transform: identity
+
+  - property: Power/Current
+    topic: /mavros/battery
+    message_type: sensor_msgs.msg.BatteryState
+    field_path: current
+    data_transform: identity
+
+  # - property: Power/Remaining
+  #   topic: /mavros/battery
+  #   message_type: sensor_msgs.msg.BatteryState
+  #   field_path: percentage
+  #   data_transform: identity
+
+  # ==============================================================================
+  # 4. NAVIGATION
+  # ==============================================================================
+  
+  # --- GlobalPosition ---
+  - property: Navigation/GlobalPosition/Latitude
+    topic: /mavros/global_position/global
+    message_type: sensor_msgs.msg.NavSatFix
+    field_path: latitude
+    data_transform: identity
+
+  - property: Navigation/GlobalPosition/Longitude
+    topic: /mavros/global_position/global
+    message_type: sensor_msgs.msg.NavSatFix
+    field_path: longitude
+    data_transform: identity
+
+  - property: Navigation/GlobalPosition/AltitudeMSL
+    topic: /mavros/global_position/global
+    message_type: sensor_msgs.msg.NavSatFix
+    field_path: altitude
+    data_transform: identity
+
+  # - property: Navigation/GlobalPosition/Heading
+  #   topic: /mavros/global_position/compass_hdg
+  #   message_type: std_msgs.msg.Float64
+  #   field_path: data
+  #   data_transform: identity
+
+  # --- LocalPositionNED ---
+  - property: Navigation/LocalPositionNED/X
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.position.x
+    data_transform: identity
+
+  - property: Navigation/LocalPositionNED/Y
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.position.y
+    data_transform: identity
+
+  - property: Navigation/LocalPositionNED/Z
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.position.z
+    data_transform: identity
+
+  - property: Navigation/LocalPositionNED/VX
+    topic: /mavros/local_position/velocity_local
+    message_type: geometry_msgs.msg.TwistStamped
+    field_path: twist.linear.x
+    data_transform: identity
+
+  - property: Navigation/LocalPositionNED/VY
+    topic: /mavros/local_position/velocity_local
+    message_type: geometry_msgs.msg.TwistStamped
+    field_path: twist.linear.y
+    data_transform: identity
+
+  - property: Navigation/LocalPositionNED/VZ
+    topic: /mavros/local_position/velocity_local
+    message_type: geometry_msgs.msg.TwistStamped
+    field_path: twist.linear.z
+    data_transform: identity
+
+  # --- GPS_Raw ---
+  # - property: Navigation/GPS_Raw/FixType
+  #   topic: /mavros/gpsstatus/gps1/raw
+  #   message_type: mavros_msgs.msg.GPSRAW
+  #   field_path: fix_type
+  #   data_transform: identity
+
+  # - property: Navigation/GPS_Raw/SatellitesVisible
+  #   topic: /mavros/gpsstatus/gps1/raw
+  #   message_type: mavros_msgs.msg.GPSRAW
+  #   field_path: satellites_visible
+  #   data_transform: identity
+
+  # - property: Navigation/GPS_Raw/HDOP
+  #   topic: /mavros/gpsstatus/gps1/raw
+  #   message_type: mavros_msgs.msg.GPSRAW
+  #   field_path: eph
+  #   data_transform: identity
+
+  # # --- TerrainData ---
+  # - property: Navigation/TerrainData/TerrainAltitude
+  #   topic: /mavros/altitude
+  #   message_type: mavros_msgs.msg.Altitude
+  #   field_path: terrain
+  #   data_transform: identity
+
+  # - property: Navigation/TerrainData/BottomClearance
+  #   topic: /mavros/altitude
+  #   message_type: mavros_msgs.msg.Altitude
+  #   field_path: bottom_clearance
+  #   data_transform: identity
+
+  # ==============================================================================
+  # 5. ATTITUDE
+  # ==============================================================================
+
+  # --- EulerAngles (Derived from Pose) ---
+  - property: Attitude/EulerAngles/Roll
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation
+    data_transform: quaternion_to_roll
+
+  - property: Attitude/EulerAngles/Pitch
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation
+    data_transform: quaternion_to_pitch
+
+  - property: Attitude/EulerAngles/Yaw
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation
+    data_transform: quaternion_to_yaw
+
+  # # --- Euler Rates ---
+  # - property: Attitude/EulerAngles/RollSpeed
+  #   topic: /mavros/local_position/velocity_body
+  #   message_type: geometry_msgs.msg.TwistStamped
+  #   field_path: twist.angular.x
+  #   data_transform: identity
+
+  # - property: Attitude/EulerAngles/PitchSpeed
+  #   topic: /mavros/local_position/velocity_body
+  #   message_type: geometry_msgs.msg.TwistStamped
+  #   field_path: twist.angular.y
+  #   data_transform: identity
+
+  # - property: Attitude/EulerAngles/YawSpeed
+  #   topic: /mavros/local_position/velocity_body
+  #   message_type: geometry_msgs.msg.TwistStamped
+  #   field_path: twist.angular.z
+  #   data_transform: identity
+
+  # --- Quaternion ---
+  # MAVLink Q1 (w), Q2 (x), Q3 (y), Q4 (z) 
+  - property: Attitude/Quaternion/Q1
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation.w
+    data_transform: identity
+
+  - property: Attitude/Quaternion/Q2
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation.x
+    data_transform: identity
+
+  - property: Attitude/Quaternion/Q3
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation.y
+    data_transform: identity
+
+  - property: Attitude/Quaternion/Q4
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation.z
+    data_transform: identity
+
+  # --- AttitudeTarget ---
+  - property: Attitude/AttitudeTarget/BodyRollRate
+    topic: /mavros/setpoint_raw/attitude
+    message_type: mavros_msgs.msg.AttitudeTarget
+    field_path: body_rate.x
+    data_transform: identity
+
+  - property: Attitude/AttitudeTarget/BodyPitchRate
+    topic: /mavros/setpoint_raw/attitude
+    message_type: mavros_msgs.msg.AttitudeTarget
+    field_path: body_rate.y
+    data_transform: identity
+
+  - property: Attitude/AttitudeTarget/BodyYawRate
+    topic: /mavros/setpoint_raw/attitude
+    message_type: mavros_msgs.msg.AttitudeTarget
+    field_path: body_rate.z
+    data_transform: identity
+
+  - property: Attitude/AttitudeTarget/Thrust
+    topic: /mavros/setpoint_raw/attitude
+    message_type: mavros_msgs.msg.AttitudeTarget
+    field_path: thrust
+    data_transform: identity
+
+  # ==============================================================================
+  # 6. ACTUATION
+  # ==============================================================================
+
+  # --- ServoOutput (RCOut) ---
+  # - property: Actuation/ServoOutput/Servo1
+  #   topic: /mavros/rc/out
+  #   message_type: mavros_msgs.msg.RCOut
+  #   field_path: channels[0]
+  #   data_transform: identity
+
+  # - property: Actuation/ServoOutput/Servo2
+  #   topic: /mavros/rc/out
+  #   message_type: mavros_msgs.msg.RCOut
+  #   field_path: channels[1]
+  #   data_transform: identity
+
+  # - property: Actuation/ServoOutput/Servo3
+  #   topic: /mavros/rc/out
+  #   message_type: mavros_msgs.msg.RCOut
+  #   field_path: channels[2]
+  #   data_transform: identity
+
+  # - property: Actuation/ServoOutput/Servo4
+  #   topic: /mavros/rc/out
+  #   message_type: mavros_msgs.msg.RCOut
+  #   field_path: channels[3]
+  #   data_transform: identity
+
+  # --- ESC Status ---
+  # Assuming ESC Telemetry plugin is active
+  - property: Actuation/ESC_Status/RPM
+    topic: /mavros/esc_status
+    message_type: mavros_msgs.msg.ESCTelemetry
+    field_path: esc_telemetry[0].rpm
+    data_transform: identity
+
+  - property: Actuation/ESC_Status/Voltage
+    topic: /mavros/esc_status
+    message_type: mavros_msgs.msg.ESCTelemetry
+    field_path: esc_telemetry[0].voltage
+    data_transform: identity
+
+  - property: Actuation/ESC_Status/Current
+    topic: /mavros/esc_status
+    message_type: mavros_msgs.msg.ESCTelemetry
+    field_path: esc_telemetry[0].current
+    data_transform: identity
+
+  # ==============================================================================
+  # 7. HUD
+  # ==============================================================================
+  - property: HUD/Airspeed
+    topic: /mavros/vfr_hud
+    message_type: mavros_msgs.msg.VfrHud
+    field_path: airspeed
+    data_transform: identity
+
+  - property: HUD/Groundspeed
+    topic: /mavros/vfr_hud
+    message_type: mavros_msgs.msg.VfrHud
+    field_path: groundspeed
+    data_transform: identity
+
+  # - property: HUD/Heading
+  #   topic: /mavros/vfr_hud
+  #   message_type: mavros_msgs.msg.VfrHud
+  #   field_path: heading
+  #   data_transform: identity
+
+  # - property: HUD/Throttle
+  #   topic: /mavros/vfr_hud
+  #   message_type: mavros_msgs.msg.VfrHud
+  #   field_path: throttle
+    data_transform: identity
+
+  - property: HUD/Altitude
+    topic: /mavros/vfr_hud
+    message_type: mavros_msgs.msg.VfrHud
+    field_path: altitude
+    data_transform: identity
+
+  - property: HUD/ClimbRate
+    topic: /mavros/vfr_hud
+    message_type: mavros_msgs.msg.VfrHud
+    field_path: climb
+    data_transform: identity
+
+# MAVROS enum mappings for transformations
+mavros_enums:
+  navsatfix_status: 
+    -1: "NO_FIX"
+    0: "FIX_NOT_AVAILABLE"
+    1: "GPS_FIX"
+    2: "DGPS_FIX"
+
+  mavros_modes: 
+    "MANUAL": "MANUAL"
+    "ACRO": "ACRO"
+    "ALTCTL": "ALTITUDE_CONTROL"
+    "POSCTL": "POSITION_CONTROL"
+    "OFFBOARD": "OFFBOARD"
+    "STABILIZED": "STABILIZED"
+    "RATTITUDE": "RATTITUDE"
+    "AUTO.MISSION": "AUTO_MISSION"
+    "AUTO.LOITER": "AUTO_LOITER"
+    "AUTO.RTL": "AUTO_RTL"
+    "AUTO.LAND": "AUTO_LAND"
+    "AUTO.RTGS": "AUTO_RTGS"
+    "AUTO.READY": "AUTO_READY"
+    "AUTO.TAKEOFF": "AUTO_TAKEOFF"

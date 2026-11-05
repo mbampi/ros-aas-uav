@@ -1,6 +1,6 @@
 /**:
     ros__parameters:
-        mapping_path: "/ros2_ws/install/aas_ros2_gateway/share/aas_ros2_gateway/config/map.yaml"
-        aas_path: "/ros2_ws/install/aas_ros2_gateway/share/aas_ros2_gateway/config/uav_submodel.xml"
+        mapping_path: "/ros2_ws/install/aas_ros2_gateway/share/aas_ros2_gateway/config/map_mavros_op.yaml"
+        aas_path: "/ros2_ws/install/aas_ros2_gateway/share/aas_ros2_gateway/config/quad_op.nodeset.xml"
         opcua_endpoint: "opc.tcp://host.docker.internal:4840/freeopcua/server/"
         debug_enabled: false

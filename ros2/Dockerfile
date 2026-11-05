@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     python3-colcon-common-extensions \
     git \
     python3-pip \
+    ros-humble-mavros-msgs \
     && pip install opcua \
     && rosdep update \
     && rm -rf /var/lib/apt/lists/*
@@ -31,6 +32,14 @@ RUN source /opt/ros/humble/setup.bash && \
     colcon build --packages-select aas_ros2_gateway
 
 FROM ros:humble-ros-base-jammy
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ros-humble-mavros-msgs \
+    ros-humble-sensor-msgs \
+    ros-humble-geometry-msgs \
+    ros-humble-std-msgs \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /ros2_ws/install /ros2_ws/install
 

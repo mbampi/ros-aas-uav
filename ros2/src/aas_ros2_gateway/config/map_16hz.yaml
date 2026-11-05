@@ -1,0 +1,64 @@
+# MAVROS ROS2 Gateway Configuration
+# Setup: Quarter Load (Tier 3)
+# Calculation: Per-Property Load Test
+# Total Calculated Load: 15.40 Hz (Close to target of 15.75 Hz)
+
+# Number of properties: 5
+# Number of topics: 4
+
+topics_to_properties:
+  # --- Low-Frequency Properties (Total 0.60 Hz) ---
+  - property: CurrentBatteryLevel
+    topic: /mavros/battery
+    message_type: sensor_msgs.msg.BatteryState
+    field_path: percentage
+    data_transform: identity
+
+  - property: FlightStatus
+    topic: /mavros/state
+    message_type: mavros_msgs.msg.State
+    field_path: mode
+    data_transform: identity
+
+  - property: Status
+    topic: /mavros/state
+    message_type: mavros_msgs.msg.State
+    field_path: armed
+    data_transform: bool_to_armed_string
+
+  # --- High-Frequency Properties (Total 14.80 Hz) ---
+  - property: Altitude
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.position.z
+    data_transform: identity
+
+  - property: Pitch
+    topic: /mavros/local_position/pose
+    message_type: geometry_msgs.msg.PoseStamped
+    field_path: pose.orientation
+    data_transform: quaternion_to_pitch
+
+# MAVROS enum mappings for transformations
+mavros_enums:
+  navsatfix_status:
+    -1: "NO_FIX"
+    0: "FIX_NOT_AVAILABLE"
+    1: "GPS_FIX"
+    2: "DGPS_FIX"
+
+  mavros_modes:
+    "MANUAL": "MANUAL"
+    "ACRO": "ACRO"
+    "ALTCTL": "ALTITUDE_CONTROL"
+    "POSCTL": "POSITION_CONTROL"
+    "OFFBOARD": "OFFBOARD"
+    "STABILIZED": "STABILIZED"
+    "RATTITUDE": "RATTITUDE"
+    "AUTO.MISSION": "AUTO_MISSION"
+    "AUTO.LOITER": "AUTO_LOITER"
+    "AUTO.RTL": "AUTO_RTL"
+    "AUTO.LAND": "AUTO_LAND"
+    "AUTO.RTGS": "AUTO_RTGS"
+    "AUTO.READY": "AUTO_READY"
+    "AUTO.TAKEOFF": "AUTO_TAKEOFF"

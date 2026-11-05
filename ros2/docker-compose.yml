@@ -11,27 +11,78 @@ services:
       - ./logs/aas_gateway:/logs
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    # 4GB of RAM and 4 CPU cores - simulating a weak Companion Board
-    deploy:
-      resources:
-        limits:
-          memory: 4G
-          cpus: '4'
+    network_mode: "host" 
 
-  mock_publisher:
-    container_name: mock_publisher
+  mavros:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.mavros
+    container_name: mavros
+    ports:
+      - "14550:14550/udp"
+      # - "/dev/ttyAMA0:/dev/ttyAMA0" # Example for serial device (UART)
     command: >
-      bash -c "source /ros2_ws/install/setup.bash && 
-        ros2 run aas_ros2_gateway mock_publisher"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - aas_gateway
-    profiles:
-      - mock
+      bash -c "source /opt/ros/humble/setup.bash && 
+        ros2 run mavros mavros_node --ros-args -p fcu_url:=udp://:14550@ -p tgt_system:=2 -p conn_debug:=true --log-level mavros:=INFO"
+
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:latest
+  #   container_name: cadvisor
+  #   restart: unless-stopped
+  #   command:
+  #     # Frequency of collection
+  #     - "-housekeeping_interval=500ms"
+  #     # Disable disk/network I/O, CPU topology, and process metrics to reduce overhead.
+  #     - --disable_metrics=disk,network,cpu_topology,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp
+  #     # Only monitor Docker containers (removes host process monitoring).
+  #     - --docker_only=true
+  #   privileged: true
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:ro
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #     - /dev/disk/:/dev/disk:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   ports:
+  #     - "8081:8080"
+  #   devices:
+  #     - /dev/kmsg
+
+  # Leaving these commented out for now; can be enabled for testing purposes
+  
+  # mock_publisher:
+  #   container_name: mock_publisher
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   command: >
+  #     bash -c "source /ros2_ws/install/setup.bash && 
+  #       ros2 run aas_ros2_gateway mock_publisher"
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   network_mode: "host" 
+  #   depends_on:
+  #     - aas_gateway
+  #   profiles:
+  #     - mock
+
+  # mavlink_mock_publisher:
+  #   container_name: mavlink_mock_publisher
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   command: >
+  #     bash -c "source /opt/ros/humble/setup.bash && 
+  #       source /ros2_ws/install/setup.bash && 
+  #       ros2 launch aas_ros2_gateway mavlink_mock_publisher.launch.py"
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   network_mode: "host" 
+  #   depends_on:
+  #     - aas_gateway
+  #   profiles:
+  #     - mavlink-mock
 
   resource_monitor:
     image: docker:latest
@@ -42,7 +93,7 @@ services:
           TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
           STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
           echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
-          sleep 1;
+          sleep 0.5;
         done
       '
     volumes:
