@@ -263,3 +263,6 @@ latency_measure/
 opcua_server/events/
 paper/
 experiments/
+
+# Docker image archives
+*.tar

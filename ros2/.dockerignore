@@ -16,3 +16,6 @@ pixi.toml
 __pycache__/
 *.pyc
 *.pyo
+
+# Docker image archives
+*.tar
