@@ -27,32 +27,8 @@ services:
       bash -c "source /opt/ros/humble/setup.bash && 
         ros2 run mavros mavros_node --ros-args -p fcu_url:=udp://:14550@ -p tgt_system:=2 -p conn_debug:=true --log-level mavros:=INFO"
 
-  # cadvisor:
-  #   image: gcr.io/cadvisor/cadvisor:latest
-  #   container_name: cadvisor
-  #   restart: unless-stopped
-  #   command:
-  #     # Frequency of collection
-  #     - "-housekeeping_interval=500ms"
-  #     # Disable disk/network I/O, CPU topology, and process metrics to reduce overhead.
-  #     - --disable_metrics=disk,network,cpu_topology,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp
-  #     # Only monitor Docker containers (removes host process monitoring).
-  #     - --docker_only=true
-  #   privileged: true
-  #   volumes:
-  #     - /:/rootfs:ro
-  #     - /var/run:/var/run:ro
-  #     - /sys:/sys:ro
-  #     - /var/lib/docker/:/var/lib/docker:ro
-  #     - /dev/disk/:/dev/disk:ro
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #   ports:
-  #     - "8081:8080"
-  #   devices:
-  #     - /dev/kmsg
+  # Mock publishers, for testing without a UAV
 
-  # Leaving these commented out for now; can be enabled for testing purposes
-  
   # mock_publisher:
   #   container_name: mock_publisher
   #   build:
@@ -86,24 +62,6 @@ services:
   #   profiles:
   #     - mavlink-mock
 
-  # resource_monitor:
-  #   image: docker:latest
-  #   container_name: resource_monitor
-  #   command: >
-  #     sh -c '
-  #       while true; do
-  #         TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%SZ);
-  #         STATS_JSON=$$(docker stats --no-stream --format "{{json .}}" aas_gateway);
-  #         echo "{\"timestamp\":\"$$TIMESTAMP\", \"stats\":$$STATS_JSON}" >> /logs/resource_usage.log;
-  #         sleep 0.5;
-  #       done
-  #     '
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ./logs/resource_monitor:/logs
-  #   depends_on:
-  #     - aas_gateway
-
   resource_monitor:
     image: alpine:latest
     container_name: resource_monitor
@@ -118,7 +76,6 @@ services:
         GATEWAY_PID=$$(pgrep -f "aas_gateway" | grep -v "bash" | head -n 1);
         echo "Found gateway at PID: $$GATEWAY_PID. Starting 1Hz monitor.";
         
-        # Changed 0.5 to 1. pidstat will now measure the exact CPU delta over 1 second.
         stdbuf -oL pidstat -p $$GATEWAY_PID -u -r -h 1 >> /logs/native_resource_usage.log 2>&1;
       '
     volumes:
